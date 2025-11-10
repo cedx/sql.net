@@ -39,7 +39,7 @@ function New-Command {
 		$dbParameter.IsNullable = $null -eq $value
 		$dbParameter.Value = $null -eq $value ? [DBNull]::Value : $value
 
-		$dbCommand.Parameters.Add($dbParameter)
+		$dbCommand.Parameters.Add($dbParameter) | Out-Null
 	}
 
 	$dbCommand
