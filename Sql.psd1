@@ -23,7 +23,6 @@
 		"Invoke-NonQuery"
 		"Invoke-Query"
 		"Invoke-Reader"
-		"New-Command"
 		"New-Connection"
 	)
 
@@ -35,7 +34,6 @@
 		"src/Invoke-NonQuery.psm1"
 		"src/Invoke-Query.psm1"
 		"src/Invoke-Reader.psm1"
-		"src/New-Command.psm1"
 		"src/New-Connection.psm1"
 	)
 

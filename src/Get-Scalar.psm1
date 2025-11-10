@@ -3,19 +3,19 @@ using module ./New-Command.psm1
 
 <#
 .SYNOPSIS
-	Executes a parameterized SQL statement.
+	Executes a parameterized SQL query that selects a single value.
 .PARAMETER Connection
 	The connection to the data source.
 .PARAMETER Command
-	The SQL statement to be executed.
+	The SQL query to be executed.
 .PARAMETER Parameters
-	The parameters of the SQL statement.
+	The parameters of the SQL query.
 .OUTPUTS
-	The number of rows affected.
+	The value of the first column of the first row returned.
 #>
-function Invoke-NonQuery {
+function Get-Scalar {
 	[CmdletBinding()]
-	[OutputType([int])]
+	[OutputType([object])]
 	param (
 		[Parameter(Mandatory, Position = 0)]
 		[IDbConnection] $Connection,
@@ -30,7 +30,7 @@ function Invoke-NonQuery {
 
 	if ($Connection.State -eq [ConnectionState]::Closed) { $Connection.Open() }
 	$dbCommand = New-Command $Connection -Command $Command -Parameters $Parameters
-	$rowsAffected = $dbCommand.Execute()
+	$value = $dbCommand.ExecuteScalar()
 	$dbCommand.Dispose()
-	$rowsAffected
+	$value -eq [DBNull]::Value ? $null : $value
 }
