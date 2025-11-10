@@ -1,21 +1,20 @@
 using namespace System.Data
-using module ./New-Command.psm1
 
 <#
 .SYNOPSIS
-	Executes a parameterized SQL query and returns a data reader.
+	Executes a parameterized SQL statement.
 .PARAMETER Connection
 	The connection to the data source.
 .PARAMETER Command
-	The SQL query to be executed.
+	The SQL statement to be executed.
 .PARAMETER Parameters
-	The parameters of the SQL query.
+	The parameters of the SQL statement.
 .OUTPUTS
-	A data reader that can be used to iterate over the results of the SQL query.
+	The number of rows affected.
 #>
-function Invoke-Reader {
+function Invoke-NonQuery {
 	[CmdletBinding()]
-	[OutputType([IDataReader])]
+	[OutputType([int])]
 	param (
 		[Parameter(Mandatory, Position = 0)]
 		[IDbConnection] $Connection,
@@ -30,7 +29,7 @@ function Invoke-Reader {
 
 	if ($Connection.State -eq [ConnectionState]::Closed) { $Connection.Open() }
 	$dbCommand = New-Command $Connection -Command $Command -Parameters $Parameters
-	$reader = $dbCommand.ExecuteReader()
+	$rowsAffected = $dbCommand.Execute()
 	$dbCommand.Dispose()
-	$reader
+	$rowsAffected
 }
