@@ -29,7 +29,7 @@ function Invoke-NonQuery {
 
 	if ($Connection.State -eq [System.Data.ConnectionState]::Closed) { $Connection.Open() }
 	$dbCommand = New-Command $Connection -Command $Command -Parameters $Parameters
-	$rowsAffected = $dbCommand.Execute()
+	$rowsAffected = $dbCommand.ExecuteNonQuery()
 	$dbCommand.Dispose()
 	$rowsAffected
 }
