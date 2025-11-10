@@ -35,6 +35,6 @@ function Invoke-Query {
 		[switch] $AsHashtable
 	)
 
-	$reader = Invoke-Reader $Connection -Command $Command -Parameters $Parameters
+	$reader = (Invoke-Reader $Connection -Command $Command -Parameters $Parameters).Reader
 	ConvertFrom-Reader $reader -AsHashtable:$AsHashtable
 }

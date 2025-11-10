@@ -10,11 +10,11 @@ using module ./New-Command.psm1
 .PARAMETER Parameters
 	The parameters of the SQL query.
 .OUTPUTS
-	A data reader that can be used to iterate over the results of the SQL query.
+	A custom object with a `Reader` property containing the data reader that can be used to iterate over the results of the SQL query.
 #>
 function Invoke-Reader {
 	[CmdletBinding()]
-	[OutputType([System.Data.IDataReader])]
+	[OutputType([psobject])]
 	param (
 		[Parameter(Mandatory, Position = 0)]
 		[System.Data.IDbConnection] $Connection,
@@ -31,5 +31,5 @@ function Invoke-Reader {
 	$dbCommand = New-Command $Connection -Command $Command -Parameters $Parameters
 	$reader = $dbCommand.ExecuteReader()
 	$dbCommand.Dispose()
-	$reader
+	[PSCustomObject]@{ Reader = $reader }
 }

@@ -31,7 +31,7 @@ function New-Command {
 	$dbCommand = $Connection.CreateCommand()
 	$dbCommand.CommandText = $Command
 
-	foreach ($key in $Parameters) {
+	foreach ($key in $Parameters.Keys) {
 		$dbParameter = $dbCommand.CreateParameter()
 		$dbParameter.ParameterName = "@$key"
 

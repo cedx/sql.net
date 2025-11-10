@@ -35,7 +35,7 @@ function Get-First {
 		[switch] $AsHashtable
 	)
 
-	$reader = Invoke-Reader $Connection -Command $Command -Parameters $Parameters
+	$reader = (Invoke-Reader $Connection -Command $Command -Parameters $Parameters).Reader
 	$record = $reader.Read() ? (ConvertFrom-Record $reader -AsHashtable:$AsHashtable) : $null
 	$reader.Close()
 

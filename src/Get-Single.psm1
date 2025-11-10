@@ -35,7 +35,7 @@ function Get-Single {
 		[switch] $AsHashtable
 	)
 
-	$reader = Invoke-Reader $Connection -Command $Command -Parameters $Parameters
+	$reader = (Invoke-Reader $Connection -Command $Command -Parameters $Parameters).Reader
 	$record = $null
 	$rowCount = 0
 	while ($reader.Read()) {
