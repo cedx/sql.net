@@ -7,7 +7,7 @@
 	Author = "Cédric Belin <cedx@outlook.com>"
 	CompanyName = "Cedric-Belin.fr"
 	Copyright = "© Cédric Belin"
-	Description = "A high performance micro-ORM supporting MariaDB, PostgreSQL, SQL Server, SQLite and more."
+	Description = "A simple micro-ORM supporting MySQL, PostgreSQL, SQL Server and SQLite."
 	GUID = "73f259d4-477b-4162-8bc7-af02221cef9c"
 
 	AliasesToExport = @()
@@ -18,7 +18,7 @@
 		"Close-Connection"
 		"Get-First"
 		"Get-Scalar"
-		"Get-ServerVersion"
+		# "Get-ServerVersion"
 		"Get-Single"
 		"Invoke-NonQuery"
 		"Invoke-Query"

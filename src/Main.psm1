@@ -14,6 +14,7 @@ function Get-ServerVersion {
 		[System.Data.IDbConnection] $Connection
 	)
 
+	$invalidOperation = [InvalidOperationException]  "Unable to fetch the server version."
 	$command = switch ($Connection.GetType().FullName) {
 		"Microsoft.Data.SqlClient.SqlConnection" { "SELECT SERVERPROPERTY('ProductVersion')"; break }
 		"Microsoft.Data.Sqlite.SqlConnection" { "SELECT sqlite_version()"; break }
@@ -21,12 +22,12 @@ function Get-ServerVersion {
 		"MySqlConnector.MySqlConnection" { "SELECT VERSION()"; break }
 		"Npgsql.NpgsqlConnection" { "SHOW server_version"; break }
 		"System.Data.SqlClient.SqlConnection" { "SELECT SERVERPROPERTY('ProductVersion')"; break }
-		default { throw [InvalidOperationException] "TODO" }
+		default { throw $invalidOperation }
 	}
 
 	$version = Get-Scalar $Connection -Command $command
-	if (-not $version) { throw [InvalidOperationException] "TODO" }
-	if ($version -notmatch "^(\d+(\.\d+)*)[^\.\d]*") { throw [InvalidOperationException] "TODO" }
+	if (-not $version) { throw $invalidOperation }
+	if ($version -notmatch "^(\d+(\.\d+)*)[^\.\d]*") { throw $invalidOperation }
 	[version] $Matches.1
 
 	# TODO !!!!

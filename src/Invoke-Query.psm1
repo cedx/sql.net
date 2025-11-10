@@ -3,7 +3,7 @@ using module ./Mapping/ConvertFrom-Reader.psm1
 
 <#
 .SYNOPSIS
-	Executes a parameterized SQL query and returns a sequence of objects whose properties correspond to the columns.
+	Executes a parameterized SQL query and returns an array of objects whose properties correspond to the columns.
 .PARAMETER Connection
 	The connection to the data source.
 .PARAMETER Command
@@ -11,11 +11,11 @@ using module ./Mapping/ConvertFrom-Reader.psm1
 .PARAMETER Parameters
 	The parameters of the SQL query.
 .PARAMETER AsHashtable
-	Value indicating whether to convert the rows to a hash table.
+	Value indicating whether to convert the records to hash tables.
 .OUTPUTS
-	[hashtable[]] The sequence of hash tables whose keys correspond to the returned columns.
+	[hashtable[]] The array of hash tables whose keys correspond to the returned columns.
 .OUTPUTS
-	[psobject[]] The sequence of custom objects whose properties correspond to the returned columns.
+	[psobject[]] The array of custom objects whose properties correspond to the returned columns.
 #>
 function Invoke-Query {
 	[CmdletBinding()]

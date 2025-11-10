@@ -11,7 +11,7 @@ using module ./Mapping/ConvertFrom-Record.psm1
 .PARAMETER Parameters
 	The parameters of the SQL query.
 .PARAMETER AsHashtable
-	Value indicating whether to convert the row to a hash table.
+	Value indicating whether to convert the record to a hash table.
 .OUTPUTS
 	[hashtable] The first row as a hash table. If not found: throws an error if `-ErrorAction` is set to `Stop`, otherwise returns `$null`.
 .OUTPUTS
