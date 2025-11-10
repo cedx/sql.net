@@ -8,7 +8,7 @@
 	CompanyName = "Cedric-Belin.fr"
 	Copyright = "© Cédric Belin"
 	Description = "A simple micro-ORM supporting MySQL, PostgreSQL, SQL Server and SQLite."
-	GUID = "73f259d4-477b-4162-8bc7-af02221cef9c"
+	GUID = "d2b1c123-e1bc-4cca-84c5-af102244e3c5"
 
 	AliasesToExport = @()
 	CmdletsToExport = @()
