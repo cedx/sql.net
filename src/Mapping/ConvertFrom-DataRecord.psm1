@@ -27,8 +27,8 @@ function ConvertFrom-DataRecord {
 	process {
 		$hashtable = [ordered]@{}
 		for ($index = 0; $index -lt $InputObject.FieldCount; $index++) {
-			$name = $InputObject.GetName($index)
-			$hashtable.$name = $InputObject.IsDBNull($index) ? $null : $InputObject.GetValue($index)
+			$key = $InputObject.GetName($index)
+			$hashtable.$key = $InputObject.IsDBNull($index) ? $null : $InputObject.GetValue($index)
 		}
 
 		$AsHashtable ? $hashtable : [PSCustomObject] $hashtable
