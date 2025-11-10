@@ -4,7 +4,7 @@ using module ./Mapping/ConvertFrom-Record.psm1
 
 <#
 .SYNOPSIS
-	Executes a parameterized SQL query and returns the first row.
+	Executes a parameterized SQL query and returns the single row.
 .PARAMETER Connection
 	The connection to the data source.
 .PARAMETER Command
@@ -14,11 +14,11 @@ using module ./Mapping/ConvertFrom-Record.psm1
 .PARAMETER AsHashtable
 	Value indicating whether to convert the row to a hash table.
 .OUTPUTS
-	[hashtable] The first row as a hash table. If not found: throws an error if `-ErrorAction` is set to `Stop`, otherwise returns `$null`.
+	[hashtable] The single row as a hash table. If not found: throws an error if `-ErrorAction` is set to `Stop`, otherwise returns `$null`.
 .OUTPUTS
-	[psobject] The first row as a custom object. If not found: throws an error if `-ErrorAction` is set to `Stop`, otherwise returns `$null`.
+	[psobject] The single row as a custom object. If not found: throws an error if `-ErrorAction` is set to `Stop`, otherwise returns `$null`.
 #>
-function Get-First {
+function Get-Single {
 	[CmdletBinding()]
 	[OutputType([hashtable], [psobject])]
 	param (
@@ -37,10 +37,15 @@ function Get-First {
 	)
 
 	$reader = Invoke-Reader $Connection -Command $Command -Parameters $Parameters -AsHashtable:$AsHashtable
-	$record = $reader.Read() ? (ConvertFrom-Record $reader -AsHashtable:$AsHashtable) : $null
-	$reader.Close()
+	$record = $null
+	$rowCount = 0
+	while ($reader.Read()) {
+		if (++$rowCount -gt 1) { break }
+		$record = ConvertFrom-Record $reader -AsHashtable:$AsHashtable
+	}
 
-	$invalidOperation = $record ? $null : [InvalidOperationException] "Unable to fetch the first row."
+	$reader.Close()
+	$invalidOperation = $record -and ($rowCount -eq 1) ? $null : [InvalidOperationException] "Unable to fetch the single row."
 	if ($invalidOperation -and ($ErrorActionPreference -eq "Stop")) { throw $invalidOperation }
 	$record
 }
