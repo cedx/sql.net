@@ -1,8 +1,8 @@
 # SQL Client for PowerShell
-![PowerShell](https://badgen.net/static/powershell/%3E%3D7.5/green) ![PSGallery](https://badgen.net/static/module/v0.4.0/blue) ![License](https://badgen.net/static/license/MIT/blue)
+![PowerShell](https://badgen.net/static/powershell/%3E%3D7.4/green) ![PSGallery](https://badgen.net/static/module/v0.1.0/blue) ![License](https://badgen.net/static/license/MIT/blue)
 
 Simple micro-ORM used to simplify working with [ADO.NET](https://learn.microsoft.com/en-us/dotnet/framework/data/adonet).  
-If you like SQL but dislike the boilerplate of ADO.NET: **SQL Client for PowerShell** is for you!
+If you like [SQL](https://en.wikipedia.org/wiki/SQL) but dislike the boilerplate of ADO.NET: **SQL Client for PowerShell** is for you!
 
 ## Documentation
 - [User guide](https://github.com/cedx/sql.ps1/wiki)
