@@ -43,7 +43,7 @@ function Get-Single {
 	}
 
 	$reader.Close()
-	$invalidOperation = $record -and ($rowCount -eq 1) ? $null : [InvalidOperationException] "Unable to fetch the single row."
+	$invalidOperation = $record ? $null : [InvalidOperationException] "The result set is empty or contains more than one record."
 	if ($invalidOperation -and ($ErrorActionPreference -eq "Stop")) { throw $invalidOperation }
 	$record
 }
