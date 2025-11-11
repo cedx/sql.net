@@ -38,7 +38,7 @@ function Get-First {
 	$record = $reader.Read() ? (ConvertFrom-Record $reader -As:$As) : $null
 	$reader.Close()
 
-	$invalidOperation = $record ? $null : [InvalidOperationException] "Unable to fetch the first row."
+	$invalidOperation = $record ? $null : [InvalidOperationException] "The result set is empty."
 	if ($invalidOperation -and ($ErrorActionPreference -eq "Stop")) { throw $invalidOperation }
 	$record
 }
