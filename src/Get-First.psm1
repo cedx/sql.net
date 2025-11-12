@@ -34,9 +34,9 @@ function Get-First {
 		[type] $As = ([psobject])
 	)
 
-	$reader = (Invoke-Reader $Connection -Command $Command -Parameters $Parameters).Reader
-	$record = $reader.Read() ? (ConvertFrom-Record $reader -As:$As) : $null
-	$reader.Close()
+	$adapter = Invoke-Reader $Connection -Command $Command -Parameters $Parameters
+	$record = $adapter.Reader.Read() ? $adapter.Mapper.ConvertRecord($adapter.Reader, $As) : $null
+	$adapter.Reader.Close()
 
 	$invalidOperation = $record ? $null : [InvalidOperationException] "The result set is empty."
 	if ($invalidOperation -and ($ErrorActionPreference -eq "Stop")) { throw $invalidOperation }
