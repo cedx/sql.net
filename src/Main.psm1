@@ -6,7 +6,7 @@ using module ./Get-Scalar.psm1
 .OUTPUTS
 	The version of the server associated with the specified connection.
 #>
-function Get-ServerVersion {
+function Get-Version {
 	[CmdletBinding()]
 	[OutputType([version])]
 	param (
