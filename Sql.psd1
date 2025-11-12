@@ -1,6 +1,6 @@
 ﻿@{
 	DefaultCommandPrefix = "Sql"
-	ModuleVersion = "0.1.0"
+	ModuleVersion = "0.2.0"
 	PowerShellVersion = "7.4"
 	RootModule = "src/Main.psm1"
 
@@ -18,7 +18,7 @@
 		"Close-Connection"
 		"Get-First"
 		"Get-Scalar"
-		# "Get-ServerVersion"
+		"Get-ServerVersion"
 		"Get-Single"
 		"Invoke-NonQuery"
 		"Invoke-Query"
