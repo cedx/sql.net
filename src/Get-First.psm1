@@ -11,7 +11,7 @@ using module ./Mapping/ConvertFrom-Record.psm1
 .PARAMETER Parameters
 	The parameters of the SQL query.
 .PARAMETER As
-	The type to which the returned record should be converted.
+	The type of object to return.
 .OUTPUTS
 	The first record.
 	If not found: throws an error if `-ErrorAction` is set to `Stop`, otherwise returns `$null`.

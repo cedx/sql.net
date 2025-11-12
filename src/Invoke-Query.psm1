@@ -11,7 +11,7 @@ using module ./Mapping/ConvertFrom-Reader.psm1
 .PARAMETER Parameters
 	The parameters of the SQL query.
 .PARAMETER As
-	The type to which the returned records should be converted.
+	The type of objects to return.
 .OUTPUTS
 	The array of objects whose properties correspond to the queried columns.
 #>
