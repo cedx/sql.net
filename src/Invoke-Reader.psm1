@@ -1,4 +1,6 @@
 using module ./New-Command.psm1
+using module ./Mapping/DataAdapter.psm1
+using module ./Mapping/DataMapper.psm1
 
 <#
 .SYNOPSIS
@@ -10,11 +12,11 @@ using module ./New-Command.psm1
 .PARAMETER Parameters
 	The parameters of the SQL query.
 .OUTPUTS
-	A custom object with a `Reader` property containing the data reader that can be used to iterate over the results of the SQL query.
+	An adapter with a `Reader` property containing the data reader that can be used to iterate over the results of the SQL query.
 #>
 function Invoke-Reader {
 	[CmdletBinding()]
-	[OutputType([psobject])]
+	[OutputType([DataAdapter])]
 	param (
 		[Parameter(Mandatory, Position = 0)]
 		[System.Data.IDbConnection] $Connection,
@@ -31,5 +33,5 @@ function Invoke-Reader {
 	$dbCommand = New-Command $Connection -Command $Command -Parameters $Parameters
 	$reader = $dbCommand.ExecuteReader()
 	$dbCommand.Dispose()
-	[pscustomobject]@{ Reader = $reader }
+	[DataAdapter]@{ Mapper = [DataMapper]::new(); Reader = $reader }
 }

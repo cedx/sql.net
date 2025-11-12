@@ -33,6 +33,6 @@ function Invoke-Query {
 		[type] $As = ([psobject])
 	)
 
-	$reader = (Invoke-Reader $Connection -Command $Command -Parameters $Parameters).Reader
-	ConvertFrom-Reader $reader -As:$As
+	$adapter = Invoke-Reader $Connection -Command $Command -Parameters $Parameters
+	$adapter.Mapper.ConvertReader($adapter.Reader, $As)
 }

@@ -34,15 +34,15 @@ function Get-Single {
 		[type] $As = ([psobject])
 	)
 
-	$reader = (Invoke-Reader $Connection -Command $Command -Parameters $Parameters).Reader
+	$adapter = Invoke-Reader $Connection -Command $Command -Parameters $Parameters
 	$record = $null
 	$rowCount = 0
-	while ($reader.Read()) {
+	while ($adapter.Reader.Read()) {
 		if (++$rowCount -gt 1) { break }
-		$record = ConvertFrom-Record $reader -As:$As
+		$record = $adapter.Mapper.ConvertRecord($adapter.Reader, $As)
 	}
 
-	$reader.Close()
+	$adapter.Reader.Close()
 	$invalidOperation = $record ? $null : [InvalidOperationException] "The result set is empty or contains more than one record."
 	if ($invalidOperation -and ($ErrorActionPreference -eq "Stop")) { throw $invalidOperation }
 	$record
