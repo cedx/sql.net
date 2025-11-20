@@ -1,5 +1,8 @@
 # Changelog
 
+## Version [0.3.0](https://github.com/cedx/sql.ps1/compare/v0.2.0...v0.3.0)
+- Added the `-Timeout` parameter to most cmdlets.
+
 ## Version [0.2.0](https://github.com/cedx/sql.ps1/compare/v0.1.0...v0.2.0)
 - Added a simple object mapping feature.
 - Added new cmdlets: `Get-ServerVersion`, `New-Command` and `New-Parameter`.
