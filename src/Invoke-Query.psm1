@@ -11,6 +11,8 @@ using module ./Invoke-Reader.psm1
 	The parameters of the SQL query.
 .PARAMETER As
 	The type of objects to return.
+.PARAMETER Timeout
+	The wait time, in seconds, before terminating the attempt to execute the command and generating an error.
 .OUTPUTS
 	The array of objects whose properties correspond to the queried columns.
 #>
@@ -29,9 +31,12 @@ function Invoke-Query {
 		[hashtable] $Parameters = @{},
 
 		[ValidateNotNull()]
-		[type] $As = ([psobject])
+		[type] $As = ([psobject]),
+
+		[ValidateRange("NonNegative")]
+		[int] $Timeout = 30
 	)
 
-	$adapter = Invoke-Reader $Connection -Command $Command -Parameters $Parameters
+	$adapter = Invoke-Reader $Connection -Command $Command -Parameters $Parameters -Timeout $Timeout
 	$adapter.Mapper.ConvertReader($adapter.Reader, $As)
 }

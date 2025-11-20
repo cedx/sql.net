@@ -11,6 +11,8 @@ using module ./Invoke-Reader.psm1
 	The parameters of the SQL query.
 .PARAMETER As
 	The type of object to return.
+.PARAMETER Timeout
+	The wait time, in seconds, before terminating the attempt to execute the command and generating an error.
 .OUTPUTS
 	The single record.
 	If not found: throws an error if `-ErrorAction` is set to `Stop`, otherwise returns `$null`.
@@ -30,10 +32,13 @@ function Get-Single {
 		[hashtable] $Parameters = @{},
 
 		[ValidateNotNull()]
-		[type] $As = ([psobject])
+		[type] $As = ([psobject]),
+
+		[ValidateRange("NonNegative")]
+		[int] $Timeout = 30
 	)
 
-	$adapter = Invoke-Reader $Connection -Command $Command -Parameters $Parameters
+	$adapter = Invoke-Reader $Connection -Command $Command -Parameters $Parameters -Timeout $Timeout
 	$record = $null
 	$rowCount = 0
 	while ($adapter.Reader.Read()) {

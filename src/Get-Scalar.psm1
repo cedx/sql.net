@@ -9,6 +9,8 @@ using module ./New-Command.psm1
 	The SQL query to be executed.
 .PARAMETER Parameters
 	The parameters of the SQL query.
+.PARAMETER Timeout
+	The wait time, in seconds, before terminating the attempt to execute the command and generating an error.
 .OUTPUTS
 	The value of the first column of the first row returned, or `$null` if not found.
 #>
@@ -24,11 +26,14 @@ function Get-Scalar {
 
 		[Parameter(Position = 2)]
 		[ValidateNotNull()]
-		[hashtable] $Parameters = @{}
+		[hashtable] $Parameters = @{},
+
+		[ValidateRange("NonNegative")]
+		[int] $Timeout = 30
 	)
 
 	if ($Connection.State -eq [System.Data.ConnectionState]::Closed) { $Connection.Open() }
-	$dbCommand = New-Command $Connection -Command $Command -Parameters $Parameters
+	$dbCommand = New-Command $Connection -Command $Command -Parameters $Parameters -Timeout $Timeout
 	$value = $dbCommand.ExecuteScalar()
 	$dbCommand.Dispose()
 	$value -is [DBNull] ? $null : $value

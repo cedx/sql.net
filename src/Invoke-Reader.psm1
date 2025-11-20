@@ -11,6 +11,8 @@ using module ./Mapping/DataMapper.psm1
 	The SQL query to be executed.
 .PARAMETER Parameters
 	The parameters of the SQL query.
+.PARAMETER Timeout
+	The wait time, in seconds, before terminating the attempt to execute the command and generating an error.
 .OUTPUTS
 	An object with a `Reader` property containing the data reader that can be used to iterate over the results of the SQL query.
 #>
@@ -26,11 +28,14 @@ function Invoke-Reader {
 
 		[Parameter(Position = 2)]
 		[ValidateNotNull()]
-		[hashtable] $Parameters = @{}
+		[hashtable] $Parameters = @{},
+
+		[ValidateRange("NonNegative")]
+		[int] $Timeout = 30
 	)
 
 	if ($Connection.State -eq [System.Data.ConnectionState]::Closed) { $Connection.Open() }
-	$dbCommand = New-Command $Connection -Command $Command -Parameters $Parameters
+	$dbCommand = New-Command $Connection -Command $Command -Parameters $Parameters -Timeout $Timeout
 	$reader = $dbCommand.ExecuteReader()
 	$dbCommand.Dispose()
 	[DataAdapter]@{ Mapper = [DataMapper]::new(); Reader = $reader }
