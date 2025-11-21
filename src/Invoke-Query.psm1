@@ -43,5 +43,5 @@ function Invoke-Query {
 	)
 
 	$adapter = Invoke-Reader $Connection -Command $Command -Parameters $Parameters -PositionalParameters $PositionalParameters -Timeout $Timeout
-	$adapter.Mapper.ConvertReader($adapter.Reader, $As)
+	$adapter.Mapper.CreateInstances($As, $adapter.Reader)
 }

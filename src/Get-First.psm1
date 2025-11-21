@@ -44,7 +44,7 @@ function Get-First {
 	)
 
 	$adapter = Invoke-Reader $Connection -Command $Command -Parameters $Parameters -PositionalParameters $PositionalParameters -Timeout $Timeout
-	$record = $adapter.Reader.Read() ? $adapter.Mapper.ConvertRecord($adapter.Reader, $As) : $null
+	$record = $adapter.Reader.Read() ? $adapter.Mapper.CreateInstance($As, $adapter.Reader) : $null
 	$adapter.Reader.Close()
 
 	$invalidOperation = $record ? $null : [InvalidOperationException] "The result set is empty."

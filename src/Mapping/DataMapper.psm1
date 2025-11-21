@@ -17,33 +17,16 @@ class DataMapper {
 
 	<#
 	.SYNOPSIS
-		Converts the specified data reader into an array of objects of the specified type.
-	.PARAMETER Reader
-		The data reader to be converted.
+		Creates a new entity of a given type from the specified data record.
 	.PARAMETER Type
-		The type of objects to return.
-	.OUTPUTS
-		The array of objects corresponding to the specified data reader.
-	#>
-	[object[]] ConvertReader([System.Data.IDataReader] $Reader, [type] $Type) {
-		$list = [ArrayList]::new()
-		while ($Reader.Read()) { $list.Add($this.ConvertRecord($Reader, $Type)) }
-		$Reader.Close()
-		return $list.ToArray()
-	}
-
-	<#
-	.SYNOPSIS
-		Converts the specified data record to the specified type.
+		The entity type.
 	.PARAMETER Record
-		The data record to be converted.
-	.PARAMETER Type
-		The type of object to return.
+		A data record providing the properties to be set on the created object.
 	.OUTPUTS
-		The object corresponding to the specified data record.
+		The newly created object.
 	#>
 	[SuppressMessage("PSUseDeclaredVarsMoreThanAssignments", "")]
-	[object] ConvertRecord([System.Data.IDataRecord] $Record, [type] $Type) {
+	[object] CreateInstance([type] $Type, [System.Data.IDataRecord] $Record) {
 		$properties = [ordered]@{}
 		for ($index = 0; $index -lt $Record.FieldCount; $index++) {
 			$key = $Record.GetName($index)
@@ -60,11 +43,11 @@ class DataMapper {
 
 	<#
 	.SYNOPSIS
-		Creates a new entity of the specified type using that type's parameterless constructor.
+		Creates a new entity of a given type from the specified hash table.
 	.PARAMETER Type
 		The entity type.
 	.PARAMETER Properties
-		The properties to be set on the newly created object.
+		A hash table providing the properties to be set on the created object.
 	.OUTPUTS
 		The newly created object.
 	#>
@@ -75,10 +58,34 @@ class DataMapper {
 
 		foreach ($key in $Properties.Keys.Where{ $_ -in $propertyMap.Keys }) {
 			$propertyInfo = $propertyMap.$key
-			$object.$($propertyInfo.Name) = [Convert]::ChangeType($Properties.$key, $propertyInfo.PropertyType, $culture)
+			$propertyType = [Nullable]::GetUnderlyingType($propertyInfo.PropertyType) ?? $propertyInfo.PropertyType
+			$value = $Properties.$key
+
+			$object.$($propertyInfo.Name) = switch ($true) {
+				($null -eq $value) { $null; break }
+				($propertyType.IsEnum) { [Enum]::ToObject($propertyType, $value); break }
+				default { [Convert]::ChangeType($value, $propertyType, $culture) }
+			}
 		}
 
 		return $object
+	}
+
+	<#
+	.SYNOPSIS
+		Creates new entities of a given type from the specified data reader.
+	.PARAMETER Type
+		The entity type.
+	.PARAMETER Reader
+		A data reader providing the properties to be set on the created objects.
+	.OUTPUTS
+		An array of newly created objects.
+	#>
+	[object[]] CreateInstances([type] $Type, [System.Data.IDataReader] $Reader) {
+		$list = [ArrayList]::new()
+		while ($Reader.Read()) { $list.Add($this.CreateInstance($Type, $Reader)) }
+		$Reader.Close()
+		return $list.ToArray()
 	}
 
 	<#

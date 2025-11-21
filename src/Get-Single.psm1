@@ -48,7 +48,7 @@ function Get-Single {
 	$rowCount = 0
 	while ($adapter.Reader.Read()) {
 		if (++$rowCount -gt 1) { break }
-		$record = $adapter.Mapper.ConvertRecord($adapter.Reader, $As)
+		$record = $adapter.Mapper.CreateInstance($As, $adapter.Reader)
 	}
 
 	$adapter.Reader.Close()
