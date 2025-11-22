@@ -17,9 +17,9 @@ class DataMapper {
 
 	<#
 	.SYNOPSIS
-		Creates a new entity of a given type from the specified data record.
+		Creates a new object of a given type from the specified data record.
 	.PARAMETER Type
-		The entity type.
+		The object type.
 	.PARAMETER Record
 		A data record providing the properties to be set on the created object.
 	.OUTPUTS
@@ -27,15 +27,14 @@ class DataMapper {
 	#>
 	[SuppressMessage("PSUseDeclaredVarsMoreThanAssignments", "")]
 	[object] CreateInstance([type] $Type, [System.Data.IDataRecord] $Record) {
-		$properties = [ordered]@{}
+		$properties = @{}
 		for ($index = 0; $index -lt $Record.FieldCount; $index++) {
 			$key = $Record.GetName($index)
 			$properties.$key = $Record.IsDBNull($index) ? $null : $Record.GetValue($index)
 		}
 
 		return $discard = switch ($Type) {
-			([hashtable]) { [hashtable] $properties; break }
-			([ordered]) { $properties; break }
+			([hashtable]) { $properties; break }
 			([psobject]) { [pscustomobject] $properties; break }
 			default { $this.CreateInstance($Type, $properties) }
 		}
@@ -43,9 +42,9 @@ class DataMapper {
 
 	<#
 	.SYNOPSIS
-		Creates a new entity of a given type from the specified hash table.
+		Creates a new object of a given type from the specified hash table.
 	.PARAMETER Type
-		The entity type.
+		The object type.
 	.PARAMETER Properties
 		A hash table providing the properties to be set on the created object.
 	.OUTPUTS
@@ -73,9 +72,9 @@ class DataMapper {
 
 	<#
 	.SYNOPSIS
-		Creates new entities of a given type from the specified data reader.
+		Creates new objects of a given type from the specified data reader.
 	.PARAMETER Type
-		The entity type.
+		The object type.
 	.PARAMETER Reader
 		A data reader providing the properties to be set on the created objects.
 	.OUTPUTS
@@ -90,11 +89,11 @@ class DataMapper {
 
 	<#
 	.SYNOPSIS
-		Gets the property map associated with the specified entity type.
+		Retrives a hash table of mapped properties of the specified type.
 	.PARAMETER Type
-		The entity type.
+		The type to inspect.
 	.OUTPUTS
-		The property map associated with the specified entity type.
+		The hash table of mapped properties of the specified type.
 	#>
 	[hashtable] GetPropertyMap([type] $Type) {
 		if ($Type -in [DataMapper]::PropertyMaps.Keys) { return [DataMapper]::PropertyMaps.$Type }
