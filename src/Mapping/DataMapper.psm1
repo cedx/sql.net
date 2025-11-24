@@ -52,7 +52,7 @@ class DataMapper {
 	#>
 	[object] CreateInstance([type] $Type, [hashtable] $Properties) {
 		$culture = [cultureinfo]::InvariantCulture
-		$object = $Type::new()
+		$instance = $Type::new()
 		$propertyMap = $this.GetPropertyMap($Type)
 
 		foreach ($key in $Properties.Keys.Where{ $_ -in $propertyMap.Keys }) {
@@ -60,14 +60,14 @@ class DataMapper {
 			$propertyType = [Nullable]::GetUnderlyingType($propertyInfo.PropertyType) ?? $propertyInfo.PropertyType
 			$value = $Properties.$key
 
-			$object.$($propertyInfo.Name) = switch ($true) {
+			$instance.$($propertyInfo.Name) = switch ($true) {
 				($null -eq $value) { $null; break }
 				($propertyType.IsEnum) { [Enum]::ToObject($propertyType, $value); break }
 				default { [Convert]::ChangeType($value, $propertyType, $culture) }
 			}
 		}
 
-		return $object
+		return $instance
 	}
 
 	<#
