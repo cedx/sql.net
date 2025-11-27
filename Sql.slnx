@@ -25,25 +25,11 @@
 		<File Path="tool/Test.ps1" />
 		<File Path="tool/Update.ps1" />
 	</Folder>
-	<Folder Name="/Sources/">
-		<File Path="src/Close-Connection.psm1" />
-		<File Path="src/Get-First.psm1" />
-		<File Path="src/Get-Scalar.psm1" />
-		<File Path="src/Get-Single.psm1" />
-		<File Path="src/Invoke-NonQuery.psm1" />
-		<File Path="src/Invoke-Query.psm1" />
-		<File Path="src/Invoke-Reader.psm1" />
-		<File Path="src/Main.psm1" />
-		<File Path="src/New-Command.psm1" />
-		<File Path="src/New-Connection.psm1" />
-		<File Path="src/New-DataMapper.psm1" />
-		<File Path="src/New-Parameter.psm1" />
-	</Folder>
-	<Folder Name="/Sources/Mapping/">
-		<File Path="src/Mapping/DataAdapter.psm1" />
-		<File Path="src/Mapping/DataMapper.psm1" />
-	</Folder>
 	<Folder Name="/Workflows/">
 		<File Path=".github/workflows/ContinuousIntegration.yaml" />
 	</Folder>
+	<Project Path="src/Sql.esproj">
+		<Build />
+		<Deploy />
+	</Project>
 </Solution>
