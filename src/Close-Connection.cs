@@ -5,6 +5,8 @@ using System.Data;
 /// <summary>
 /// Closes the specified database connection.
 /// </summary>
+[Cmdlet(VerbsCommon.Close, "Connection")]
+[OutputType(typeof(void))]
 public class CloseConnection: Cmdlet {
 
 	/// <summary>
