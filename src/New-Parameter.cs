@@ -1,13 +1,12 @@
 namespace Belin.Sql.Cmdlets;
 
 using System.Data;
-using System.Reflection.Metadata;
 
 /// <summary>
 /// Creates a new parameter associated with the specified command.
 /// </summary>
 [Cmdlet(VerbsCommon.New, "Parameter")]
-[OutputType(typeof(void))]
+[OutputType(typeof(IDbDataParameter))]
 public class NewParameter: Cmdlet {
 
 	/// <summary>
@@ -34,7 +33,7 @@ public class NewParameter: Cmdlet {
 	protected override void ProcessRecord() {
 		var parameter = Command.CreateParameter();
 		parameter.ParameterName = Name;
-		parameter.Value = Value is null ? DBNull.Value : Value;
+		parameter.Value = Value ?? DBNull.Value;
 		WriteObject(parameter);
 	}
 }
