@@ -1,4 +1,4 @@
-namespace Belin.Sql.Cmdlets;
+namespace Belin.Sql;
 
 using Belin.Sql.Mapping;
 

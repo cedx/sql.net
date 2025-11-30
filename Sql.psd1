@@ -1,8 +1,8 @@
-﻿@{
+@{
 	DefaultCommandPrefix = "Sql"
 	ModuleVersion = "0.7.0"
 	PowerShellVersion = "7.5"
-	RootModule = "bin/Belin.Sql.Cmdlets.dll"
+	RootModule = "bin/Belin.Sql.dll"
 
 	Author = "Cédric Belin <cedx@outlook.com>"
 	CompanyName = "Cedric-Belin.fr"

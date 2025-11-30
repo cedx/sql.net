@@ -9,7 +9,7 @@
 
 	<PropertyGroup>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<AssemblyName>Belin.Sql.Cmdlets</AssemblyName>
+		<AssemblyName>Belin.Sql</AssemblyName>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
@@ -18,7 +18,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Management.Automation" Version="7.*" PrivateAssets="All" />
+		<PackageReference Include="System.Management.Automation" Version="7.*" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
