@@ -10,7 +10,7 @@ using System.Data;
 [Cmdlet(VerbsLifecycle.Invoke, "Reader")]
 [OutputType(typeof(DataAdapter))]
 public class InvokeReader: Cmdlet {
-	
+
 	/// <summary>
 	/// The SQL query to be executed.
 	/// </summary>
@@ -22,13 +22,13 @@ public class InvokeReader: Cmdlet {
 	/// </summary>
 	[Parameter(Mandatory = true, Position = 0)]
 	public required IDbConnection Connection { get; set; }
-		
+
 	/// <summary>
 	/// The named parameters of the SQL query.
 	/// </summary>
 	[Parameter(Position = 2)]
 	public Hashtable? Parameters { get; set; }
-		
+
 	/// <summary>
 	/// The positional parameters of the SQL query.
 	/// </summary>

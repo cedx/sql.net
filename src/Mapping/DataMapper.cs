@@ -101,7 +101,7 @@ public sealed class DataMapper {
 	/// <param name="reader">A data reader providing the properties to be set on the created objects.</param>
 	/// <returns>An enumerable of newly created objects.</returns>
 	public IEnumerable<T> CreateInstances<T>(IDataReader reader) => (IEnumerable<T>) CreateInstances(typeof(T), reader);
-	
+
 	/// <summary>
 	/// Creates new objects of a given type from the specified data reader.
 	/// </summary>

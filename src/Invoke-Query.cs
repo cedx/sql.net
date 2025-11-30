@@ -16,7 +16,7 @@ public class InvokeQuery: Cmdlet {
 	/// </summary>
 	[Parameter]
 	public Type? As { get; set; }
-		
+
 	/// <summary>
 	/// The SQL query to be executed.
 	/// </summary>
@@ -28,13 +28,13 @@ public class InvokeQuery: Cmdlet {
 	/// </summary>
 	[Parameter(Mandatory = true, Position = 0)]
 	public required IDbConnection Connection { get; set; }
-		
+
 	/// <summary>
 	/// The named parameters of the SQL query.
 	/// </summary>
 	[Parameter(Position = 2)]
 	public Hashtable? Parameters { get; set; }
-		
+
 	/// <summary>
 	/// The positional parameters of the SQL query.
 	/// </summary>
