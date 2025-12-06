@@ -1,6 +1,5 @@
 "Running the test suite..."
-& "$PSScriptRoot/Build.ps1"
-
+dotnet test --settings .runsettings
 pwsh -Command {
 	Import-Module Pester
 	Invoke-Pester test
