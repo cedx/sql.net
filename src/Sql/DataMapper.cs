@@ -1,5 +1,6 @@
 namespace Belin.Sql;
 
+using System.Collections;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Dynamic;
@@ -29,7 +30,7 @@ public class DataMapper {
 	/// <typeparam name="T">The object type.</typeparam>
 	/// <param name="record">A data record providing the properties to be set on the created object.</param>
 	/// <returns>The newly created object.</returns>
-	public T CreateInstance<T>(IDataRecord record) => (T) CreateInstance(typeof(T), record);
+	public T CreateInstance<T>(IDataRecord record) where T: class, new() => (T) CreateInstance(typeof(T), record);
 
 	/// <summary>
 	/// Creates a new object of a given type from the specified data record.
@@ -44,6 +45,30 @@ public class DataMapper {
 	}
 
 	/// <summary>
+	/// Creates a new dyamic object from the specified hash table.
+	/// </summary>
+	/// <param name="properties">A hash table providing the properties to be set on the created object.</param>
+	/// <returns>The newly created object.</returns>
+	public dynamic CreateInstance(Hashtable properties) => CreateInstance<ExpandoObject>(properties);
+
+	/// <summary>
+	/// Creates a new object of a given type from the specified hash table.
+	/// </summary>
+	/// <typeparam name="T">The object type.</typeparam>
+	/// <param name="properties">A hash table providing the properties to be set on the created object.</param>
+	/// <returns>The newly created object.</returns>
+	public T CreateInstance<T>(Hashtable properties) where T: class, new() => (T) CreateInstance(typeof(T), properties);
+
+	/// <summary>
+	/// Creates a new object of a given type from the specified hash table.
+	/// </summary>
+	/// <param name="T">The object type.</param>
+	/// <param name="properties">A hash table providing the properties to be set on the created object.</param>
+	/// <returns>The newly created object.</returns>
+	public object CreateInstance(Type type, Hashtable properties) =>
+		CreateInstance(type, properties.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString()!, entry => entry.Value));
+
+	/// <summary>
 	/// Creates a new dynamic object from the specified dictionary.
 	/// </summary>
 	/// <param name="properties">A dictionary providing the properties to be set on the created object.</param>
@@ -56,7 +81,7 @@ public class DataMapper {
 	/// <typeparam name="T">The object type.</typeparam>
 	/// <param name="properties">A dictionary providing the properties to be set on the created object.</param>
 	/// <returns>The newly created object.</returns>
-	public T CreateInstance<T>(IDictionary<string, object?> properties) => (T) CreateInstance(typeof(T), properties);
+	public T CreateInstance<T>(IDictionary<string, object?> properties) where T: class, new() => (T) CreateInstance(typeof(T), properties);
 
 	/// <summary>
 	/// Creates a new object of a given type from the specified dictionary.
@@ -65,6 +90,8 @@ public class DataMapper {
 	/// <param name="properties">A dictionary providing the properties to be set on the created object.</param>
 	/// <returns>The newly created object.</returns>
 	public object CreateInstance(Type type, IDictionary<string, object?> properties) {
+		if (type == typeof(Hashtable)) return new Hashtable(properties.ToDictionary());
+
 		if (type == typeof(ExpandoObject)) {
 			var expandoObject = (IDictionary<string, object?>) new ExpandoObject();
 			foreach (var (key, value) in properties) expandoObject.Add(key, value);
@@ -104,7 +131,7 @@ public class DataMapper {
 	/// <typeparam name="T">The object type.</typeparam>
 	/// <param name="reader">A data reader providing the properties to be set on the created objects.</param>
 	/// <returns>An enumerable of newly created objects.</returns>
-	public IEnumerable<T> CreateInstances<T>(IDataReader reader) => (IEnumerable<T>) CreateInstances(typeof(T), reader);
+	public IEnumerable<T> CreateInstances<T>(IDataReader reader) where T: class, new() => (IEnumerable<T>) CreateInstances(typeof(T), reader);
 
 	/// <summary>
 	/// Creates new objects of a given type from the specified data reader.
