@@ -83,6 +83,16 @@ public static partial class ConnectionExtensions {
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
+	/// <param name="options">The query options.</param>
+	/// <returns>The first column of the first row.</returns>
+	public static object? ExecuteScalar(this IDbConnection connection, string command, QueryOptions? options = null) =>
+		ExecuteScalar(connection, command, new Dictionary<string, object?>(), options);
+
+	/// <summary>
+	/// Executes a parameterized SQL query that selects a single value.
+	/// </summary>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The named parameters of the SQL query.</param>
 	/// <param name="options">The query options.</param>
 	/// <returns>The first column of the first row.</returns>

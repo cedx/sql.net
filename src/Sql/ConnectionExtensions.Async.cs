@@ -90,6 +90,17 @@ public static partial class ConnectionExtensions {
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
+	/// <param name="options">The query options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
+	/// <returns>The first column of the first row.</returns>
+	public static Task<object?> ExecuteScalarAsync(this DbConnection connection, string command, QueryOptions? options = null, CancellationToken cancellationToken = default) =>
+		ExecuteScalarAsync(connection, command, new Dictionary<string, object?>(), options, cancellationToken);
+
+	/// <summary>
+	/// Executes a parameterized SQL query that selects a single value.
+	/// </summary>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The named parameters of the SQL query.</param>
 	/// <param name="options">The query options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
