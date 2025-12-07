@@ -43,5 +43,5 @@ public class NewParameterCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() =>
-		WriteObject(Command.CreateParameter(Name, Value, Type, Direction));
+		WriteObject(Command.CreateParameter(Name, Value, DbType, Direction));
 }
