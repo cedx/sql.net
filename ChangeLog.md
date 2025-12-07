@@ -4,6 +4,7 @@
 - Moved the data mapping to the `Belin.Sql` assembly.
 - Moved the cmdlets to the `Belin.Sql.Cmdlets` assembly.
 - Added the `Belin.Sql.Dapper` assembly providing some type maps and type handlers for [Dapper](https://www.learndapper.com).
+- Added the `-Type` parameter to the `New-Command` cmdlet.
 - Added the `-Direction` and `-Type` parameters to the `New-Parameter` cmdlet.
 
 ## Version [0.7.0](https://github.com/cedx/sql.net/compare/v0.6.0...v0.7.0)
