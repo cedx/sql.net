@@ -312,6 +312,17 @@ public static partial class ConnectionExtensions {
 	/// <typeparam name="T">The type of objects to return.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
+	/// <param name="options">The query options.</param>
+	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
+	public static T? QuerySingleOrDefault<T>(this IDbConnection connection, string command, QueryOptions? options = null) where T: class, new() =>
+		QuerySingleOrDefault<T>(connection, command, new Dictionary<string, object?>(), options);
+
+	/// <summary>
+	/// Executes a parameterized SQL query and returns the single row.
+	/// </summary>
+	/// <typeparam name="T">The type of objects to return.</typeparam>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The named parameters of the SQL query.</param>
 	/// <param name="options">The query options.</param>
 	/// <returns>The single row, or <see langword="null"/> if not found.</returns>

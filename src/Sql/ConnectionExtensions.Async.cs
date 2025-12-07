@@ -327,6 +327,18 @@ public static partial class ConnectionExtensions {
 	/// <returns>The single row.</returns>
 	public static Task<T> QuerySingleAsync<T>(this DbConnection connection, string command, IList<object?> parameters, QueryOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() =>
 		QuerySingleAsync<T>(connection, command, (parameters ?? []).ToOrderedDictionary(), options, cancellationToken);
+	
+	/// <summary>
+	/// Executes a parameterized SQL query and returns the single row.
+	/// </summary>
+	/// <typeparam name="T">The type of objects to return.</typeparam>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="command">The SQL query to be executed.</param>
+	/// <param name="options">The query options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
+	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
+	public static Task<T?> QuerySingleOrDefaultAsync<T>(this DbConnection connection, string command, QueryOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() =>
+		QuerySingleOrDefaultAsync<T>(connection, command, new Dictionary<string, object?>(), options, cancellationToken);
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the single row.
