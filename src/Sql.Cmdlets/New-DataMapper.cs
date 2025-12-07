@@ -1,7 +1,5 @@
 namespace Belin.Sql.Cmdlets;
 
-using Belin.Sql.Cmdlets.Mapping;
-
 /// <summary>
 /// Creates a new data mapper.
 /// </summary>
