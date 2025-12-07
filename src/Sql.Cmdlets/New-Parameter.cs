@@ -16,6 +16,12 @@ public class NewParameterCommand: Cmdlet {
 	public required IDbCommand Command { get; set; }
 	
 	/// <summary>
+	/// The parameter type.
+	/// </summary>
+	[Parameter]
+	public DbType? DbType { get; set; }
+
+	/// <summary>
 	/// The parameter direction.
 	/// </summary>
 	[Parameter]
@@ -26,12 +32,6 @@ public class NewParameterCommand: Cmdlet {
 	/// </summary>
 	[Parameter(Mandatory = true, Position = 1)]
 	public required string Name { get; set; }
-
-	/// <summary>
-	/// The parameter type.
-	/// </summary>
-	[Parameter]
-	public DbType? Type { get; set; }
 
 	/// <summary>
 	/// The parameter value.
