@@ -6,9 +6,9 @@ using System.Data;
 /// <summary>
 /// Executes a parameterized SQL statement.
 /// </summary>
-[Cmdlet(VerbsLifecycle.Invoke, "NonQuery")]
+[Cmdlet(VerbsLifecycle.Invoke, "NonQuery", DefaultParameterSetName = "Parameters")]
 [OutputType(typeof(int))]
-public class InvokeNonQueryCommand: Cmdlet {
+public class InvokeNonQueryCommand: PSCmdlet {
 
 	/// <summary>
 	/// The SQL query to be executed.
@@ -25,14 +25,14 @@ public class InvokeNonQueryCommand: Cmdlet {
 	/// <summary>
 	/// The named parameters of the SQL query.
 	/// </summary>
-	[Parameter(Position = 2)]
-	public Hashtable? Parameters { get; set; }
+	[Parameter(ParameterSetName = "Parameters", Position = 2)]
+	public Hashtable Parameters { get; set; } = [];
 
 	/// <summary>
 	/// The positional parameters of the SQL query.
 	/// </summary>
-	[Parameter]
-	public object[]? PositionalParameters { get; set; }
+	[Parameter(ParameterSetName = "PositionalParameters")]
+	public object[] PositionalParameters { get; set; } = [];
 
 	/// <summary>
 	/// The wait time, in seconds, before terminating the attempt to execute the command and generating an error.

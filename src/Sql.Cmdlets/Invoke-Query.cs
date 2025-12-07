@@ -1,15 +1,14 @@
 namespace Belin.Sql.Cmdlets;
 
-using Belin.Sql.Cmdlets.Mapping;
 using System.Collections;
 using System.Data;
 
 /// <summary>
 /// Executes a parameterized SQL query and returns an array of objects whose properties correspond to the columns.
 /// </summary>
-[Cmdlet(VerbsLifecycle.Invoke, "Query")]
+[Cmdlet(VerbsLifecycle.Invoke, "Query", DefaultParameterSetName = "Parameters")]
 [OutputType(typeof(object[]))]
-public class InvokeQueryCommand: Cmdlet {
+public class InvokeQueryCommand: PSCmdlet {
 
 	/// <summary>
 	/// The type of objects to return.
@@ -32,14 +31,14 @@ public class InvokeQueryCommand: Cmdlet {
 	/// <summary>
 	/// The named parameters of the SQL query.
 	/// </summary>
-	[Parameter(Position = 2)]
-	public Hashtable? Parameters { get; set; }
+	[Parameter(ParameterSetName = "Parameters", Position = 2)]
+	public Hashtable Parameters { get; set; } = [];
 
 	/// <summary>
 	/// The positional parameters of the SQL query.
 	/// </summary>
-	[Parameter]
-	public object[]? PositionalParameters { get; set; }
+	[Parameter(ParameterSetName = "PositionalParameters")]
+	public object[] PositionalParameters { get; set; } = [];
 
 	/// <summary>
 	/// The wait time, in seconds, before terminating the attempt to execute the command and generating an error.

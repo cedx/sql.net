@@ -1,15 +1,14 @@
 namespace Belin.Sql.Cmdlets;
 
-using Belin.Sql.Cmdlets.Mapping;
 using System.Collections;
 using System.Data;
 
 /// <summary>
 /// Executes a parameterized SQL query and returns the single row.
 /// </summary>
-[Cmdlet(VerbsCommon.Get, "Single")]
+[Cmdlet(VerbsCommon.Get, "Single", DefaultParameterSetName = "Parameters")]
 [OutputType(typeof(object))]
-public class GetSingleCommand: Cmdlet {
+public class GetSingleCommand: PSCmdlet {
 
 	/// <summary>
 	/// The type of objects to return.
@@ -32,14 +31,14 @@ public class GetSingleCommand: Cmdlet {
 	/// <summary>
 	/// The named parameters of the SQL query.
 	/// </summary>
-	[Parameter(Position = 2)]
-	public Hashtable? Parameters { get; set; }
+	[Parameter(ParameterSetName = "Parameters", Position = 2)]
+	public Hashtable Parameters { get; set; } = [];
 
 	/// <summary>
 	/// The positional parameters of the SQL query.
 	/// </summary>
-	[Parameter]
-	public object[]? PositionalParameters { get; set; }
+	[Parameter(ParameterSetName = "PositionalParameters")]
+	public object[] PositionalParameters { get; set; } = [];
 
 	/// <summary>
 	/// The wait time, in seconds, before terminating the attempt to execute the command and generating an error.
