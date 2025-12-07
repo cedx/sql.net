@@ -57,19 +57,12 @@ public class GetFirstCommand: PSCmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		var adapter =
-			new InvokeReaderCommand { Command = Command, Connection = Connection, Parameters = Parameters, PositionalParameters = PositionalParameters, Timeout = Timeout }
-			.Invoke<DataAdapter>()
-			.Single();
+		IDictionary<string, object?> parameters = ParameterSetName == nameof(PositionalParameters)
+			? PositionalParameters.ToOrderedDictionary()
+			: Parameters.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString()!, entry => entry.Value);
 
-		var record = adapter.Reader.Read() ? adapter.Mapper.CreateInstance(As ?? typeof(PSObject), adapter.Reader) : null;
-		adapter.Reader.Close();
-
-		if (record is null) {
-			var exception = new InvalidOperationException("The record set is empty.");
-			WriteError(new ErrorRecord(exception, "EmptyRecordSet", ErrorCategory.InvalidOperation, null));
-		}
-
+		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QueryFirst))!.MakeGenericMethod(As);
+		var record = method.Invoke(null, [Connection, Command, parameters, new QueryOptions(Timeout: Timeout, Type: CommandType)])!;
 		WriteObject(record);
 	}
 }

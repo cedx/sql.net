@@ -3,6 +3,7 @@ namespace Belin.Sql.Cmdlets;
 using System.Collections;
 using System.Data;
 using System.Dynamic;
+using System.Reflection;
 
 /// <summary>
 /// Executes a parameterized SQL query and returns an array of objects whose properties correspond to the columns.
@@ -57,13 +58,12 @@ public class InvokeQueryCommand: PSCmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		if (Connection.State == ConnectionState.Closed) Connection.Open();
+		IDictionary<string, object?> parameters = ParameterSetName == nameof(PositionalParameters)
+			? PositionalParameters.ToOrderedDictionary()
+			: Parameters.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString()!, entry => entry.Value);
 
-		var adapter =
-			new InvokeReaderCommand { Command = Command, Connection = Connection, Parameters = Parameters, PositionalParameters = PositionalParameters, Timeout = Timeout }
-			.Invoke<DataAdapter>()
-			.Single();
-
-		WriteObject(adapter.Mapper.CreateInstances(As ?? typeof(PSObject), adapter.Reader).ToArray());
+		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query))!.MakeGenericMethod(As);
+		var records = (IEnumerable<object>) method.Invoke(null, [Connection, Command, parameters, new QueryOptions(Timeout: Timeout, Type: CommandType)])!;
+		WriteObject(records.ToArray());
 	}
 }

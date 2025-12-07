@@ -50,13 +50,11 @@ public class InvokeReaderCommand: PSCmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		if (Connection.State == ConnectionState.Closed) Connection.Open();
+		IDictionary<string, object?> parameters = ParameterSetName == nameof(PositionalParameters)
+			? PositionalParameters.ToOrderedDictionary()
+			: Parameters.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString()!, entry => entry.Value);
 
-		using var command =
-			new NewCommandCommand { Command = Command, Connection = Connection, Parameters = Parameters, PositionalParameters = PositionalParameters, Timeout = Timeout }
-			.Invoke<IDbCommand>()
-			.Single();
-
-		WriteObject(new DataAdapter(Mapper: new(), Reader: command.ExecuteReader()));
+		var reader = Connection.ExecuteReader(Command, parameters, new(Timeout: Timeout, Type: CommandType));
+		WriteObject(new DataAdapter(Mapper: new(), Reader: reader));
 	}
 }

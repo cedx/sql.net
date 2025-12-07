@@ -57,24 +57,12 @@ public class GetSingleCommand: PSCmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		var adapter =
-			new InvokeReaderCommand { Command = Command, Connection = Connection, Parameters = Parameters, PositionalParameters = PositionalParameters, Timeout = Timeout }
-			.Invoke<DataAdapter>()
-			.Single();
+		IDictionary<string, object?> parameters = ParameterSetName == nameof(PositionalParameters)
+			? PositionalParameters.ToOrderedDictionary()
+			: Parameters.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString()!, entry => entry.Value);
 
-		object? record = null;
-		var rowCount = 0;
-		while (adapter.Reader.Read()) {
-			if (++rowCount > 1) break;
-			record = adapter.Mapper.CreateInstance(As ?? typeof(PSObject), adapter.Reader);
-		}
-
-		adapter.Reader.Close();
-		if (rowCount != 1) {
-			var exception = new InvalidOperationException("The record set is empty or contains more than one record.");
-			WriteError(new ErrorRecord(exception, "InvalidRecordSet", ErrorCategory.InvalidOperation, null));
-		}
-
-		WriteObject(rowCount == 1 ? record : null);
+		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QuerySingle))!.MakeGenericMethod(As);
+		var record = method.Invoke(null, [Connection, Command, parameters, new QueryOptions(Timeout: Timeout, Type: CommandType)])!;
+		WriteObject(record);
 	}
 }
