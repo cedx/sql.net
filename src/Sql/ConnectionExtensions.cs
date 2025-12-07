@@ -6,6 +6,7 @@ using System.Data;
 /// Provides extension members for database connections.
 /// </summary>
 public static partial class ConnectionExtensions {
+	// TODO (.NET 10) extension(IDbConnection connection)
 
 	/// <summary>
 	/// TODO The data mapper used to TODO
@@ -30,20 +31,6 @@ public static partial class ConnectionExtensions {
 				command.Parameters.Add(command.CreateParameter($"@{key}", value ?? DBNull.Value));
 
 		return command;
-	}
-
-	/// <summary>
-	/// Creates a new parameter associated with the specified command.
-	/// </summary>
-	/// <param name="command">A command connected to a data source.</param>
-	/// <param name="name">The parameter name.</param>
-	/// <param name="value">The parameter value.</param>
-	/// <returns>The newly created parameter.</returns>
-	public static IDbDataParameter CreateParameter(this IDbCommand command, string name, object? value) {
-		var parameter = command.CreateParameter();
-		parameter.ParameterName = name;
-		parameter.Value = value ?? DBNull.Value;
-		return parameter;
 	}
 
 	/// <summary>

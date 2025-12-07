@@ -1,0 +1,28 @@
+namespace Belin.Sql;
+
+using System.Data;
+
+/// <summary>
+/// Provides extension members for database commands.
+/// </summary>
+public static class CommandExtensions {
+	// TODO (.NET 10) extension(IDbCommand command)
+
+	/// <summary>
+	/// Creates a new parameter associated with the specified command.
+	/// </summary>
+	/// <param name="command">A command connected to a data source.</param>
+	/// <param name="name">The parameter name.</param>
+	/// <param name="value">The parameter value.</param>
+	/// <param name="type">The parameter type.</param>
+	/// <param name="direction">The parameter direction.</param>
+	/// <returns>The newly created parameter.</returns>
+	public static IDbDataParameter CreateParameter(this IDbCommand command, string name, object? value, DbType? type = null, ParameterDirection? direction = null) {
+		var parameter = command.CreateParameter();
+		parameter.ParameterName = name;
+		parameter.Value = value ?? DBNull.Value;
+		if (type is not null) parameter.DbType = type.Value;
+		if (direction is not null) parameter.Direction = direction.Value;
+		return parameter;
+	}
+}
