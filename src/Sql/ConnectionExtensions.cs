@@ -25,6 +25,7 @@ public static partial class ConnectionExtensions {
 		var command = connection.CreateCommand();
 		command.CommandText = sql;
 		command.CommandTimeout = options?.Timeout ?? 30;
+		command.CommandType = options?.Type ?? CommandType.Text;
 
 		if (parameters is not null)
 			foreach (var (key, value) in parameters)
@@ -32,12 +33,4 @@ public static partial class ConnectionExtensions {
 
 		return command;
 	}
-
-	/// <summary>
-	/// Converts the specified list into an ordered dictionary.
-	/// </summary>
-	/// <param name="list">The list to convert.</param>
-	/// <returns>The ordered dictionary corresponding to the specified list.</returns>
-	private static OrderedDictionary<string, T> ToOrderedDictionary<T>(IList<T> list) =>
-		new(list.Index().Select(tuple => new KeyValuePair<string, T>($"QuestionMark{tuple.Index}", tuple.Item)));
 }
