@@ -2,6 +2,7 @@ namespace Belin.Sql;
 
 using System.Data;
 using System.Data.Common;
+using System.Globalization;
 
 /// <summary>
 /// Provides extension members for database connections.
@@ -88,6 +89,30 @@ public static partial class ConnectionExtensions {
 	/// <returns>The first column of the first row.</returns>
 	public static Task<object?> ExecuteScalarAsync(this DbConnection connection, string command, IList<object?>? parameters = null, QueryOptions? options = null, CancellationToken cancellationToken = default) =>
 		ExecuteScalarAsync(connection, command, (parameters ?? []).ToOrderedDictionary(), options, cancellationToken);
+
+	/// <summary>
+	/// Executes a parameterized SQL query that selects a single value.
+	/// </summary>
+	/// <typeparam name="T">The type of object to return.</typeparam>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="command">The SQL query to be executed.</param>
+	/// <param name="parameters">The named parameters of the SQL query.</param>
+	/// <param name="options">The query options.</param>
+	/// <returns>The first column of the first row.</returns>
+	public static async Task<T?> ExecuteScalarAsync<T>(this DbConnection connection, string command, IDictionary<string, object?>? parameters = null, QueryOptions? options = null) where T: IConvertible =>
+		(T?) Convert.ChangeType(await ExecuteScalarAsync(connection, command, parameters, options), typeof(T), CultureInfo.InvariantCulture);
+
+	/// <summary>
+	/// Executes a parameterized SQL query that selects a single value.
+	/// </summary>
+	/// <typeparam name="T">The type of object to return.</typeparam>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="command">The SQL query to be executed.</param>
+	/// <param name="parameters">The positional parameters of the SQL query.</param>
+	/// <param name="options">The query options.</param>
+	/// <returns>The first column of the first row.</returns>
+	public static async Task<T?> ExecuteScalarAsync<T>(this DbConnection connection, string command, IList<object?>? parameters = null, QueryOptions? options = null) where T: IConvertible =>
+		(T?) Convert.ChangeType(await ExecuteScalarAsync(connection, command, parameters, options), typeof(T), CultureInfo.InvariantCulture);
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns a sequence of objects whose properties correspond to the columns.
