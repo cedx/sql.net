@@ -42,7 +42,7 @@ public class InvokeReaderCommand: PSCmdlet {
 	/// <summary>
 	/// The wait time, in seconds, before terminating the attempt to execute the command and generating an error.
 	/// </summary>
-	[Parameter, ValidateRange(ValidateRangeKind.NonNegative)]
+	[Parameter, ValidateRange(ValidateRangeKind.Positive)]
 	public int Timeout { get; set; } = 30;
 
 	/// <summary>
