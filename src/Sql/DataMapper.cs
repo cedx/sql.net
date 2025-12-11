@@ -12,6 +12,11 @@ using System.Reflection;
 public sealed class DataMapper {
 
 	/// <summary>
+	/// The nullability context.
+	/// </summary>
+	private static readonly NullabilityInfoContext nullabilityContext = new();
+
+	/// <summary>
 	/// The property maps, keyed by type.
 	/// </summary>
 	private static readonly Dictionary<Type, Dictionary<string, PropertyInfo>> propertyMaps = [];
@@ -31,7 +36,11 @@ public sealed class DataMapper {
 	/// <returns>The newly created object.</returns>
 	public T CreateInstance<T>(IDataRecord record) where T: class, new() {
 		var properties = new OrderedDictionary<string, object?>();
-		for (var index = 0; index < record.FieldCount; index++) properties.TryAdd(record.GetName(index), record.GetValue(index));
+		for (var index = 0; index < record.FieldCount; index++) {
+			var value = record.GetValue(index);
+			properties.TryAdd(record.GetName(index), value is DBNull ? null : value);
+		}
+
 		return CreateInstance<T>(properties);
 	}
 
@@ -62,13 +71,15 @@ public sealed class DataMapper {
 			var propertyInfo = propertyMap[key];
 			if (!propertyInfo.CanWrite) continue;
 
-			var propertyType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType;
-			var value = properties[key];
+			var underlyingType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
+			var targetType = underlyingType ?? propertyInfo.PropertyType;
 
+			var value = properties[key];
 			propertyInfo.SetValue(instance, true switch {
-				true when value is null || value is DBNull => null,
-				true when propertyType.IsEnum => Enum.ToObject(propertyType, value),
-				_ => Convert.ChangeType(value, propertyType, CultureInfo.InvariantCulture)
+				true when value is null && targetType == typeof(string) => nullabilityContext.Create(propertyInfo).WriteState == NullabilityState.NotNull ? "" : default,
+				true when value is null && (underlyingType is not null || !propertyInfo.PropertyType.IsValueType) => default,
+				true when targetType.IsEnum => Enum.ToObject(targetType, Convert.ChangeType(value ?? default!, Enum.GetUnderlyingType(targetType), CultureInfo.InvariantCulture)),
+				_ => Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture)
 			});
 		}
 
