@@ -169,10 +169,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="parameters">The named parameters of the SQL query.</param>
 	/// <param name="options">The query options.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
-	public static IEnumerable<T> Query<T>(this IDbConnection connection, string command, IDictionary<string, object?> parameters, QueryOptions? options = null) where T: class, new() {
-		using var reader = ExecuteReader(connection, command, parameters, options);
-		return Mapper.CreateInstances<T>(reader);
-	}
+	public static IEnumerable<T> Query<T>(this IDbConnection connection, string command, IDictionary<string, object?> parameters, QueryOptions? options = null) where T: class, new() =>
+		Mapper.CreateInstances<T>(ExecuteReader(connection, command, parameters, options));
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns a sequence of objects whose properties correspond to the columns.

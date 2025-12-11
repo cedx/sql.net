@@ -181,10 +181,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The query options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
-	public static async Task<IEnumerable<T>> QueryAsync<T>(this DbConnection connection, string command, IDictionary<string, object?> parameters, QueryOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() {
-		using var reader = await ExecuteReaderAsync(connection, command, parameters, options, cancellationToken);
-		return Mapper.CreateInstances<T>(reader);
-	}
+	public static async Task<IEnumerable<T>> QueryAsync<T>(this DbConnection connection, string command, IDictionary<string, object?> parameters, QueryOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() =>
+		Mapper.CreateInstances<T>(await ExecuteReaderAsync(connection, command, parameters, options, cancellationToken));
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns a sequence of objects whose properties correspond to the columns.
