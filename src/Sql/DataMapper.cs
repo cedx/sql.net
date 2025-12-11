@@ -17,6 +17,11 @@ public sealed class DataMapper {
 	private static readonly NullabilityInfoContext nullabilityContext = new();
 
 	/// <summary>
+	/// The nullability map, keyed by property.
+	/// </summary>
+	private static readonly Dictionary<PropertyInfo, NullabilityInfo> nullabilityMap = [];
+
+	/// <summary>
 	/// The property maps, keyed by type.
 	/// </summary>
 	private static readonly Dictionary<Type, Dictionary<string, PropertyInfo>> propertyMaps = [];
@@ -71,14 +76,14 @@ public sealed class DataMapper {
 			var propertyInfo = propertyMap[key];
 			if (!propertyInfo.CanWrite) continue;
 
-			var underlyingType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
-			var targetType = underlyingType ?? propertyInfo.PropertyType;
-
+			var nullableType = Nullable.GetUnderlyingType(propertyInfo.PropertyType);
+			var targetType = nullableType ?? propertyInfo.PropertyType;
 			var value = properties[key];
+
 			propertyInfo.SetValue(instance, true switch {
-				true when value is null && underlyingType is not null => default,
-				true when value is null && targetType == typeof(string) => nullabilityContext.Create(propertyInfo).WriteState == NullabilityState.NotNull ? "" : default,
-				true when value is null && !propertyInfo.PropertyType.IsValueType => nullabilityContext.Create(propertyInfo).WriteState == NullabilityState.NotNull ? Activator.CreateInstance(targetType) : default,
+				true when value is null && nullableType is not null => default,
+				true when value is null && targetType == typeof(string) => IsNullable(propertyInfo) ? default : "",
+				true when value is null && !targetType.IsValueType => IsNullable(propertyInfo) ? default : Activator.CreateInstance(targetType),
 				true when targetType.IsEnum => Enum.ToObject(targetType, Convert.ChangeType(value ?? default!, Enum.GetUnderlyingType(targetType), CultureInfo.InvariantCulture)),
 				_ => Convert.ChangeType(value ?? default, targetType, CultureInfo.InvariantCulture)
 			});
@@ -110,7 +115,7 @@ public sealed class DataMapper {
 	/// </summary>
 	/// <typeparam name="T">The type to inspect.</typeparam>
 	/// <returns>The dictionary of mapped properties of the specified type.</returns>
-	public IDictionary<string, PropertyInfo> GetPropertyMap<T>() where T: class, new() {
+	private static Dictionary<string, PropertyInfo> GetPropertyMap<T>() where T: class, new() {
 		var type = typeof(T);
 		if (propertyMaps.TryGetValue(type, out var value)) return value;
 
@@ -125,5 +130,22 @@ public sealed class DataMapper {
 		}
 
 		return propertyMaps[type] = propertyMap;
+	}
+	
+	/// <summary>
+	/// Returns a value indicating whether the specified property is nullable.
+	/// </summary>
+	/// <param name="propertyInfo">The property to inspect.</param>
+	/// <returns><see langword="true"/> if the specified property is nullable, otherwise <see langword="false"/>.</returns>
+	private static bool IsNullable(PropertyInfo propertyInfo) => GetNullability(propertyInfo).WriteState != NullabilityState.NotNull;
+
+	/// <summary>
+	/// Gets the nullability information for the specified property.
+	/// </summary>
+	/// <param name="propertyInfo">The property to inspect.</param>
+	/// <returns>The nullability information for the specified property.</returns>
+	private static NullabilityInfo GetNullability(PropertyInfo propertyInfo) {
+		if (nullabilityMap.TryGetValue(propertyInfo, out var nullability)) return nullability;
+		return nullabilityMap[propertyInfo] = nullabilityContext.Create(propertyInfo);
 	}
 }

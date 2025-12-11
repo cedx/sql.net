@@ -9,7 +9,7 @@ public static partial class ConnectionExtensions {
 	// TODO (.NET 10) extension(IDbConnection connection)
 
 	/// <summary>
-	/// TODO The data mapper used to TODO
+	/// The data mapper used to map data records to entity objects.
 	/// </summary>
 	public static DataMapper Mapper { get; set; } = new();
 
