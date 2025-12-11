@@ -60,7 +60,8 @@ public class GetSingleCommand: PSCmdlet {
 			? PositionalParameters.ToOrderedDictionary()
 			: Parameters.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString()!, entry => entry.Value);
 
-		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QuerySingle))!.MakeGenericMethod(As);
+		var types = new[] { typeof(IDbConnection), typeof(string), typeof(IDictionary<string, object?>), typeof(QueryOptions) };
+		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QuerySingle), types)!.MakeGenericMethod(As);
 		var record = method.Invoke(null, [Connection, Command, parameters, new QueryOptions(Timeout: Timeout, Type: CommandType)])!;
 		WriteObject(record);
 	}

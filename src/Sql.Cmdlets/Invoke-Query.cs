@@ -61,7 +61,8 @@ public class InvokeQueryCommand: PSCmdlet {
 			? PositionalParameters.ToOrderedDictionary()
 			: Parameters.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString()!, entry => entry.Value);
 
-		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query))!.MakeGenericMethod(As);
+		var types = new[] { typeof(IDbConnection), typeof(string), typeof(IDictionary<string, object?>), typeof(QueryOptions) };
+		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query), types)!.MakeGenericMethod(As);
 		var records = (IEnumerable<object>) method.Invoke(null, [Connection, Command, parameters, new QueryOptions(Timeout: Timeout, Type: CommandType)])!;
 		WriteObject(records.ToArray());
 	}
