@@ -15,7 +15,9 @@
 	VariablesToExport = @()
 
 	CmdletsToExport = @(
+		"Approve-Transaction"
 		"Close-Connection"
+		"Deny-Transaction"
 		"Get-First"
 		"Get-Scalar"
 		"Get-Single"
@@ -27,6 +29,7 @@
 		"New-Connection"
 		"New-DataMapper"
 		"New-Parameter"
+		"New-Transaction"
 	)
 
 	RequiredAssemblies = @(
