@@ -26,6 +26,7 @@ public static partial class ConnectionExtensions {
 		command.CommandText = sql;
 		command.CommandTimeout = options?.Timeout ?? 30;
 		command.CommandType = options?.Type ?? CommandType.Text;
+		command.Transaction = options?.Transaction;
 
 		if (parameters is not null)
 			foreach (var (key, value) in parameters) command.Parameters.Add(command.CreateParameter($"@{key}", value));
