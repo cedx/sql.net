@@ -27,7 +27,7 @@
 		"Invoke-Reader"
 		"New-Command"
 		"New-Connection"
-		"New-DataMapper"
+		"New-Mapper"
 		"New-Parameter"
 		"New-Transaction"
 	)
