@@ -113,7 +113,7 @@ public sealed class DataMapper {
 		return true switch {
 			true when nullableType is not null => default,
 			true when targetType.IsValueType => RuntimeHelpers.GetUninitializedObject(targetType),
-			true when targetType == typeof(string) => isNullableReferenceType ? default : "",
+			true when targetType == typeof(string) => isNullableReferenceType ? default : string.Empty,
 			_ => isNullableReferenceType ? default : Activator.CreateInstance(targetType)
 		};
 	}
