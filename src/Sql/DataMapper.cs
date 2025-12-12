@@ -23,31 +23,6 @@ public sealed class DataMapper {
 	private static readonly Dictionary<Type, Dictionary<string, PropertyInfo>> propertyMaps = [];
 
 	/// <summary>
-	/// TODO Returns an object of the specified type and whose value is equivalent to the specified object.
-	/// </summary>
-	/// <param name="value">TODO An object that implements the IConvertible interface.</param>
-	/// <param name="conversionType">TODO The type of object to return.</param>
-	/// <param name="isNullableReferenceType">Value indicating whether the specified conversion type is a nullable reference type.</param>
-	/// <returns>TODO An object whose type is conversionType and whose value is equivalent to value.</returns>
-	public object? ChangeType(object? value, Type conversionType, bool isNullableReferenceType = true) {
-		var nullableType = Nullable.GetUnderlyingType(conversionType);
-		var targetType = nullableType ?? conversionType;
-
-		if (value is not null) return true switch {
-			true when targetType.IsEnum && value.GetType() == typeof(string) => Enum.Parse(targetType, (string) value, ignoreCase: true),
-			true when targetType.IsEnum => Enum.ToObject(targetType, Convert.ChangeType(value, Enum.GetUnderlyingType(targetType), CultureInfo.InvariantCulture)),
-			_ => Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture),
-		};
-
-		return true switch {
-			true when nullableType is not null => default,
-			true when targetType.IsValueType => RuntimeHelpers.GetUninitializedObject(targetType),
-			true when targetType == typeof(string) => isNullableReferenceType ? default : "",
-			_ => isNullableReferenceType ? default : Activator.CreateInstance(targetType)
-		};
-	}
-
-	/// <summary>
 	/// Creates a new dyamic object from the specified data record.
 	/// </summary>
 	/// <param name="record">A data record providing the properties to be set on the created object.</param>
@@ -116,6 +91,31 @@ public sealed class DataMapper {
 	public IEnumerable<T> CreateInstances<T>(IDataReader reader) where T: class, new() {
 		while (reader.Read()) yield return CreateInstance<T>(reader);
 		reader.Close();
+	}
+
+	/// <summary>
+	/// TODO Returns an object of the specified type and whose value is equivalent to the specified object.
+	/// </summary>
+	/// <param name="value">TODO An object that implements the IConvertible interface.</param>
+	/// <param name="conversionType">TODO The type of object to return.</param>
+	/// <param name="isNullableReferenceType">Value indicating whether the specified conversion type is a nullable reference type.</param>
+	/// <returns>TODO An object whose type is conversionType and whose value is equivalent to value.</returns>
+	internal object? ChangeType(object? value, Type conversionType, bool isNullableReferenceType = true) {
+		var nullableType = Nullable.GetUnderlyingType(conversionType);
+		var targetType = nullableType ?? conversionType;
+
+		if (value is not null) return true switch {
+			true when targetType.IsEnum && value.GetType() == typeof(string) => Enum.Parse(targetType, (string) value, ignoreCase: true),
+			true when targetType.IsEnum => Enum.ToObject(targetType, Convert.ChangeType(value, Enum.GetUnderlyingType(targetType), CultureInfo.InvariantCulture)),
+			_ => Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture),
+		};
+
+		return true switch {
+			true when nullableType is not null => default,
+			true when targetType.IsValueType => RuntimeHelpers.GetUninitializedObject(targetType),
+			true when targetType == typeof(string) => isNullableReferenceType ? default : "",
+			_ => isNullableReferenceType ? default : Activator.CreateInstance(targetType)
+		};
 	}
 
 	/// <summary>
