@@ -19,7 +19,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="sql">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <returns>The newly created command.</returns>
 	public static IDbCommand CreateCommand(this IDbConnection connection, string sql, DbParameterCollection? parameters = null, CommandOptions? options = null) {
 		var dbCommand = connection.CreateCommand();

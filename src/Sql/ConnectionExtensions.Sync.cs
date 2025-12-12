@@ -13,7 +13,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <returns>The number of rows affected.</returns>
 	public static int Execute(this IDbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
@@ -27,7 +27,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <returns>The data reader that can be used to access the results.</returns>
 	public static IDataReader ExecuteReader(this IDbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
@@ -41,7 +41,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <returns>The first column of the first row.</returns>
 	public static object? ExecuteScalar(this IDbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
@@ -57,7 +57,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <returns>The first column of the first row.</returns>
 	public static T? ExecuteScalar<T>(this IDbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null) =>
 		(T?) dataMapper.ChangeType(ExecuteScalar(connection, command, parameters, options), typeof(T));
@@ -69,7 +69,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
 	public static IEnumerable<T> Query<T>(this IDbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null) where T: class, new() =>
 		dataMapper.CreateInstances<T>(ExecuteReader(connection, command, parameters, options));
@@ -81,7 +81,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <returns>The first row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
 	public static T QueryFirst<T>(this IDbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null) where T: class, new() {
@@ -96,7 +96,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
 	public static T? QueryFirstOrDefault<T>(this IDbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null) where T: class, new() {
 		using var reader = ExecuteReader(connection, command, parameters, options);
@@ -110,7 +110,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <returns>The single row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty or contains more than one record.</exception>
 	public static T QuerySingle<T>(this IDbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null) where T: class, new() {
@@ -133,7 +133,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
 	public static T? QuerySingleOrDefault<T>(this IDbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null) where T: class, new() {
 		T? record = default;

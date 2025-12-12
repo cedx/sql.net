@@ -14,7 +14,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The number of rows affected.</returns>
 	public static async Task<int> ExecuteAsync(this DbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
@@ -29,7 +29,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The data reader that can be used to access the results.</returns>
 	public static async Task<IDataReader> ExecuteReaderAsync(this DbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
@@ -44,7 +44,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first column of the first row.</returns>
 	public static async Task<object?> ExecuteScalarAsync(this DbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
@@ -61,7 +61,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <returns>The first column of the first row.</returns>
 	public static async Task<T?> ExecuteScalarAsync<T>(this DbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null) =>
 		(T?) dataMapper.ChangeType(await ExecuteScalarAsync(connection, command, parameters, options), typeof(T));
@@ -73,7 +73,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<T>> QueryAsync<T>(this DbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() =>
@@ -86,7 +86,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
@@ -102,7 +102,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
 	public static async Task<T?> QueryFirstOrDefaultAsync<T>(this DbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() {
@@ -117,7 +117,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The single row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty or contains more than one record.</exception>
@@ -141,7 +141,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The query options.</param>
+	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
 	public static async Task<T?> QuerySingleOrDefaultAsync<T>(this DbConnection connection, string command, DbParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() {

@@ -7,7 +7,7 @@ using System.Linq;
 /// <summary>
 /// Collects all parameters relevant to a parameterized SQL statement.
 /// </summary>
-public class DbParameterCollection: List<DbParameter> {
+public class DbParameterCollection: List<DataParameter> {
 	
 	/// <summary>
 	/// Creates a new parameter list.
@@ -18,7 +18,7 @@ public class DbParameterCollection: List<DbParameter> {
 	/// Creates a new parameter list that contains the elements copied from the specified collection.
 	/// </summary>
 	/// <param name="collection">The collection whose elements are copied to the parameter list.</param>
-	public DbParameterCollection(IEnumerable<DbParameter> collection): base(collection) {}
+	public DbParameterCollection(IEnumerable<DataParameter> collection): base(collection) {}
 	
 	/// <summary>
 	/// Creates a new parameter list from the specified array of positional parameters.
@@ -26,7 +26,7 @@ public class DbParameterCollection: List<DbParameter> {
 	/// <param name="array">The array whose elements are copied to the parameter list.</param>
 	/// <returns>The parameter list corresponding to the specified array.</returns>
 	public static implicit operator DbParameterCollection(object?[] array) => [.. array.Index().Select(entry => 
-		entry.Item is DbParameter dbParameter ? dbParameter : new DbParameter($"Parameter{entry.Index}", entry.Item)
+		entry.Item is DataParameter dbParameter ? dbParameter : new DataParameter($"Parameter{entry.Index}", entry.Item)
 	)];
 
 	/// <summary>
@@ -42,7 +42,7 @@ public class DbParameterCollection: List<DbParameter> {
 	/// <param name="dictionary">The dictionary whose elements are copied to the parameter list.</param>
 	/// <returns>The parameter list corresponding to the specified dictionary.</returns>
 	public static implicit operator DbParameterCollection(Dictionary<string, object?> dictionary) => [.. dictionary.Select(entry =>
-		entry.Value is DbParameter dbParameter ? dbParameter : new DbParameter($"@{entry.Key}", entry.Value)
+		entry.Value is DataParameter dbParameter ? dbParameter : new DataParameter($"@{entry.Key}", entry.Value)
 	)];
 
 	/// <summary>
