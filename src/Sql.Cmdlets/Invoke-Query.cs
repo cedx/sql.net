@@ -3,7 +3,6 @@ namespace Belin.Sql.Cmdlets;
 using System.Collections;
 using System.Data;
 using System.Dynamic;
-using System.Reflection;
 
 /// <summary>
 /// Executes a parameterized SQL query and returns an array of objects whose properties correspond to the columns.
@@ -54,6 +53,12 @@ public class InvokeQueryCommand: PSCmdlet {
 	public int Timeout { get; set; } = 30;
 
 	/// <summary>
+	/// The transaction to use, if any.
+	/// </summary>
+	[Parameter]
+	public IDbTransaction? Transaction { get; set; }
+
+	/// <summary>
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
@@ -63,7 +68,7 @@ public class InvokeQueryCommand: PSCmdlet {
 
 		var types = new[] { typeof(IDbConnection), typeof(string), typeof(IDictionary<string, object?>), typeof(QueryOptions) };
 		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query), types)!.MakeGenericMethod(As);
-		var records = (IEnumerable<object>) method.Invoke(null, [Connection, Command, parameters, new QueryOptions(Timeout: Timeout, Type: CommandType)])!;
+		var records = (IEnumerable<object>) method.Invoke(null, [Connection, Command, parameters, new QueryOptions(Timeout, Transaction, CommandType)])!;
 		WriteObject(records.ToArray());
 	}
 }

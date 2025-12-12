@@ -46,6 +46,12 @@ public class InvokeReaderCommand: PSCmdlet {
 	public int Timeout { get; set; } = 30;
 
 	/// <summary>
+	/// The transaction to use, if any.
+	/// </summary>
+	[Parameter]
+	public IDbTransaction? Transaction { get; set; }
+
+	/// <summary>
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
@@ -53,7 +59,7 @@ public class InvokeReaderCommand: PSCmdlet {
 			? PositionalParameters.ToOrderedDictionary()
 			: Parameters.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString()!, entry => entry.Value);
 
-		var reader = Connection.ExecuteReader(Command, parameters, new(Timeout: Timeout, Type: CommandType));
+		var reader = Connection.ExecuteReader(Command, parameters, new(Timeout, Transaction, CommandType));
 		WriteObject(new DataAdapter(Mapper: new(), Reader: reader));
 	}
 }

@@ -53,6 +53,12 @@ public class GetSingleCommand: PSCmdlet {
 	public int Timeout { get; set; } = 30;
 
 	/// <summary>
+	/// The transaction to use, if any.
+	/// </summary>
+	[Parameter]
+	public IDbTransaction? Transaction { get; set; }
+
+	/// <summary>
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
@@ -62,7 +68,7 @@ public class GetSingleCommand: PSCmdlet {
 
 		var types = new[] { typeof(IDbConnection), typeof(string), typeof(IDictionary<string, object?>), typeof(QueryOptions) };
 		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QuerySingle), types)!.MakeGenericMethod(As);
-		var record = method.Invoke(null, [Connection, Command, parameters, new QueryOptions(Timeout: Timeout, Type: CommandType)])!;
+		var record = method.Invoke(null, [Connection, Command, parameters, new QueryOptions(Timeout, Transaction, CommandType)])!;
 		WriteObject(record);
 	}
 }

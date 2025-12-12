@@ -2,6 +2,7 @@
 
 ## Version [0.9.0](https://github.com/cedx/sql.net/compare/v0.8.0...v0.9.0)
 - Added the `New-Transaction`, `Approve-Transaction` and `Deny-Transaction` cmdlets.
+- Added the `-Transaction` parameter to most cmdlets.
 
 ## Version [0.8.0](https://github.com/cedx/sql.net/compare/v0.7.0...v0.8.0)
 - Moved the data querying and mapping to the `Belin.Sql` assembly.
