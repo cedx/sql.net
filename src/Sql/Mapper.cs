@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 /// <summary>
 /// Maps data records to entity objects.
 /// </summary>
-public sealed class DataMapper {
+public sealed class Mapper {
 
 	/// <summary>
 	/// The property nullability map.

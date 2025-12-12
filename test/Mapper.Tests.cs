@@ -1,10 +1,10 @@
 namespace Belin.Sql;
 
 /// <summary>
-/// Tests the features of the <see cref="DataMapper"/> class.
+/// Tests the features of the <see cref="Mapper"/> class.
 /// </summary>
 [TestClass]
-public sealed class DataMapperTests {
+public sealed class MapperTests {
 
 	[DataRow(null, typeof(bool), false, false)]
 	[DataRow(null, typeof(bool?), false, null)]
@@ -51,5 +51,5 @@ public sealed class DataMapperTests {
 
 	[TestMethod]
 	public void ChangeType(object? value, Type conversionType, bool isNullableReferenceType, object? expected) =>
-		AreEqual(expected, new DataMapper().ChangeType(value, conversionType, isNullableReferenceType)); 
+		AreEqual(expected, new Mapper().ChangeType(value, conversionType, isNullableReferenceType)); 
 }
