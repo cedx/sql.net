@@ -94,12 +94,12 @@ public sealed class DataMapper {
 	}
 
 	/// <summary>
-	/// TODO Returns an object of the specified type and whose value is equivalent to the specified object.
+	/// Converts the specified object into an equivalent value of the specified type. 
 	/// </summary>
-	/// <param name="value">TODO An object that implements the IConvertible interface.</param>
-	/// <param name="conversionType">TODO The type of object to return.</param>
+	/// <param name="value">The object to convert.</param>
+	/// <param name="conversionType">The type of object to return.</param>
 	/// <param name="isNullableReferenceType">Value indicating whether the specified conversion type is a nullable reference type.</param>
-	/// <returns>TODO An object whose type is conversionType and whose value is equivalent to value.</returns>
+	/// <returns>The value of the given type corresponding to the specified object.</returns>
 	internal object? ChangeType(object? value, Type conversionType, bool isNullableReferenceType = true) {
 		var nullableType = Nullable.GetUnderlyingType(conversionType);
 		var targetType = nullableType ?? conversionType;

@@ -39,7 +39,7 @@ public partial class GetVersionCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		var version = Command is string command ? Connection.ExecuteScalar<string>(command) : null;
+		var version = Command is string command ? Connection.ExecuteScalar<string?>(command) : null;
 		if (version is not null) {
 			var match = VersionPattern().Match(version);
 			if (match.Success) {
