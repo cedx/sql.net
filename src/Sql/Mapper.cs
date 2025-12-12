@@ -98,9 +98,9 @@ public sealed class Mapper {
 	/// </summary>
 	/// <param name="value">The object to convert.</param>
 	/// <param name="conversionType">The type of object to return.</param>
-	/// <param name="isNullableReferenceType">Value indicating whether the specified conversion type is a nullable reference type.</param>
+	/// <param name="isNullable">Value indicating whether the specified conversion type is a nullable reference type.</param>
 	/// <returns>The value of the given type corresponding to the specified object.</returns>
-	internal object? ChangeType(object? value, Type conversionType, bool isNullableReferenceType = true) {
+	internal object? ChangeType(object? value, Type conversionType, bool isNullable = true) {
 		var nullableType = Nullable.GetUnderlyingType(conversionType);
 		var targetType = nullableType ?? conversionType;
 
@@ -113,8 +113,8 @@ public sealed class Mapper {
 		return true switch {
 			true when nullableType is not null => default,
 			true when targetType.IsValueType => RuntimeHelpers.GetUninitializedObject(targetType),
-			true when targetType == typeof(string) => isNullableReferenceType ? default : string.Empty,
-			_ => isNullableReferenceType ? default : Activator.CreateInstance(targetType)
+			true when targetType == typeof(string) => isNullable ? default : string.Empty,
+			_ => isNullable ? default : Activator.CreateInstance(targetType)
 		};
 	}
 
