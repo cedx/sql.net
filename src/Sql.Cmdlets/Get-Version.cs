@@ -52,7 +52,7 @@ public partial class GetVersionCommand: Cmdlet {
 		var serverVersion = Command.Length > 0 ? Connection.ExecuteScalar<string?>(Command) : null;
 		if (serverVersion is null && Connection is DbConnection dbConnection) serverVersion = dbConnection.ServerVersion;
 
-		if (!string.IsNullOrWhiteSpace(serverVersion)) {
+		if (!string.IsNullOrEmpty(serverVersion)) {
 			var match = VersionPattern().Match(serverVersion);
 			if (match.Success) {
 				var version = Version.Parse(match.Value);
