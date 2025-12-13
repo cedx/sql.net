@@ -2,6 +2,7 @@ namespace Belin.Sql.Cmdlets;
 
 using System.Data;
 using System.Dynamic;
+using System.Reflection;
 
 /// <summary>
 /// Executes a parameterized SQL query and returns an array of objects whose properties correspond to the columns.
@@ -55,8 +56,14 @@ public class InvokeQueryCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query))!.MakeGenericMethod(As);
-		var records = (IEnumerable<object>) method.Invoke(null, [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)])!;
-		WriteObject(records.ToArray());
+		try {
+			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query))!.MakeGenericMethod(As);
+			var records = (IEnumerable<object>) method.Invoke(null, [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)])!;
+			WriteObject(records.ToArray());
+		}
+		catch (TargetInvocationException e) {
+			WriteError(new ErrorRecord(e.InnerException, "QueryError", ErrorCategory.OperationStopped, null));
+			WriteObject(Array.Empty<object>());
+		}
 	}
 }

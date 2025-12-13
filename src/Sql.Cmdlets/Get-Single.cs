@@ -2,6 +2,7 @@ namespace Belin.Sql.Cmdlets;
 
 using System.Data;
 using System.Dynamic;
+using System.Reflection;
 
 /// <summary>
 /// Executes a parameterized SQL query and returns the single row.
@@ -60,8 +61,8 @@ public class GetSingleCommand: Cmdlet {
 			var record = method.Invoke(null, [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)])!;
 			WriteObject(record);
 		}
-		catch (InvalidOperationException e) {
-			WriteError(new ErrorRecord(e, "EmptyResultSetOrMoreThanOneRecord", ErrorCategory.InvalidOperation, null));
+		catch (TargetInvocationException e) {
+			WriteError(new ErrorRecord(e.InnerException, "EmptyResultSetOrMoreThanOneRecord", ErrorCategory.InvalidOperation, null));
 			WriteObject(null);
 		}
 	}
