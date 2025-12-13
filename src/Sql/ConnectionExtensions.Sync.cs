@@ -38,29 +38,18 @@ public static partial class ConnectionExtensions {
 	/// <summary>
 	/// Executes a parameterized SQL query that selects a single value.
 	/// </summary>
-	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="command">The SQL query to be executed.</param>
-	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
-	/// <returns>The first column of the first row.</returns>
-	public static object? ExecuteScalar(this IDbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null) {
-		if (connection.State == ConnectionState.Closed) connection.Open();
-		using var dbCommand = CreateCommand(connection, command, parameters, options);
-		var value = dbCommand.ExecuteScalar();
-		return value is DBNull ? null : value;
-	}
-
-	/// <summary>
-	/// Executes a parameterized SQL query that selects a single value.
-	/// </summary>
 	/// <typeparam name="T">The type of object to return.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The first column of the first row.</returns>
-	public static T? ExecuteScalar<T>(this IDbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null) =>
-		(T?) mapper.ChangeType(ExecuteScalar(connection, command, parameters, options), typeof(T));
+	public static T? ExecuteScalar<T>(this IDbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null) {
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = CreateCommand(connection, command, parameters, options);
+		var value = dbCommand.ExecuteScalar();
+		return (T?) mapper.ChangeType(value is DBNull ? null : value, typeof(T));
+	}
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns a sequence of objects whose properties correspond to the columns.

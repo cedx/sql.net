@@ -31,7 +31,7 @@ public static partial class ConnectionExtensions {
 		if (parameters is not null) foreach (var parameter in parameters) {
 			var commandParameter = command.CreateParameter();
 			commandParameter.ParameterName = parameter.ParameterName;
-			commandParameter.Value = parameter.Value;
+			commandParameter.Value = parameter.Value ?? DBNull.Value;
 			if (parameter.DbType is not null) commandParameter.DbType = parameter.DbType.Value;
 			if (parameter.Direction is not null) commandParameter.Direction = parameter.Direction.Value;
 			if (parameter.Precision is not null) commandParameter.Precision = parameter.Precision.Value;

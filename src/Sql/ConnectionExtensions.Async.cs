@@ -41,30 +41,19 @@ public static partial class ConnectionExtensions {
 	/// <summary>
 	/// Executes a parameterized SQL query that selects a single value.
 	/// </summary>
+	/// <typeparam name="T">The type of object to return.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first column of the first row.</returns>
-	public static async Task<object?> ExecuteScalarAsync(this DbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
+	public static async Task<T?> ExecuteScalarAsync<T>(this DbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
 		if (connection.State == ConnectionState.Closed) await connection.OpenAsync(cancellationToken);
 		using var dbCommand = (DbCommand) CreateCommand(connection, command, parameters, options);
 		var value = await dbCommand.ExecuteScalarAsync(cancellationToken);
-		return value is DBNull ? null : value;
+		return (T?) mapper.ChangeType(value is DBNull ? null : value, typeof(T));
 	}
-
-	/// <summary>
-	/// Executes a parameterized SQL query that selects a single value.
-	/// </summary>
-	/// <typeparam name="T">The type of object to return.</typeparam>
-	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="command">The SQL query to be executed.</param>
-	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
-	/// <returns>The first column of the first row.</returns>
-	public static async Task<T?> ExecuteScalarAsync<T>(this DbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null) =>
-		(T?) mapper.ChangeType(await ExecuteScalarAsync(connection, command, parameters, options), typeof(T));
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns a sequence of objects whose properties correspond to the columns.
