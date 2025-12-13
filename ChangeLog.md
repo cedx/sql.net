@@ -1,5 +1,8 @@
 # Changelog
 
+## Version [0.12.0](https://github.com/cedx/sql.net/compare/v0.11.0...v0.12.0)
+- Added implicit conversions to the `Parameter` class.
+
 ## Version [0.11.0](https://github.com/cedx/sql.net/compare/v0.10.0...v0.11.0)
 - Removed the `ConnectionExtensions.ExecuteScalar()` non-generic method.
 - The `Adapter` class now implements the `IDisposable` interface.
