@@ -19,15 +19,8 @@ public partial class GetVersionCommand: Cmdlet {
 	/// <summary>
 	/// The SQL query to be executed.
 	/// </summary>
-	public string? Command => Connection.GetType().FullName switch {
-		"Microsoft.Data.SqlClient.SqlConnection" => "SELECT SERVERPROPERTY('ProductVersion')",
-		"Microsoft.Data.Sqlite.SqlConnection" => "SELECT sqlite_version()",
-		"MySql.Data.MySqlClient.MySqlConnection" => "SELECT VERSION()",
-		"MySqlConnector.MySqlConnection" => "SELECT VERSION()",
-		"Npgsql.NpgsqlConnection" => "SHOW server_version",
-		"System.Data.SqlClient.SqlConnection" => "SELECT SERVERPROPERTY('ProductVersion')",
-		_ => null
-	};
+	[Parameter(Position = 1)]
+	public string Command { get; set; } = "";
 
 	/// <summary>
 	/// The connection to the data source.
@@ -39,8 +32,18 @@ public partial class GetVersionCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		var version = Command is string command ? Connection.ExecuteScalar<string?>(command) : null;
-		if (version is not null) {
+		if (string.IsNullOrWhiteSpace(Command)) Command = Connection.GetType().FullName switch {
+			"Microsoft.Data.SqlClient.SqlConnection" => "SELECT SERVERPROPERTY('ProductVersion')",
+			"Microsoft.Data.Sqlite.SqlConnection" => "SELECT sqlite_version()",
+			"MySql.Data.MySqlClient.MySqlConnection" => "SELECT VERSION()",
+			"MySqlConnector.MySqlConnection" => "SELECT VERSION()",
+			"Npgsql.NpgsqlConnection" => "SHOW server_version",
+			"System.Data.SqlClient.SqlConnection" => "SELECT SERVERPROPERTY('ProductVersion')",
+			_ => string.Empty
+		};
+
+		var version = Command.Length > 0 ? Connection.ExecuteScalar<string?>(Command) : null;
+		if (!string.IsNullOrWhiteSpace(version)) {
 			var match = VersionPattern().Match(version);
 			if (match.Success) {
 				WriteObject(Version.Parse(match.Value));
