@@ -1,6 +1,9 @@
 # Changelog
 
 ## Version [0.11.0](https://github.com/cedx/sql.net/compare/v0.10.0...v0.11.0)
+- Removed the `ConnectionExtensions.ExecuteScalar()` non-generic method.
+- The `Adapter` class now implements the `IDisposable` interface.
+- The `Get-Scalar` and `Invoke-Query` cmdlets now use a non-terminating error.
 
 ## Version [0.10.0](https://github.com/cedx/sql.net/compare/v0.9.0...v0.10.0)
 - Added the `TableInfo` and `ColumnInfo` classes.
