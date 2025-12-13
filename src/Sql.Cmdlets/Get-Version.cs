@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 /// <summary>
 /// Returns the version of the server associated with the specified connection.
 /// </summary>
-[Cmdlet(VerbsCommon.Get, "Version"), OutputType(typeof(Version))]
+[Cmdlet(VerbsCommon.Get, "Version"), OutputType(typeof(string), typeof(Version))]
 public partial class GetVersionCommand: Cmdlet {
 
 	/// <summary>
@@ -29,6 +29,12 @@ public partial class GetVersionCommand: Cmdlet {
 	public required IDbConnection Connection { get; set; }
 
 	/// <summary>
+	/// Value indicating whether to return a <see cref="Version"/> object.
+	/// </summary>
+	[Parameter]
+	public SwitchParameter PassThru { get; set; }
+
+	/// <summary>
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
@@ -42,11 +48,12 @@ public partial class GetVersionCommand: Cmdlet {
 			_ => string.Empty
 		};
 
-		var version = Command.Length > 0 ? Connection.ExecuteScalar<string?>(Command) : null;
-		if (!string.IsNullOrWhiteSpace(version)) {
-			var match = VersionPattern().Match(version);
+		var serverVersion = Command.Length > 0 ? Connection.ExecuteScalar<string?>(Command) : null;
+		if (!string.IsNullOrWhiteSpace(serverVersion)) {
+			var match = VersionPattern().Match(serverVersion);
 			if (match.Success) {
-				WriteObject(Version.Parse(match.Value));
+				var version = Version.Parse(match.Value);
+				WriteObject(PassThru ? version : version.ToString());
 				return;
 			}
 		}
