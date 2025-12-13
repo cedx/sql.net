@@ -10,12 +10,6 @@ using System.Reflection;
 public class GetScalarCommand: Cmdlet {
 
 	/// <summary>
-	/// The type of object to return.
-	/// </summary>
-	[Parameter]
-	public Type As { get; set; } = typeof(object);
-
-	/// <summary>
 	/// The SQL query to be executed.
 	/// </summary>
 	[Parameter(Mandatory = true, Position = 1)]
@@ -56,7 +50,7 @@ public class GetScalarCommand: Cmdlet {
 	/// </summary>
 	protected override void ProcessRecord() {
 		try {
-			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.ExecuteScalar))!.MakeGenericMethod(As);
+			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.ExecuteScalar))!.MakeGenericMethod(typeof(object));
 			var value = method.Invoke(null, [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)]);
 			WriteObject(value);
 		}
