@@ -99,7 +99,7 @@ public sealed class Mapper {
 		var targetType = nullableType ?? conversionType;
 
 		if (value is not null) return true switch {
-			true when targetType.IsEnum && value.GetType() == typeof(string) => Enum.Parse(targetType, (string) value, ignoreCase: true),
+			true when targetType.IsEnum && value is string stringValue => Enum.Parse(targetType, stringValue, ignoreCase: true),
 			true when targetType.IsEnum => Enum.ToObject(targetType, Convert.ChangeType(value, Enum.GetUnderlyingType(targetType), CultureInfo.InvariantCulture)),
 			_ => targetType.IsInstanceOfType(value) ? value : Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture),
 		};

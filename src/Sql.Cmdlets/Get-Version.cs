@@ -1,6 +1,7 @@
 namespace Belin.Sql.Cmdlets;
 
 using System.Data;
+using System.Data.Common;
 using System.Text.RegularExpressions;
 
 /// <summary>
@@ -49,6 +50,8 @@ public partial class GetVersionCommand: Cmdlet {
 		};
 
 		var serverVersion = Command.Length > 0 ? Connection.ExecuteScalar<string?>(Command) : null;
+		if (serverVersion is null && Connection is DbConnection dbConnection) serverVersion = dbConnection.ServerVersion;
+
 		if (!string.IsNullOrWhiteSpace(serverVersion)) {
 			var match = VersionPattern().Match(serverVersion);
 			if (match.Success) {
