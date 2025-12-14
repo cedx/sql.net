@@ -86,7 +86,7 @@ public sealed class Mapper {
 		while (reader.Read()) yield return CreateInstance<T>(reader);
 		reader.Close();
 	}
-	
+
 	/// <summary>
 	/// Converts the specified object into an equivalent value of the specified type. 
 	/// </summary>

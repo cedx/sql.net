@@ -67,7 +67,7 @@ public static partial class ConnectionExtensions {
 		var value = await dbCommand.ExecuteScalarAsync(cancellationToken);
 		return value is null || value is DBNull ? default : (T?) mapper.ChangeType(value, typeof(T));
 	}
-	
+
 	/// <summary>
 	/// Executes a parameterized SQL query and returns a sequence of objects whose properties correspond to the columns.
 	/// </summary>
@@ -92,7 +92,7 @@ public static partial class ConnectionExtensions {
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<T>> QueryAsync<T>(this DbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() =>
 		mapper.CreateInstances<T>(await ExecuteReaderAsync(connection, command, parameters, options, cancellationToken));
-	
+
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the first row.
 	/// </summary>
@@ -121,7 +121,7 @@ public static partial class ConnectionExtensions {
 		using var reader = await ExecuteReaderAsync(connection, command, parameters, options, cancellationToken);
 		return reader.Read() ? mapper.CreateInstance<T>(reader) : throw new InvalidOperationException("The result set is empty.");
 	}
-	
+
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the first row.
 	/// </summary>
@@ -148,7 +148,7 @@ public static partial class ConnectionExtensions {
 		using var reader = await ExecuteReaderAsync(connection, command, parameters, options, cancellationToken);
 		return reader.Read() ? mapper.CreateInstance<T>(reader) : default;
 	}
-	
+
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the single row.
 	/// </summary>
@@ -185,7 +185,7 @@ public static partial class ConnectionExtensions {
 
 		return rowCount == 1 ? record! : throw new InvalidOperationException("The result set is empty or contains more than one record.");
 	}
-	
+
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the single row.
 	/// </summary>

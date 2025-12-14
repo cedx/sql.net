@@ -85,7 +85,7 @@ public static partial class ConnectionExtensions {
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
 	public static IEnumerable<T> Query<T>(this IDbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null) where T: class, new() =>
 		mapper.CreateInstances<T>(ExecuteReader(connection, command, parameters, options));
-	
+
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the first row.
 	/// </summary>
@@ -112,7 +112,7 @@ public static partial class ConnectionExtensions {
 		using var reader = ExecuteReader(connection, command, parameters, options);
 		return reader.Read() ? mapper.CreateInstance<T>(reader) : throw new InvalidOperationException("The result set is empty.");
 	}
-	
+
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the first row.
 	/// </summary>
@@ -137,7 +137,7 @@ public static partial class ConnectionExtensions {
 		using var reader = ExecuteReader(connection, command, parameters, options);
 		return reader.Read() ? mapper.CreateInstance<T>(reader) : default;
 	}
-	
+
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the single row.
 	/// </summary>
@@ -172,7 +172,7 @@ public static partial class ConnectionExtensions {
 
 		return rowCount == 1 ? record! : throw new InvalidOperationException("The result set is empty or contains more than one record.");
 	}
-	
+
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the single row.
 	/// </summary>
