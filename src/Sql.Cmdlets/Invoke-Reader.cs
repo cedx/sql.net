@@ -5,7 +5,7 @@ using System.Data;
 /// <summary>
 /// Executes a parameterized SQL query and returns a data reader.
 /// </summary>
-[Cmdlet(VerbsLifecycle.Invoke, "Reader"), OutputType(typeof(Adapter))]
+[Cmdlet(VerbsLifecycle.Invoke, "Reader"), OutputType(typeof(IDataReader))]
 public class InvokeReaderCommand: Cmdlet {
 
 	/// <summary>
@@ -49,6 +49,6 @@ public class InvokeReaderCommand: Cmdlet {
 	/// </summary>
 	protected override void ProcessRecord() {
 		var reader = Connection.ExecuteReader(Command, Parameters, new(Timeout, Transaction, CommandType));
-		WriteObject(new Adapter(Mapper: new(), Reader: reader));
+		WriteObject(reader, enumerateCollection: false);
 	}
 }

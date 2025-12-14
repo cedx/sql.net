@@ -60,7 +60,7 @@ public class InvokeQueryCommand: Cmdlet {
 			var types = new[] { typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions) };
 			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query), 1, types)!.MakeGenericMethod(As);
 			var records = (IEnumerable<object>) method.Invoke(null, [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)])!;
-			foreach (var record in records) WriteObject(record);
+			WriteObject(records, enumerateCollection: true);
 		}
 		catch (TargetInvocationException e) {
 			WriteError(new ErrorRecord(e.InnerException, "QueryError", ErrorCategory.OperationStopped, null));
