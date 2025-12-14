@@ -21,7 +21,6 @@
 		"Get-First"
 		"Get-Scalar"
 		"Get-Single"
-		"Get-Version"
 		"Invoke-NonQuery"
 		"Invoke-Query"
 		"Invoke-Reader"
