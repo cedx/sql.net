@@ -7,7 +7,7 @@ using System.Reflection;
 /// <summary>
 /// Executes a parameterized SQL query and returns an array of objects whose properties correspond to the columns.
 /// </summary>
-[Cmdlet(VerbsLifecycle.Invoke, "Query"), OutputType(typeof(object[]))]
+[Cmdlet(VerbsLifecycle.Invoke, "Query"), OutputType(typeof(object))]
 public class InvokeQueryCommand: Cmdlet {
 
 	/// <summary>
@@ -60,11 +60,10 @@ public class InvokeQueryCommand: Cmdlet {
 			var types = new[] { typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions) };
 			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query), 1, types)!.MakeGenericMethod(As);
 			var records = (IEnumerable<object>) method.Invoke(null, [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)])!;
-			WriteObject(records.ToArray());
+			foreach (var record in records) WriteObject(record);
 		}
 		catch (TargetInvocationException e) {
 			WriteError(new ErrorRecord(e.InnerException, "QueryError", ErrorCategory.OperationStopped, null));
-			WriteObject(Array.Empty<object>());
 		}
 	}
 }
