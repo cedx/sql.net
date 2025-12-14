@@ -56,7 +56,7 @@ public class GetScalarCommand: Cmdlet {
 			WriteObject(value);
 		}
 		catch (TargetInvocationException e) {
-			WriteError(new ErrorRecord(e.InnerException, "ScalarError", ErrorCategory.OperationStopped, null));
+			WriteError(new ErrorRecord(e.InnerException, "GetScalar:TargetInvocation", ErrorCategory.OperationStopped, null));
 			WriteObject(default);
 		}
 	}

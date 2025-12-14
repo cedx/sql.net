@@ -63,7 +63,7 @@ public class InvokeQueryCommand: Cmdlet {
 			WriteObject(records, enumerateCollection: true);
 		}
 		catch (TargetInvocationException e) {
-			WriteError(new ErrorRecord(e.InnerException, "QueryError", ErrorCategory.OperationStopped, null));
+			WriteError(new ErrorRecord(e.InnerException, "InvokeQuery:TargetInvocation", ErrorCategory.OperationStopped, null));
 		}
 	}
 }
