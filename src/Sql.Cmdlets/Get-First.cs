@@ -57,7 +57,8 @@ public class GetFirstCommand: Cmdlet {
 	/// </summary>
 	protected override void ProcessRecord() {
 		try {
-			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QueryFirst))!.MakeGenericMethod(As);
+			var types = new[] { typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions) };
+			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QueryFirst), 1, types)!.MakeGenericMethod(As);
 			var record = method.Invoke(null, [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)]);
 			WriteObject(record);
 		}

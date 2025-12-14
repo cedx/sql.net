@@ -2,6 +2,7 @@ namespace Belin.Sql;
 
 using System.Data;
 using System.Data.Common;
+using System.Dynamic;
 
 /// <summary>
 /// Provides extension members for database connections.
@@ -41,6 +42,18 @@ public static partial class ConnectionExtensions {
 	/// <summary>
 	/// Executes a parameterized SQL query that selects a single value.
 	/// </summary>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="command">The SQL query to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL query.</param>
+	/// <param name="options">The command options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
+	/// <returns>The first column of the first row.</returns>
+	public static async Task<object?> ExecuteScalarAsync(this DbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
+		ExecuteScalarAsync<object>(connection, command, parameters, options, cancellationToken);
+
+	/// <summary>
+	/// Executes a parameterized SQL query that selects a single value.
+	/// </summary>
 	/// <typeparam name="T">The type of object to return.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="command">The SQL query to be executed.</param>
@@ -52,8 +65,20 @@ public static partial class ConnectionExtensions {
 		if (connection.State == ConnectionState.Closed) await connection.OpenAsync(cancellationToken);
 		using var dbCommand = (DbCommand) CreateCommand(connection, command, parameters, options);
 		var value = await dbCommand.ExecuteScalarAsync(cancellationToken);
-		return (T?) mapper.ChangeType(value is DBNull ? null : value, typeof(T));
+		return value is null || value is DBNull ? default : (T?) mapper.ChangeType(value, typeof(T));
 	}
+	
+	/// <summary>
+	/// Executes a parameterized SQL query and returns a sequence of objects whose properties correspond to the columns.
+	/// </summary>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="command">The SQL query to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL query.</param>
+	/// <param name="options">The command options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
+	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
+	public static async Task<IEnumerable<dynamic>> QueryAsync(this DbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
+		await QueryAsync<ExpandoObject>(connection, command, parameters, options, cancellationToken);
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns a sequence of objects whose properties correspond to the columns.
@@ -67,6 +92,19 @@ public static partial class ConnectionExtensions {
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<T>> QueryAsync<T>(this DbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() =>
 		mapper.CreateInstances<T>(await ExecuteReaderAsync(connection, command, parameters, options, cancellationToken));
+	
+	/// <summary>
+	/// Executes a parameterized SQL query and returns the first row.
+	/// </summary>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="command">The SQL query to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL query.</param>
+	/// <param name="options">The command options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
+	/// <returns>The first row.</returns>
+	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
+	public static async Task<dynamic> QueryFirstAsync(this DbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
+		await QueryFirstAsync<ExpandoObject>(connection, command, parameters, options, cancellationToken);
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the first row.
@@ -83,6 +121,18 @@ public static partial class ConnectionExtensions {
 		using var reader = await ExecuteReaderAsync(connection, command, parameters, options, cancellationToken);
 		return reader.Read() ? mapper.CreateInstance<T>(reader) : throw new InvalidOperationException("The result set is empty.");
 	}
+	
+	/// <summary>
+	/// Executes a parameterized SQL query and returns the first row.
+	/// </summary>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="command">The SQL query to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL query.</param>
+	/// <param name="options">The command options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
+	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
+	public static async Task<dynamic?> QueryFirstOrDefaultAsync(this DbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
+		await QueryFirstOrDefaultAsync<ExpandoObject>(connection, command, parameters, options, cancellationToken);
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the first row.
@@ -98,6 +148,19 @@ public static partial class ConnectionExtensions {
 		using var reader = await ExecuteReaderAsync(connection, command, parameters, options, cancellationToken);
 		return reader.Read() ? mapper.CreateInstance<T>(reader) : default;
 	}
+	
+	/// <summary>
+	/// Executes a parameterized SQL query and returns the single row.
+	/// </summary>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="command">The SQL query to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL query.</param>
+	/// <param name="options">The command options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
+	/// <returns>The single row.</returns>
+	/// <exception cref="InvalidOperationException">The result set is empty or contains more than one record.</exception>
+	public static async Task<dynamic> QuerySingleAsync(this DbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
+		await QuerySingleAsync<ExpandoObject>(connection, command, parameters, options, cancellationToken);
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the single row.
@@ -122,6 +185,18 @@ public static partial class ConnectionExtensions {
 
 		return rowCount == 1 ? record! : throw new InvalidOperationException("The result set is empty or contains more than one record.");
 	}
+	
+	/// <summary>
+	/// Executes a parameterized SQL query and returns the single row.
+	/// </summary>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="command">The SQL query to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL query.</param>
+	/// <param name="options">The command options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
+	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
+	public static async Task<dynamic?> QuerySingleOrDefaultAsync(this DbConnection connection, string command, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
+		await QuerySingleOrDefaultAsync<ExpandoObject>(connection, command, parameters, options, cancellationToken);
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the single row.
