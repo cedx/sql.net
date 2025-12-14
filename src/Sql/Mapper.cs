@@ -60,10 +60,10 @@ public sealed class Mapper {
 		}
 
 		var instance = Activator.CreateInstance<T>()!;
-		var table = GetTableInfo<T>();
+		var table = GetTable<T>();
 		foreach (var name in properties.Keys.Where(table.Columns.ContainsKey)) {
 			var column = table.Columns[name];
-			if (column.CanWrite) column.SetValue(instance, ChangeType(properties[name], column.Type, column.IsNullable));
+			if (column.CanWrite) column.SetValue(instance, ChangeType(properties[name], column));
 		}
 
 		return instance;
@@ -86,6 +86,14 @@ public sealed class Mapper {
 		while (reader.Read()) yield return CreateInstance<T>(reader);
 		reader.Close();
 	}
+	
+	/// <summary>
+	/// Converts the specified object into an equivalent value of the specified type. 
+	/// </summary>
+	/// <param name="value">The object to convert.</param>
+	/// <param name="column">The type of object to return.</param>
+	/// <returns>The value of the given type corresponding to the specified object.</returns>
+	internal object? ChangeType(object? value, ColumnInfo column) => ChangeType(value, column.Type, column.IsNullable);
 
 	/// <summary>
 	/// Converts the specified object into an equivalent value of the specified type. 
@@ -117,7 +125,7 @@ public sealed class Mapper {
 	/// </summary>
 	/// <typeparam name="T">The type to inspect.</typeparam>
 	/// <returns>The table information associated with the specified type.</returns>
-	private static TableInfo GetTableInfo<T>() where T: class, new() {
+	internal TableInfo GetTable<T>() where T: class, new() {
 		var type = typeof(T);
 		return mapping.TryGetValue(type, out var value) ? value : mapping[type] = new TableInfo(type);
 	}
