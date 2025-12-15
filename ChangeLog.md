@@ -1,5 +1,8 @@
 # Changelog
 
+## Version [0.13.1](https://github.com/cedx/sql.net/compare/v0.13.0...v0.13.1)
+- The asynchronous methods of the `ConnectionExtensions` class can now be used with instances of the `IDbConnection` interface.
+
 ## Version [0.13.0](https://github.com/cedx/sql.net/compare/v0.12.0...v0.13.0)
 - Added non-generic overloads to the methods of `ConnectionExtensions` class.
 - Fixed the `Invoke-Query` and `Invoke-Reader` cmdlets.
