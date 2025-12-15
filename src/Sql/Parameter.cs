@@ -59,7 +59,7 @@ public sealed class Parameter(string name, object? value, DbType? dbType = null,
 	/// </summary>
 	/// <param name="parameter">The tuple providing the parameter properties.</param>
 	/// <returns>The parameter corresponding to the specified tuple.</returns>
-	public static implicit operator Parameter((string Name, object? Value, DbType DbType) parameter) =>
+	public static implicit operator Parameter((string Name, object? Value, DbType? DbType) parameter) =>
 		new(parameter.Name, parameter.Value, parameter.DbType);
 
 	/// <summary>
@@ -67,6 +67,6 @@ public sealed class Parameter(string name, object? value, DbType? dbType = null,
 	/// </summary>
 	/// <param name="parameter">The tuple providing the parameter properties.</param>
 	/// <returns>The parameter corresponding to the specified tuple.</returns>
-	public static implicit operator Parameter((string Name, object? Value, DbType DbType, int Size) parameter) =>
+	public static implicit operator Parameter((string Name, object? Value, DbType? DbType, int? Size) parameter) =>
 		new(parameter.Name, parameter.Value, parameter.DbType, parameter.Size);
 }

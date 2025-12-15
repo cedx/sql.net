@@ -1,6 +1,7 @@
 # Changelog
 
 ## Version [0.14.0](https://github.com/cedx/sql.net/compare/v0.13.1...v0.14.0)
+- Added overloads to the constructor of `ParameterCollection` class.
 - Renamed the `Parameter.ParameterName` property to `Name`.
 - The `Parameter` constructor now allows values to be passed to the `DbType` and `Size` properties.
 

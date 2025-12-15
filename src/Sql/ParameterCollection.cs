@@ -18,12 +18,27 @@ public class ParameterCollection: List<Parameter> {
 	/// </summary>
 	/// <param name="collection">The collection whose elements are copied to the parameter list.</param>
 	public ParameterCollection(IEnumerable<Parameter> collection): base(collection) {}
+		
+	/// <summary>
+	/// Creates a new parameter list that contains the specified parameter.
+	/// </summary>
+	/// <param name="parameter">The parameter to add to the elements in the parameter list.</param>
+	public ParameterCollection(Parameter parameter): this([parameter]) {}
+	
+	/// <summary>
+	/// Creates a new parameter list that contains the specified parameter.
+	/// </summary>
+	/// <param name="name">The parameter name.</param>
+	/// <param name="value">The parameter value.</param>
+	/// <param name="dbType">The parameter database type.</param>
+	/// <param name="size">The parameter maximum size, in bytes.</param>
+	public ParameterCollection(string name, object? value, DbType? dbType = null, int? size = null): this(new Parameter(name, value, dbType, size)) {}
 
 	/// <summary>
 	/// Creates a new parameter list from the specified array of positional parameters.
 	/// </summary>
 	/// <param name="array">The array whose elements are copied to the parameter list.</param>
-	/// <returns>The parameter list corresponding to the specified array.</returns>
+	/// <returns>The parameter list corresponding to the specified array of positional parameters.</returns>
 	public static implicit operator ParameterCollection(object?[] array) => [.. array.Index().Select(entry =>
 		entry.Item is Parameter parameter ? parameter : new Parameter($"PositionalParameter{entry.Index}", entry.Item)
 	)];
@@ -32,14 +47,14 @@ public class ParameterCollection: List<Parameter> {
 	/// Creates a new parameter list from the specified list of positional parameters.
 	/// </summary>
 	/// <param name="list">The list whose elements are copied to the parameter list.</param>
-	/// <returns>The parameter list corresponding to the specified list.</returns>
+	/// <returns>The parameter list corresponding to the specified list of positional parameters.</returns>
 	public static implicit operator ParameterCollection(ArrayList list) => list.ToArray();
 
 	/// <summary>
 	/// Creates a new parameter list from the specified dictionary of named parameters.
 	/// </summary>
 	/// <param name="dictionary">The dictionary whose elements are copied to the parameter list.</param>
-	/// <returns>The parameter list corresponding to the specified dictionary.</returns>
+	/// <returns>The parameter list corresponding to the specified dictionary of named parameters.</returns>
 	public static implicit operator ParameterCollection(Dictionary<string, object?> dictionary) => [.. dictionary.Select(entry =>
 		entry.Value is Parameter parameter ? parameter : new Parameter($"@{entry.Key}", entry.Value)
 	)];
@@ -48,7 +63,7 @@ public class ParameterCollection: List<Parameter> {
 	/// Creates a new parameter list from the specified hash table of named parameters.
 	/// </summary>
 	/// <param name="hashtable">The hash table whose elements are copied to the parameter list.</param>
-	/// <returns>The parameter list corresponding to the specified hash table.</returns>
+	/// <returns>The parameter list corresponding to the specified hash table of named parameters.</returns>
 	public static implicit operator ParameterCollection(Hashtable hashtable) =>
 		hashtable.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString() ?? "", entry => entry.Value);
 
@@ -56,6 +71,6 @@ public class ParameterCollection: List<Parameter> {
 	/// Creates a new parameter list from the specified list of positional parameters.
 	/// </summary>
 	/// <param name="list">The list whose elements are copied to the parameter list.</param>
-	/// <returns>The parameter list corresponding to the specified list.</returns>
+	/// <returns>The parameter list corresponding to the specified list of positional parameters.</returns>
 	public static implicit operator ParameterCollection(List<object?> list) => list.ToArray();
 }
