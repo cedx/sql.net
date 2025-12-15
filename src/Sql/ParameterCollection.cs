@@ -47,7 +47,7 @@ public class ParameterCollection: List<Parameter> {
 	/// <summary>
 	/// Creates a new parameter list from the specified hash table of named parameters.
 	/// </summary>
-	/// <param name="hashtable">The dictionary whose elements are copied to the parameter list.</param>
+	/// <param name="hashtable">The hash table whose elements are copied to the parameter list.</param>
 	/// <returns>The parameter list corresponding to the specified hash table.</returns>
 	public static implicit operator ParameterCollection(Hashtable hashtable) =>
 		hashtable.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString() ?? "", entry => entry.Value);
