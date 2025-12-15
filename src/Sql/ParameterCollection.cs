@@ -35,6 +35,14 @@ public class ParameterCollection: List<Parameter> {
 	public ParameterCollection(string name, object? value, DbType? dbType = null, int? size = null): this(new Parameter(name, value, dbType, size)) {}
 
 	/// <summary>
+	/// Gets the parameter with the specified name.
+	/// </summary>
+	/// <param name="name">The parameter name.</param>
+	/// <returns>The parameter with the specified name.</returns>
+	/// <exception cref="ArgumentOutOfRangeException">The specified parameter name does not exist.</exception>
+	public Parameter this[string name] => Find(parameter => parameter.Name == name) ?? throw new ArgumentOutOfRangeException(name);
+
+	/// <summary>
 	/// Creates a new parameter list from the specified array of positional parameters.
 	/// </summary>
 	/// <param name="array">The array whose elements are copied to the parameter list.</param>
