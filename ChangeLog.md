@@ -1,5 +1,8 @@
 # Changelog
 
+## Version [0.14.0](https://github.com/cedx/sql.net/compare/v0.13.1...v0.14.0)
+- Renamed the `Parameter.ParameterName` property to `Name`.
+
 ## Version [0.13.1](https://github.com/cedx/sql.net/compare/v0.13.0...v0.13.1)
 - The asynchronous methods of the `ConnectionExtensions` class can now be used with instances of the `IDbConnection` interface.
 

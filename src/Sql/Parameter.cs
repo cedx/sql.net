@@ -22,7 +22,7 @@ public sealed class Parameter(string parameterName, object? parameterValue = def
 	/// <summary>
 	/// The parameter name.
 	/// </summary>
-	public string ParameterName { get; set; } = parameterName;
+	public string Name { get; set; } = name;
 
 	/// <summary>
 	/// Indicates the precision of numeric parameters.
