@@ -73,4 +73,24 @@ public class ParameterCollection: List<Parameter> {
 	/// <param name="list">The list whose elements are copied to the parameter list.</param>
 	/// <returns>The parameter list corresponding to the specified list of positional parameters.</returns>
 	public static implicit operator ParameterCollection(List<object?> list) => list.ToArray();
+
+	/// <summary>
+	/// Gets a value indicating whether a parameter in this collection has the specified name.
+	/// </summary>
+	/// <param name="name">The parameter name.</param>
+	/// <returns><see langword="true"/> if this collection contains a parameter with the specified name, otherwise <see langword="false"/>.</returns>
+	public bool Contains(string name) => Exists(parameter => parameter.Name == name);
+
+	/// <summary>
+	/// Returns the index of the parameter with the specified name.
+	/// </summary>
+	/// <param name="name">The parameter name.</param>
+	/// <returns>The index of the parameter with the specified name, or <c>-1</c> if not found.</returns>
+	public int IndexOf(string name) => FindIndex(parameter => parameter.Name == name);
+
+	/// <summary>
+	/// Removes the parameter with the specified name from this collection.
+	/// </summary>
+	/// <param name="name">The parameter name.</param>
+	public void RemoveAt(string name) => RemoveAt(IndexOf(name));
 }
