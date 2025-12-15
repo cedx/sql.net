@@ -5,14 +5,16 @@ using System.Data;
 /// <summary>
 /// Represents a parameter of a parameterized SQL statement.
 /// </summary>
-/// <param name="parameterName">The parameter name.</param>
-/// <param name="parameterValue">The parameter value.</param>
-public sealed class Parameter(string parameterName, object? parameterValue = default) {
+/// <param name="name">The parameter name.</param>
+/// <param name="value">The parameter value.</param>
+/// <param name="dbType">The parameter database type.</param>
+/// <param name="size">The parameter maximum size, in bytes.</param>
+public sealed class Parameter(string name, object? value, DbType? dbType = null, int? size = null) {
 
 	/// <summary>
 	/// The database type of this parameter.
 	/// </summary>
-	public DbType? DbType { get; set; }
+	public DbType? DbType { get; set; } = dbType;
 
 	/// <summary>
 	/// Value indicating whether this parameter is input-only, output-only, bidirectional, or a stored procedure return value parameter.
@@ -37,12 +39,12 @@ public sealed class Parameter(string parameterName, object? parameterValue = def
 	/// <summary>
 	/// The maximum size of this parameter, in bytes.
 	/// </summary>
-	public int? Size { get; set; }
+	public int? Size { get; set; } = size;
 
 	/// <summary>
 	/// The parameter value.
 	/// </summary>
-	public object? Value { get; set; } = parameterValue;
+	public object? Value { get; set; } = value;
 
 	/// <summary>
 	/// Creates a new parameter from the specified tuple.
@@ -58,7 +60,7 @@ public sealed class Parameter(string parameterName, object? parameterValue = def
 	/// <param name="parameter">The tuple providing the parameter properties.</param>
 	/// <returns>The parameter corresponding to the specified tuple.</returns>
 	public static implicit operator Parameter((string Name, object? Value, DbType DbType) parameter) =>
-		new(parameter.Name, parameter.Value) { DbType = parameter.DbType };
+		new(parameter.Name, parameter.Value, parameter.DbType);
 
 	/// <summary>
 	/// Creates a new parameter from the specified tuple.
@@ -66,5 +68,5 @@ public sealed class Parameter(string parameterName, object? parameterValue = def
 	/// <param name="parameter">The tuple providing the parameter properties.</param>
 	/// <returns>The parameter corresponding to the specified tuple.</returns>
 	public static implicit operator Parameter((string Name, object? Value, DbType DbType, int Size) parameter) =>
-		new(parameter.Name, parameter.Value) { DbType = parameter.DbType, Size = parameter.Size };
+		new(parameter.Name, parameter.Value, parameter.DbType, parameter.Size);
 }
