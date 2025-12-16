@@ -43,7 +43,7 @@ public class ParameterCollection: List<Parameter> {
 	public Parameter this[string name] {
 		get {
 			var normalizedName = Parameter.NormalizeName(name);
-			return Find(parameter => parameter.Name == normalizedName) ?? throw new ArgumentOutOfRangeException(name);
+			return Find(parameter => parameter.Name == normalizedName) ?? throw new ArgumentOutOfRangeException(nameof(name));
 		}
 	}
 
