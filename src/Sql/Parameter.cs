@@ -30,7 +30,7 @@ public sealed class Parameter(string name, object? value, DbType? dbType = null,
 	/// <summary>
 	/// The parameter name.
 	/// </summary>
-	public string Name { get; set => field = value.Length == 0 ? "?" : Array.IndexOf(prefixes, value[0]) < 0 ? $"@{value}" : value; } = name;
+	public string Name { get; set => field = value.Length == 0 ? "?" : prefixes.Contains(value[0]) ? value : $"@{value}"; } = name;
 
 	/// <summary>
 	/// Indicates the precision of numeric parameters.
