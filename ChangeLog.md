@@ -1,5 +1,8 @@
 # Changelog
 
+## Version [0.15.1](https://github.com/cedx/sql.net/compare/v0.15.0...v0.15.1)
+- Fixed the handling of parameter names and values.
+
 ## Version [0.15.0](https://github.com/cedx/sql.net/compare/v0.14.0...v0.15.0)
 - Added an indexer to the `ParameterCollection` class.
 - Added the `Contains()`, `IndexOf()` and `RemoveAt()` methods to the `ParameterCollection` class.
