@@ -1,5 +1,8 @@
 # Changelog
 
+## Version [0.15.2](https://github.com/cedx/sql.net/compare/v0.15.1...v0.15.2)
+- Fixed the handling of parameter names and values.
+
 ## Version [0.15.1](https://github.com/cedx/sql.net/compare/v0.15.0...v0.15.1)
 - Fixed the handling of parameter names and values.
 
