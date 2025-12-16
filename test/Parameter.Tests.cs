@@ -19,6 +19,7 @@ public sealed class ParameterTests {
 	[TestMethod]
 	public void Value() {
 		AreEqual(DBNull.Value, new Parameter("name", null).Value);
+		AreEqual(DBNull.Value, new Parameter("name", DBNull.Value).Value);
 		AreEqual(123, new Parameter("name", 123).Value);
 		AreEqual(-123.456, new Parameter("name", -123.456).Value);
 		AreEqual("", new Parameter("name", "").Value);
