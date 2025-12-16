@@ -1,6 +1,7 @@
 namespace Belin.Sql;
 
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 
 /// <summary>
 /// Represents a parameter of a parameterized SQL statement.
@@ -10,6 +11,11 @@ using System.Data;
 /// <param name="dbType">The parameter database type.</param>
 /// <param name="size">The parameter maximum size, in bytes.</param>
 public sealed class Parameter(string name, object? value, DbType? dbType = null, int? size = null) {
+
+	/// <summary>
+	/// The prefixes used for parameter placeholders.
+	/// </summary>
+	private static readonly char[] prefixes = ['?', '@', ':', '$'];
 
 	/// <summary>
 	/// The database type of this parameter.
@@ -24,7 +30,7 @@ public sealed class Parameter(string name, object? value, DbType? dbType = null,
 	/// <summary>
 	/// The parameter name.
 	/// </summary>
-	public string Name { get; set; } = name;
+	public string Name { get; set => field = value.Length == 0 ? "?" : Array.IndexOf(prefixes, value[0]) < 0 ? $"@{value}" : value; } = name;
 
 	/// <summary>
 	/// Indicates the precision of numeric parameters.
@@ -44,7 +50,8 @@ public sealed class Parameter(string name, object? value, DbType? dbType = null,
 	/// <summary>
 	/// The parameter value.
 	/// </summary>
-	public object? Value { get; set; } = value;
+	[NotNull]
+	public object? Value { get; set => field = value ?? DBNull.Value; } = value;
 
 	/// <summary>
 	/// Creates a new parameter from the specified tuple.
