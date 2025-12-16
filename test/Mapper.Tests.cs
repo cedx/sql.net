@@ -6,50 +6,66 @@ namespace Belin.Sql;
 [TestClass]
 public sealed class MapperTests {
 
-	[DataRow(null, typeof(bool), false, false)]
-	[DataRow(null, typeof(bool?), true, null)]
-	[DataRow(0, typeof(bool), false, false)]
-	[DataRow(0, typeof(bool?), true, false)]
-	[DataRow(1, typeof(bool), false, true)]
-	[DataRow(1, typeof(bool?), true, true)]
-	[DataRow("false", typeof(bool), false, false)]
-	[DataRow("true", typeof(bool), false, true)]
+	/// <summary>
+	/// The test data used by the <see cref="ChangeType"/> method.
+	/// </summary>
+	private static IEnumerable<object?[]> TestData => [ 
+		[null, typeof(bool), false, false],
+		[null, typeof(bool?), true, null],
+		[0, typeof(bool), false, false],
+		[0, typeof(bool?), true, false],
+		[1, typeof(bool), false, true],
+		[1, typeof(bool?), true, true],
+		["false", typeof(bool), false, false],
+		["true", typeof(bool), false, true],
 
-	[DataRow(null, typeof(char), false, char.MinValue)]
-	[DataRow(null, typeof(char?), true, null)]
-	[DataRow(0, typeof(char), false, char.MinValue)]
-	[DataRow(0, typeof(char?), true, char.MinValue)]
-	[DataRow(97, typeof(char), false, 'a')]
-	[DataRow("a", typeof(char), false, 'a')]
+		[null, typeof(char), false, char.MinValue],
+		[null, typeof(char?), true, null],
+		[0, typeof(char), false, char.MinValue],
+		[0, typeof(char?), true, char.MinValue],
+		[97, typeof(char), false, 'a'],
+		[98, typeof(char?), true, 'b'],
+		["a", typeof(char), false, 'a'],
+		["b", typeof(char?), true, 'b'],
 
-	[DataRow(null, typeof(double), false, 0.0)]
-	[DataRow(null, typeof(double?), true, null)]
-	[DataRow(0, typeof(double), false, 0.0)]
-	[DataRow(0, typeof(double?), true, 0.0)]
-	[DataRow(123, typeof(double), false, 123.0)]
-	[DataRow(-123.456, typeof(double?), true, -123.456)]
-	[DataRow("123", typeof(double), false, 123.0)]
-	[DataRow("-123.456", typeof(double), false, -123.456)]
+		[null, typeof(double), false, 0.0],
+		[null, typeof(double?), true, null],
+		[0, typeof(double), false, 0.0],
+		[0, typeof(double?), true, 0.0],
+		[123, typeof(double), false, 123.0],
+		[-123.456, typeof(double?), true, -123.456],
+		["123", typeof(double), false, 123.0],
+		["-123.456", typeof(double?), true, -123.456],
 
-	[DataRow(null, typeof(int), false, 0)]
-	[DataRow(null, typeof(int?), true, null)]
-	[DataRow(0, typeof(int), false, 0)]
-	[DataRow(0, typeof(int?), true, 0)]
-	[DataRow(123, typeof(int), false, 123)]
-	[DataRow(-123.456, typeof(int?), true, -123)]
-	[DataRow("123", typeof(int), false, 123)]
-	[DataRow("-123", typeof(int), false, -123)]
+		[null, typeof(DateTime), false, DateTime.MinValue],
+		[null, typeof(DateTime?), true, null],
+		[DateTime.MinValue, typeof(DateTime), false, DateTime.MinValue],
+		[DateTime.MaxValue, typeof(DateTime?), true, DateTime.MaxValue],
+		[new DateTime(2025, 6, 7, 10, 45, 1), typeof(DateTime), false, new DateTime(2025, 6, 7, 10, 45, 1)],
+		[new DateTime(2025, 6, 7, 10, 45, 1), typeof(DateTime?), true, new DateTime(2025, 6, 7, 10, 45, 1)],
+		["2025-06-07 10:45:01", typeof(DateTime), false, new DateTime(2025, 6, 7, 10, 45, 1)],
+		["2025-06-07T10:45:01", typeof(DateTime?), true, new DateTime(2025, 6, 7, 10, 45, 1)],
 
-	[DataRow(null, typeof(DayOfWeek), false, DayOfWeek.Sunday)]
-	[DataRow(null, typeof(DayOfWeek?), true, null)]
-	[DataRow(0, typeof(DayOfWeek), false, DayOfWeek.Sunday)]
-	[DataRow(0, typeof(DayOfWeek?), true, DayOfWeek.Sunday)]
-	[DataRow(5, typeof(DayOfWeek), false, DayOfWeek.Friday)]
-	[DataRow(5, typeof(DayOfWeek?), true, DayOfWeek.Friday)]
-	[DataRow("sunday", typeof(DayOfWeek), false, DayOfWeek.Sunday)]
-	[DataRow("friday", typeof(DayOfWeek), false, DayOfWeek.Friday)]
+		[null, typeof(int), false, 0],
+		[null, typeof(int?), true, null],
+		[0, typeof(int), false, 0],
+		[0, typeof(int?), true, 0],
+		[123, typeof(int), false, 123],
+		[-123.456, typeof(int?), true, -123],
+		["123", typeof(int), false, 123],
+		["-123", typeof(int?), true, -123],
 
-	[TestMethod]
+		[null, typeof(DayOfWeek), false, DayOfWeek.Sunday],
+		[null, typeof(DayOfWeek?), true, null],
+		[0, typeof(DayOfWeek), false, DayOfWeek.Sunday],
+		[1, typeof(DayOfWeek?), true, DayOfWeek.Monday],
+		[5, typeof(DayOfWeek), false, DayOfWeek.Friday],
+		[6, typeof(DayOfWeek?), true, DayOfWeek.Saturday],
+		["sunday", typeof(DayOfWeek), false, DayOfWeek.Sunday],
+		["friday", typeof(DayOfWeek?), true, DayOfWeek.Friday]
+	];
+
+	[TestMethod, DynamicData(nameof(TestData))]
 	public void ChangeType(object? value, Type conversionType, bool isNullable, object? expected) =>
 		AreEqual(expected, new Mapper().ChangeType(value, conversionType, isNullable));
 }
