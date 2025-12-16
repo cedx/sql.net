@@ -40,7 +40,12 @@ public class ParameterCollection: List<Parameter> {
 	/// <param name="name">The parameter name.</param>
 	/// <returns>The parameter with the specified name.</returns>
 	/// <exception cref="ArgumentOutOfRangeException">The specified parameter name does not exist.</exception>
-	public Parameter this[string name] => Find(parameter => parameter.Name == name) ?? throw new ArgumentOutOfRangeException(name);
+	public Parameter this[string name] {
+		get {
+			var normalizedName = Parameter.NormalizeName(name);
+			return Find(parameter => parameter.Name == normalizedName) ?? throw new ArgumentOutOfRangeException(name);
+		}
+	}
 
 	/// <summary>
 	/// Creates a new parameter list from the specified array of positional parameters.
@@ -87,14 +92,20 @@ public class ParameterCollection: List<Parameter> {
 	/// </summary>
 	/// <param name="name">The parameter name.</param>
 	/// <returns><see langword="true"/> if this collection contains a parameter with the specified name, otherwise <see langword="false"/>.</returns>
-	public bool Contains(string name) => Exists(parameter => parameter.Name == name);
+	public bool Contains(string name) {
+		var normalizedName = Parameter.NormalizeName(name);
+		return Exists(parameter => parameter.Name == normalizedName);
+	}
 
 	/// <summary>
 	/// Returns the index of the parameter with the specified name.
 	/// </summary>
 	/// <param name="name">The parameter name.</param>
 	/// <returns>The index of the parameter with the specified name, or <c>-1</c> if not found.</returns>
-	public int IndexOf(string name) => FindIndex(parameter => parameter.Name == name);
+	public int IndexOf(string name) {
+		var normalizedName = Parameter.NormalizeName(name);
+		return FindIndex(parameter => parameter.Name == normalizedName);
+	}
 
 	/// <summary>
 	/// Removes the parameter with the specified name from this collection.

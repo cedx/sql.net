@@ -30,7 +30,7 @@ public sealed class Parameter(string name, object? value, DbType? dbType = null,
 	/// <summary>
 	/// The parameter name.
 	/// </summary>
-	public string Name { get; set => field = value.Length == 0 ? "?" : prefixes.Contains(value[0]) ? value : $"@{value}"; } = name;
+	public string Name { get; set => field = NormalizeName(value); } = NormalizeName(name);
 
 	/// <summary>
 	/// Indicates the precision of numeric parameters.
@@ -51,7 +51,7 @@ public sealed class Parameter(string name, object? value, DbType? dbType = null,
 	/// The parameter value.
 	/// </summary>
 	[NotNull]
-	public object? Value { get; set => field = value ?? DBNull.Value; } = value;
+	public object? Value { get; set => field = NormalizeValue(value); } = NormalizeValue(value);
 
 	/// <summary>
 	/// Creates a new parameter from the specified tuple.
@@ -76,4 +76,18 @@ public sealed class Parameter(string name, object? value, DbType? dbType = null,
 	/// <returns>The parameter corresponding to the specified tuple.</returns>
 	public static implicit operator Parameter((string Name, object? Value, DbType? DbType, int? Size) parameter) =>
 		new(parameter.Name, parameter.Value, parameter.DbType, parameter.Size);
+
+	/// <summary>
+	/// Normalizes the specified parameter name.
+	/// </summary>
+	/// <param name="name">The parameter name.</param>
+	/// <returns>The normalized parameter name.</returns>
+	internal static string NormalizeName(string name) => name.Length == 0 ? "?" : prefixes.Contains(name[0]) ? name : $"@{name}";
+
+	/// <summary>
+	/// Normalizes the specified parameter value.
+	/// </summary>
+	/// <param name="value">The parameter value.</param>
+	/// <returns>The normalized parameter value.</returns>
+	internal static object NormalizeValue(object? value) => value ?? DBNull.Value;
 }
