@@ -1,7 +1,8 @@
 # Changelog
 
-## Version [0.15.2](https://github.com/cedx/sql.net/compare/v0.15.1...v0.15.2)
+## Version [0.16.0](https://github.com/cedx/sql.net/compare/v0.15.1...v0.16.0)
 - Fixed the handling of parameter names and values.
+- The `-Value` parameter of the `New-Parameter` cmdlet is now mandatory.
 
 ## Version [0.15.1](https://github.com/cedx/sql.net/compare/v0.15.0...v0.15.1)
 - Fixed the handling of parameter names and values.

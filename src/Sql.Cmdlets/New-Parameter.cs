@@ -47,7 +47,7 @@ public class NewParameterCommand: Cmdlet {
 	/// <summary>
 	/// The parameter value.
 	/// </summary>
-	[Parameter(Position = 2)]
+	[Parameter(Mandatory = true, Position = 2), AllowNull]
 	public object? Value { get; set; }
 
 	/// <summary>
