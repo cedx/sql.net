@@ -9,7 +9,7 @@ public sealed class MapperTests {
 	/// <summary>
 	/// The test data used by the <see cref="ChangeType"/> method.
 	/// </summary>
-	private static IEnumerable<object?[]> TestData => [ 
+	private static IEnumerable<object?[]> TestData => [
 		[null, typeof(bool), false, false],
 		[null, typeof(bool?), true, null],
 		[0, typeof(bool), false, false],

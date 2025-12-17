@@ -1,5 +1,8 @@
 # Changelog
 
+## Version [0.17.0](https://github.com/cedx/sql.net/compare/v0.16.0...v0.17.0)
+- Replaced all `dynamic` references by the `ExpandoObject` type.
+
 ## Version [0.16.0](https://github.com/cedx/sql.net/compare/v0.15.1...v0.16.0)
 - Fixed the handling of parameter names and values.
 - Fixed the `New-Parameter` cmdlet.
