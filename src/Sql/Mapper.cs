@@ -21,7 +21,7 @@ public sealed class Mapper {
 	/// </summary>
 	/// <param name="record">A data record providing the properties to be set on the created object.</param>
 	/// <returns>The newly created object.</returns>
-	public dynamic CreateInstance(IDataRecord record) => CreateInstance<ExpandoObject>(record);
+	public ExpandoObject CreateInstance(IDataRecord record) => CreateInstance<ExpandoObject>(record);
 
 	/// <summary>
 	/// Creates a new object of a given type from the specified data record.
@@ -44,7 +44,7 @@ public sealed class Mapper {
 	/// </summary>
 	/// <param name="properties">A dictionary providing the properties to be set on the created object.</param>
 	/// <returns>The newly created object.</returns>
-	public dynamic CreateInstance(IDictionary<string, object?> properties) => CreateInstance<ExpandoObject>(properties);
+	public ExpandoObject CreateInstance(IDictionary<string, object?> properties) => CreateInstance<ExpandoObject>(properties);
 
 	/// <summary>
 	/// Creates a new object of a given type from the specified dictionary.
@@ -74,7 +74,7 @@ public sealed class Mapper {
 	/// </summary>
 	/// <param name="reader">A data reader providing the properties to be set on the created objects.</param>
 	/// <returns>An enumerable of newly created objects.</returns>
-	public IEnumerable<dynamic> CreateInstances(IDataReader reader) => CreateInstances<ExpandoObject>(reader);
+	public IEnumerable<ExpandoObject> CreateInstances(IDataReader reader) => CreateInstances<ExpandoObject>(reader);
 
 	/// <summary>
 	/// Creates new objects of a given type from the specified data reader.

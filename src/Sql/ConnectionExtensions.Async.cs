@@ -77,7 +77,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
-	public static async Task<IEnumerable<dynamic>> QueryAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
+	public static async Task<IEnumerable<ExpandoObject>> QueryAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
 		await QueryAsync<ExpandoObject>(connection, sql, parameters, options, cancellationToken);
 
 	/// <summary>
@@ -103,7 +103,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
-	public static async Task<dynamic> QueryFirstAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
+	public static async Task<ExpandoObject> QueryFirstAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
 		await QueryFirstAsync<ExpandoObject>(connection, sql, parameters, options, cancellationToken);
 
 	/// <summary>
@@ -131,7 +131,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
-	public static async Task<dynamic?> QueryFirstOrDefaultAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
+	public static async Task<ExpandoObject?> QueryFirstOrDefaultAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
 		await QueryFirstOrDefaultAsync<ExpandoObject>(connection, sql, parameters, options, cancellationToken);
 
 	/// <summary>
@@ -159,7 +159,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The single row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty or contains more than one record.</exception>
-	public static async Task<dynamic> QuerySingleAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
+	public static async Task<ExpandoObject> QuerySingleAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
 		await QuerySingleAsync<ExpandoObject>(connection, sql, parameters, options, cancellationToken);
 
 	/// <summary>
@@ -195,7 +195,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
-	public static async Task<dynamic?> QuerySingleOrDefaultAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
+	public static async Task<ExpandoObject?> QuerySingleOrDefaultAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
 		await QuerySingleOrDefaultAsync<ExpandoObject>(connection, sql, parameters, options, cancellationToken);
 
 	/// <summary>

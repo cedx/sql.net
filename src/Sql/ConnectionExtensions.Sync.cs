@@ -71,7 +71,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
-	public static IEnumerable<dynamic> Query(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
+	public static IEnumerable<ExpandoObject> Query(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
 		Query<ExpandoObject>(connection, sql, parameters, options);
 
 	/// <summary>
@@ -95,7 +95,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns>The first row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
-	public static dynamic QueryFirst(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
+	public static ExpandoObject QueryFirst(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
 		QueryFirst<ExpandoObject>(connection, sql, parameters, options);
 
 	/// <summary>
@@ -121,7 +121,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
-	public static dynamic? QueryFirstOrDefault(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
+	public static ExpandoObject? QueryFirstOrDefault(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
 		QueryFirstOrDefault<ExpandoObject>(connection, sql, parameters, options);
 
 	/// <summary>
@@ -147,7 +147,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns>The single row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty or contains more than one record.</exception>
-	public static dynamic QuerySingle(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
+	public static ExpandoObject QuerySingle(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
 		QuerySingle<ExpandoObject>(connection, sql, parameters, options);
 
 	/// <summary>
@@ -181,7 +181,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
-	public static dynamic? QuerySingleOrDefault(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
+	public static ExpandoObject? QuerySingleOrDefault(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
 		QuerySingleOrDefault<ExpandoObject>(connection, sql, parameters, options);
 
 	/// <summary>
