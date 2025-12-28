@@ -64,7 +64,7 @@ public class GetFirstCommand: Cmdlet {
 		}
 		catch (TargetInvocationException e) {
 			WriteError(new ErrorRecord(e.InnerException, "GetFirst:TargetInvocation", ErrorCategory.InvalidOperation, null));
-			WriteObject(null);
+			WriteObject(default);
 		}
 	}
 }
