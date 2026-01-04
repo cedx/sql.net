@@ -63,7 +63,7 @@ public class GetSingleCommand: Cmdlet {
 			WriteObject(record);
 		}
 		catch (TargetInvocationException e) {
-			WriteError(new ErrorRecord(e.InnerException, "GetSingle:TargetInvocation", ErrorCategory.InvalidOperation, null));
+			WriteError(new ErrorRecord(e.InnerException, "Get-Single:TargetInvocationException", ErrorCategory.InvalidOperation, null));
 			WriteObject(default);
 		}
 	}
