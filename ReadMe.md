@@ -3,8 +3,7 @@ A simple micro-ORM for [C#](https://learn.microsoft.com/en-us/dotnet/csharp) and
 based on [ADO.NET](https://learn.microsoft.com/en-us/dotnet/framework/data/adonet) and data annotations.  
 If you like [SQL](https://en.wikipedia.org/wiki/SQL) but dislike the boilerplate of ADO.NET: **SQL Mapper for .NET** might be for you!
 
-> Think of [Dapper](https://www.learndapper.com) and its alternatives,
-> but significantly less advanced/powerful.
+> Think of [Dapper](https://www.learndapper.com) and its alternatives, but less advanced/powerful.
 
 ## Documentation
 - [User guide](https://github.com/cedx/sql.net/wiki)
