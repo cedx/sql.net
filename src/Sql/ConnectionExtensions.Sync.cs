@@ -97,7 +97,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
-	public static IEnumerable<(T, U)> Query<T, U>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, string splitOn = "", CommandOptions? options = null) where T: class, new() where U: class, new() =>
+	public static IEnumerable<(T, U)> Query<T, U>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, string splitOn = "Id", CommandOptions? options = null) where T: class, new() where U: class, new() =>
 		mapper.CreateInstances<T, U>(ExecuteReader(connection, sql, parameters, options), splitOn);
 
 	/// <summary>
