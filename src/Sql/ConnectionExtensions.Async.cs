@@ -94,6 +94,21 @@ public static partial class ConnectionExtensions {
 		mapper.CreateInstances<T>(await ExecuteReaderAsync(connection, sql, parameters, options, cancellationToken));
 
 	/// <summary>
+	/// Executes a parameterized SQL query and returns a sequence of object pairs whose properties correspond to the columns.
+	/// </summary>
+	/// <typeparam name="T">The type of the first objects.</typeparam>
+	/// <typeparam name="U">The type of the second objects.</typeparam>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL query.</param>
+	/// <param name="splitOn">The field from which to split and read the second object.</param>
+	/// <param name="options">The command options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
+	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
+	public static async Task<IEnumerable<(T, U)>> QueryAsync<T, U>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, string splitOn = "", CommandOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() where U: class, new() =>
+		mapper.CreateInstances<T, U>(await ExecuteReaderAsync(connection, sql, parameters, options, cancellationToken), splitOn);
+
+	/// <summary>
 	/// Executes a parameterized SQL query and returns the first row.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
