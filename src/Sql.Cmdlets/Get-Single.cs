@@ -56,13 +56,15 @@ public class GetSingleCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		var types = new[] { typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions) };
-		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QuerySingle), 1, types)!.MakeGenericMethod(As);
+		Type[] types = [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions)];
+		object?[] arguments = [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)];
 
-		try { WriteObject(method.Invoke(null, [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)])); }
+		try {
+			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QuerySingle), 1, types)!.MakeGenericMethod(As);
+			WriteObject(method.Invoke(null, arguments));
+		}
 		catch (TargetInvocationException e) {
 			WriteError(new ErrorRecord(e.InnerException, "Get-Single:TargetInvocationException", ErrorCategory.InvalidOperation, null));
-			WriteObject(default);
 		}
 	}
 }
