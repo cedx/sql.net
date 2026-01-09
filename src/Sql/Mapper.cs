@@ -49,17 +49,17 @@ public sealed class Mapper {
 	/// <returns>The newly created object pair.</returns>
 	/// <exception cref="InvalidOperationException">The specified split field cannot be found.</exception>
 	public (T, U) CreateInstance<T, U>(IDataRecord record, string splitOn = "Id") where T: class, new() where U: class, new() {
-		var list = new List<KeyValuePair<string, object?>>(record.FieldCount);
+		var properties = new List<KeyValuePair<string, object?>>(record.FieldCount);
 		for (var index = 0; index < record.FieldCount; index++) {
 			var value = record[index];
-			list.Add(new(record.GetName(index), value is DBNull ? null : value));
+			properties.Add(new(record.GetName(index), value is DBNull ? null : value));
 		}
 
-		var splitOnIndex = list.FindLastIndex(entry => entry.Key == splitOn);
+		var splitOnIndex = properties.FindLastIndex(entry => entry.Key == splitOn);
 		if (splitOnIndex <= 0) throw new InvalidOperationException("The specified split field cannot be found.");
 
-		var firstObject = list.Take(splitOnIndex).ToDictionary();
-		var secondObject = list.Skip(splitOnIndex).ToDictionary();
+		var firstObject = properties.Take(splitOnIndex).ToDictionary();
+		var secondObject = properties.Skip(splitOnIndex).ToDictionary();
 		return (
 			firstObject.Values.All(value => value is null) ? default! : CreateInstance<T>(firstObject),
 			secondObject.Values.All(value => value is null) ? default! : CreateInstance<U>(secondObject)

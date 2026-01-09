@@ -56,12 +56,10 @@ public class GetFirstCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		try {
-			var types = new[] { typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions) };
-			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QueryFirst), 1, types)!.MakeGenericMethod(As);
-			var record = method.Invoke(null, [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)]);
-			WriteObject(record);
-		}
+		var types = new[] { typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions) };
+		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QueryFirst), 1, types)!.MakeGenericMethod(As);
+
+		try { WriteObject(method.Invoke(null, [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)])); }
 		catch (TargetInvocationException e) {
 			WriteError(new ErrorRecord(e.InnerException, "Get-First:TargetInvocationException", ErrorCategory.InvalidOperation, null));
 			WriteObject(default);

@@ -49,12 +49,10 @@ public class GetScalarCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		try {
-			var types = new[] { typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions) };
-			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.ExecuteScalar), 1, types)!.MakeGenericMethod(typeof(object));
-			var value = method.Invoke(null, [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)]);
-			WriteObject(value);
-		}
+		var types = new[] { typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions) };
+		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.ExecuteScalar), 1, types)!.MakeGenericMethod(typeof(object));
+
+		try { WriteObject(method.Invoke(null, [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)])); }
 		catch (TargetInvocationException e) {
 			WriteError(new ErrorRecord(e.InnerException, "Get-Scalar:TargetInvocationException", ErrorCategory.OperationStopped, null));
 			WriteObject(default);
