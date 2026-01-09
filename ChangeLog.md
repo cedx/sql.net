@@ -2,6 +2,7 @@
 
 ## Version [1.1.0](https://github.com/cedx/sql.net/compare/v1.0.0...v1.1.0)
 - Added support for mapping a single record to multiple objects.
+- Added the `-SplitOn` parameter to the `Invoke-Query` cmdlet.
 
 ## Version [1.0.0](https://github.com/cedx/sql.net/compare/v0.17.0...v1.0.0)
 - First stable release.
