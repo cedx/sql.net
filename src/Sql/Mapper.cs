@@ -86,7 +86,7 @@ public sealed class Mapper {
 			return (T) expandoObject;
 		}
 
-		var instance = Activator.CreateInstance<T>()!;
+		var instance = Activator.CreateInstance<T>();
 		var table = GetTable<T>();
 		foreach (var name in properties.Keys.Where(table.Columns.ContainsKey)) {
 			var column = table.Columns[name];
