@@ -5,6 +5,7 @@
 - Breaking change: transformed the `CommandOptions` constructor into a parameterless constructor.
 - Added the `QueryOptions` record.
 - Added the `IEnumerable<T>.AsList()` extension method.
+- Added the `-NoEnumerate` and `-Stream` parameters to the `Invoke-Query` cmdlet.
 
 ## Version [1.2.0](https://github.com/cedx/sql.net/compare/v1.1.0...v1.2.0)
 - Simplified the constraint on generic type parameters.

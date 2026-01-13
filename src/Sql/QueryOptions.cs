@@ -6,7 +6,7 @@ namespace Belin.Sql;
 public record QueryOptions: CommandOptions {
 
 	/// <summary>
-	/// Value indicating whether to buffer the results in memory.
+	/// Value indicating whether to buffer the rows in memory.
 	/// </summary>
 	public bool Buffered { get; init; } = true;
 }

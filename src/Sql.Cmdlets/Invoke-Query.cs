@@ -5,9 +5,9 @@ using System.Dynamic;
 using System.Reflection;
 
 /// <summary>
-/// Executes a parameterized SQL query and returns an array of objects whose properties correspond to the columns.
+/// Executes a parameterized SQL query and returns a sequence of objects whose properties correspond to the columns.
 /// </summary>
-[Cmdlet(VerbsLifecycle.Invoke, "Query"), OutputType(typeof(object), typeof((object?, object?)))]
+[Cmdlet(VerbsLifecycle.Invoke, "Query"), OutputType(typeof(object), typeof((object?, object?)), typeof(IEnumerable<object>), typeof(IEnumerable<(object?, object?)>))]
 public class InvokeQueryCommand: Cmdlet {
 
 	/// <summary>
@@ -35,6 +35,12 @@ public class InvokeQueryCommand: Cmdlet {
 	public required IDbConnection Connection { get; set; }
 
 	/// <summary>
+	/// Value indicating whether to prevent from enumerating the rows.
+	/// </summary>
+	[Parameter]
+	public SwitchParameter NoEnumerate { get; set; }
+
+	/// <summary>
 	/// The parameters of the SQL query.
 	/// </summary>
 	[Parameter(Position = 2)]
@@ -45,6 +51,12 @@ public class InvokeQueryCommand: Cmdlet {
 	/// </summary>
 	[Parameter, ValidateNotNullOrWhiteSpace]
 	public string SplitOn { get; set; } = "Id";
+
+	/// <summary>
+	/// Value indicating whether to prevent from buffering the rows in memory.
+	/// </summary>
+	[Parameter]
+	public SwitchParameter Stream { get; set; }
 
 	/// <summary>
 	/// The wait time, in seconds, before terminating the attempt to execute the command and generating an error.
@@ -63,16 +75,15 @@ public class InvokeQueryCommand: Cmdlet {
 	/// </summary>
 	protected override void ProcessRecord() {
 		Type[] types = As.Length <= 1
-			? [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions)]
-			: [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(string), typeof(CommandOptions)];
+			? [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(QueryOptions)]
+			: [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(string), typeof(QueryOptions)];
 
-		object?[] arguments = As.Length <= 1
-			? [Connection, Command, Parameters, new CommandOptions { Timeout = Timeout, Transaction = Transaction, Type = CommandType }]
-			: [Connection, Command, Parameters, SplitOn, new CommandOptions { Timeout = Timeout, Transaction = Transaction, Type = CommandType }];
+		var queryOptions = new QueryOptions { Buffered = !Stream, Timeout = Timeout, Transaction = Transaction, Type = CommandType };
+		object?[] arguments = As.Length <= 1 ? [Connection, Command, Parameters, queryOptions] : [Connection, Command, Parameters, SplitOn, queryOptions];
 
 		try {
 			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query), As.Length, types)!.MakeGenericMethod(As);
-			WriteObject(method.Invoke(null, arguments), enumerateCollection: true);
+			WriteObject(method.Invoke(null, arguments), enumerateCollection: !NoEnumerate);
 		}
 		catch (TargetInvocationException e) {
 			WriteError(new ErrorRecord(e.InnerException, "Invoke-Query:TargetInvocationException", ErrorCategory.OperationStopped, null));
