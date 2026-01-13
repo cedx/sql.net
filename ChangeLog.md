@@ -1,5 +1,11 @@
 # Changelog
 
+## Version [2.0.0](https://github.com/cedx/sql.net/compare/v1.2.0...v2.0.0)
+- Breaking change: the `Query` and `QueryAsync` methods of the `ConnectionExtensions` class now return a `List<T>` by default.
+- Breaking change: transformed the `CommandOptions` constructor into a parameterless constructor.
+- Added the `QueryOptions` record.
+- Added the `IEnumerable<T>.AsList()` extension method.
+
 ## Version [1.2.0](https://github.com/cedx/sql.net/compare/v1.1.0...v1.2.0)
 - Simplified the constraint on generic type parameters.
 
