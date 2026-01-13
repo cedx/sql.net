@@ -1,5 +1,8 @@
 # Changelog
 
+## Version [1.2.0](https://github.com/cedx/sql.net/compare/v1.1.0...v1.2.0)
+- Simplified the constraint on type parameters.
+
 ## Version [1.1.0](https://github.com/cedx/sql.net/compare/v1.0.0...v1.1.0)
 - Added support for mapping a single record to multiple objects.
 - Added the `-SplitOn` parameter to the `Invoke-Query` cmdlet.
