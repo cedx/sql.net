@@ -90,7 +90,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
-	public static async Task<IEnumerable<T>> QueryAsync<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() =>
+	public static async Task<IEnumerable<T>> QueryAsync<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() =>
 		mapper.CreateInstances<T>(await ExecuteReaderAsync(connection, sql, parameters, options, cancellationToken));
 
 	/// <summary>
@@ -105,7 +105,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
-	public static async Task<IEnumerable<(T, U)>> QueryAsync<T, U>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, string splitOn = "Id", CommandOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() where U: class, new() =>
+	public static async Task<IEnumerable<(T, U)>> QueryAsync<T, U>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, string splitOn = "Id", CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() where U: new() =>
 		mapper.CreateInstances<T, U>(await ExecuteReaderAsync(connection, sql, parameters, options, cancellationToken), splitOn);
 
 	/// <summary>
@@ -132,7 +132,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
-	public static async Task<T> QueryFirstAsync<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() {
+	public static async Task<T> QueryFirstAsync<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		using var reader = await ExecuteReaderAsync(connection, sql, parameters, options, cancellationToken);
 		return reader.Read() ? mapper.CreateInstance<T>(reader) : throw new InvalidOperationException("The result set is empty.");
 	}
@@ -159,7 +159,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
-	public static async Task<T?> QueryFirstOrDefaultAsync<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() {
+	public static async Task<T?> QueryFirstOrDefaultAsync<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		using var reader = await ExecuteReaderAsync(connection, sql, parameters, options, cancellationToken);
 		return reader.Read() ? mapper.CreateInstance<T>(reader) : default;
 	}
@@ -188,7 +188,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The single row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty or contains more than one record.</exception>
-	public static async Task<T> QuerySingleAsync<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() {
+	public static async Task<T> QuerySingleAsync<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		T? record = default;
 		var rowCount = 0;
 
@@ -223,7 +223,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
-	public static async Task<T?> QuerySingleOrDefaultAsync<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: class, new() {
+	public static async Task<T?> QuerySingleOrDefaultAsync<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		T? record = default;
 		var rowCount = 0;
 

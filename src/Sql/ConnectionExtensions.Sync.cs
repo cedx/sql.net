@@ -83,7 +83,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
-	public static IEnumerable<T> Query<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: class, new() =>
+	public static IEnumerable<T> Query<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() =>
 		mapper.CreateInstances<T>(ExecuteReader(connection, sql, parameters, options));
 
 	/// <summary>
@@ -97,7 +97,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
-	public static IEnumerable<(T, U)> Query<T, U>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, string splitOn = "Id", CommandOptions? options = null) where T: class, new() where U: class, new() =>
+	public static IEnumerable<(T, U)> Query<T, U>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, string splitOn = "Id", CommandOptions? options = null) where T: new() where U: new() =>
 		mapper.CreateInstances<T, U>(ExecuteReader(connection, sql, parameters, options), splitOn);
 
 	/// <summary>
@@ -122,7 +122,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns>The first row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
-	public static T QueryFirst<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: class, new() {
+	public static T QueryFirst<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
 		using var reader = ExecuteReader(connection, sql, parameters, options);
 		return reader.Read() ? mapper.CreateInstance<T>(reader) : throw new InvalidOperationException("The result set is empty.");
 	}
@@ -147,7 +147,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
-	public static T? QueryFirstOrDefault<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: class, new() {
+	public static T? QueryFirstOrDefault<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
 		using var reader = ExecuteReader(connection, sql, parameters, options);
 		return reader.Read() ? mapper.CreateInstance<T>(reader) : default;
 	}
@@ -174,7 +174,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns>The single row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty or contains more than one record.</exception>
-	public static T QuerySingle<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: class, new() {
+	public static T QuerySingle<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
 		T? record = default;
 		var rowCount = 0;
 
@@ -207,7 +207,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
-	public static T? QuerySingleOrDefault<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: class, new() {
+	public static T? QuerySingleOrDefault<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
 		T? record = default;
 		var rowCount = 0;
 

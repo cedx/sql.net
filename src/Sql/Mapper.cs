@@ -29,7 +29,7 @@ public sealed class Mapper {
 	/// <typeparam name="T">The object type.</typeparam>
 	/// <param name="record">A data record providing the properties to be set on the created object.</param>
 	/// <returns>The newly created object.</returns>
-	public T CreateInstance<T>(IDataRecord record) where T: class, new() {
+	public T CreateInstance<T>(IDataRecord record) where T: new() {
 		var properties = new Dictionary<string, object?>();
 		for (var index = 0; index < record.FieldCount; index++) {
 			var value = record[index];
@@ -48,7 +48,7 @@ public sealed class Mapper {
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
 	/// <returns>The newly created object pair.</returns>
 	/// <exception cref="InvalidOperationException">The specified split field cannot be found.</exception>
-	public (T, U) CreateInstance<T, U>(IDataRecord record, string splitOn = "Id") where T: class, new() where U: class, new() {
+	public (T, U) CreateInstance<T, U>(IDataRecord record, string splitOn = "Id") where T: new() where U: new() {
 		var properties = new List<KeyValuePair<string, object?>>(record.FieldCount);
 		for (var index = 0; index < record.FieldCount; index++) {
 			var value = record[index];
@@ -79,7 +79,7 @@ public sealed class Mapper {
 	/// <typeparam name="T">The object type.</typeparam>
 	/// <param name="properties">A dictionary providing the properties to be set on the created object.</param>
 	/// <returns>The newly created object.</returns>
-	public T CreateInstance<T>(IDictionary<string, object?> properties) where T: class, new() {
+	public T CreateInstance<T>(IDictionary<string, object?> properties) where T: new() {
 		if (typeof(T) == typeof(ExpandoObject)) {
 			var expandoObject = (IDictionary<string, object?>) new ExpandoObject();
 			foreach (var (key, value) in properties) expandoObject.Add(key, value);
@@ -109,7 +109,7 @@ public sealed class Mapper {
 	/// <typeparam name="T">The object type.</typeparam>
 	/// <param name="reader">A data reader providing the properties to be set on the created objects.</param>
 	/// <returns>An enumerable of newly created objects.</returns>
-	public IEnumerable<T> CreateInstances<T>(IDataReader reader) where T: class, new() {
+	public IEnumerable<T> CreateInstances<T>(IDataReader reader) where T: new() {
 		while (reader.Read()) yield return CreateInstance<T>(reader);
 		reader.Close();
 	}
@@ -122,7 +122,7 @@ public sealed class Mapper {
 	/// <param name="reader">A data reader providing the properties to be set on the created objects.</param>
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
 	/// <returns>An enumerable of newly created object pairs.</returns>
-	public IEnumerable<(T, U)> CreateInstances<T, U>(IDataReader reader, string splitOn = "Id") where T: class, new() where U: class, new() {
+	public IEnumerable<(T, U)> CreateInstances<T, U>(IDataReader reader, string splitOn = "Id") where T: new() where U: new() {
 		while (reader.Read()) yield return CreateInstance<T, U>(reader, splitOn);
 		reader.Close();
 	}
@@ -165,7 +165,7 @@ public sealed class Mapper {
 	/// </summary>
 	/// <typeparam name="T">The type to inspect.</typeparam>
 	/// <returns>The table information associated with the specified type.</returns>
-	internal TableInfo GetTable<T>() where T: class, new() {
+	internal TableInfo GetTable<T>() where T: new() {
 		var type = typeof(T);
 		return mapping.TryGetValue(type, out var value) ? value : mapping[type] = new TableInfo(type);
 	}
