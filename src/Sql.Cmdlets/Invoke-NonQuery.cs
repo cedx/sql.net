@@ -48,5 +48,5 @@ public class InvokeNonQueryCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() =>
-		WriteObject(Connection.Execute(Command, Parameters, new(Timeout, Transaction, CommandType)));
+		WriteObject(Connection.Execute(Command, Parameters, new() { Timeout = Timeout, Transaction = Transaction, Type = CommandType }));
 }

@@ -67,8 +67,8 @@ public class InvokeQueryCommand: Cmdlet {
 			: [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(string), typeof(CommandOptions)];
 
 		object?[] arguments = As.Length <= 1
-			? [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)]
-			: [Connection, Command, Parameters, SplitOn, new CommandOptions(Timeout, Transaction, CommandType)];
+			? [Connection, Command, Parameters, new CommandOptions { Timeout = Timeout, Transaction = Transaction, Type = CommandType }]
+			: [Connection, Command, Parameters, SplitOn, new CommandOptions { Timeout = Timeout, Transaction = Transaction, Type = CommandType }];
 
 		try {
 			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query), As.Length, types)!.MakeGenericMethod(As);

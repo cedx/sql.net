@@ -48,7 +48,7 @@ public class InvokeReaderCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		var reader = Connection.ExecuteReader(Command, Parameters, new(Timeout, Transaction, CommandType));
+		var reader = Connection.ExecuteReader(Command, Parameters, new() { Timeout = Timeout, Transaction = Transaction, Type = CommandType });
 		WriteObject(reader, enumerateCollection: false);
 	}
 }

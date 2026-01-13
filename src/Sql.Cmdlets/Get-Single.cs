@@ -57,7 +57,7 @@ public class GetSingleCommand: Cmdlet {
 	/// </summary>
 	protected override void ProcessRecord() {
 		Type[] types = [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions)];
-		object?[] arguments = [Connection, Command, Parameters, new CommandOptions(Timeout, Transaction, CommandType)];
+		object?[] arguments = [Connection, Command, Parameters, new CommandOptions { Timeout = Timeout, Transaction = Transaction, Type = CommandType }];
 
 		try {
 			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QuerySingle), 1, types)!.MakeGenericMethod(As);

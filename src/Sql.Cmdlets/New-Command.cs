@@ -48,5 +48,5 @@ public class NewCommandCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() =>
-		WriteObject(Connection.CreateCommand(Command, Parameters, new(Timeout, Transaction, CommandType)));
+		WriteObject(Connection.CreateCommand(Command, Parameters, new() { Timeout = Timeout, Transaction = Transaction, Type = CommandType }));
 }
