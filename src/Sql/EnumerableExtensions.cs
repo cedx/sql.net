@@ -15,5 +15,5 @@ public static class EnumerableExtensions {
 	public static List<T> AsList<T>(this IEnumerable<T> enumerable) => enumerable switch {
     List<T> list => list,
     _ => Enumerable.ToList(enumerable)
-  };
+	};
 }

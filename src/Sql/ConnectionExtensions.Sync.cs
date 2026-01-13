@@ -69,9 +69,10 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="sql">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="options">The query options.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
-	public static IEnumerable<ExpandoObject> Query(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
+	/// <remarks>Each row can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
+	public static IEnumerable<ExpandoObject> Query(this IDbConnection connection, string sql, ParameterCollection? parameters = null, QueryOptions? options = null) =>
 		Query<ExpandoObject>(connection, sql, parameters, options);
 
 	/// <summary>
@@ -81,10 +82,12 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="sql">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="options">The query options.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
-	public static IEnumerable<T> Query<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() =>
-		mapper.CreateInstances<T>(ExecuteReader(connection, sql, parameters, options));
+	public static IEnumerable<T> Query<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, QueryOptions? options = null) where T: new() {
+		var records = mapper.CreateInstances<T>(ExecuteReader(connection, sql, parameters, options));
+		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+	}
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns a sequence of object pairs whose properties correspond to the columns.
@@ -95,10 +98,12 @@ public static partial class ConnectionExtensions {
 	/// <param name="sql">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="options">The query options.</param>
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
-	public static IEnumerable<(T, U)> Query<T, U>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, string splitOn = "Id", CommandOptions? options = null) where T: new() where U: new() =>
-		mapper.CreateInstances<T, U>(ExecuteReader(connection, sql, parameters, options), splitOn);
+	public static IEnumerable<(T, U)> Query<T, U>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, string splitOn = "Id", QueryOptions? options = null) where T: new() where U: new() {
+		var records = mapper.CreateInstances<T, U>(ExecuteReader(connection, sql, parameters, options), splitOn);
+		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+	}
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the first row.
@@ -109,6 +114,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns>The first row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
+	/// <remarks>The row values can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
 	public static ExpandoObject QueryFirst(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
 		QueryFirst<ExpandoObject>(connection, sql, parameters, options);
 
@@ -135,6 +141,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
+	/// <remarks>The row values can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
 	public static ExpandoObject? QueryFirstOrDefault(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
 		QueryFirstOrDefault<ExpandoObject>(connection, sql, parameters, options);
 
@@ -161,6 +168,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns>The single row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty or contains more than one record.</exception>
+	/// <remarks>The row values can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
 	public static ExpandoObject QuerySingle(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
 		QuerySingle<ExpandoObject>(connection, sql, parameters, options);
 
@@ -195,6 +203,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
+	/// <remarks>The row values can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
 	public static ExpandoObject? QuerySingleOrDefault(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
 		QuerySingleOrDefault<ExpandoObject>(connection, sql, parameters, options);
 

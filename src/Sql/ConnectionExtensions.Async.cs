@@ -74,10 +74,11 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="sql">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="options">The query options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
-	public static async Task<IEnumerable<ExpandoObject>> QueryAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
+	/// <remarks>Each row can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
+	public static async Task<IEnumerable<ExpandoObject>> QueryAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, QueryOptions? options = null, CancellationToken cancellationToken = default) =>
 		await QueryAsync<ExpandoObject>(connection, sql, parameters, options, cancellationToken);
 
 	/// <summary>
@@ -87,11 +88,13 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="sql">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="options">The query options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
-	public static async Task<IEnumerable<T>> QueryAsync<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() =>
-		mapper.CreateInstances<T>(await ExecuteReaderAsync(connection, sql, parameters, options, cancellationToken));
+	public static async Task<IEnumerable<T>> QueryAsync<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, QueryOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
+		var records = mapper.CreateInstances<T>(await ExecuteReaderAsync(connection, sql, parameters, options, cancellationToken));
+		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+	}
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns a sequence of object pairs whose properties correspond to the columns.
@@ -102,11 +105,13 @@ public static partial class ConnectionExtensions {
 	/// <param name="sql">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="options">The query options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
-	public static async Task<IEnumerable<(T, U)>> QueryAsync<T, U>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, string splitOn = "Id", CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() where U: new() =>
-		mapper.CreateInstances<T, U>(await ExecuteReaderAsync(connection, sql, parameters, options, cancellationToken), splitOn);
+	public static async Task<IEnumerable<(T, U)>> QueryAsync<T, U>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, string splitOn = "Id", QueryOptions? options = null, CancellationToken cancellationToken = default) where T: new() where U: new() {
+		var records = mapper.CreateInstances<T, U>(await ExecuteReaderAsync(connection, sql, parameters, options, cancellationToken), splitOn);
+		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+	}
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the first row.
@@ -118,6 +123,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
+	/// <remarks>The row values can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
 	public static async Task<ExpandoObject> QueryFirstAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
 		await QueryFirstAsync<ExpandoObject>(connection, sql, parameters, options, cancellationToken);
 
@@ -146,6 +152,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
+	/// <remarks>The row values can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
 	public static async Task<ExpandoObject?> QueryFirstOrDefaultAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
 		await QueryFirstOrDefaultAsync<ExpandoObject>(connection, sql, parameters, options, cancellationToken);
 
@@ -174,6 +181,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The single row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty or contains more than one record.</exception>
+	/// <remarks>The row values can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
 	public static async Task<ExpandoObject> QuerySingleAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
 		await QuerySingleAsync<ExpandoObject>(connection, sql, parameters, options, cancellationToken);
 
@@ -210,6 +218,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
+	/// <remarks>The row values can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
 	public static async Task<ExpandoObject?> QuerySingleOrDefaultAsync(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
 		await QuerySingleOrDefaultAsync<ExpandoObject>(connection, sql, parameters, options, cancellationToken);
 
