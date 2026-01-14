@@ -32,7 +32,8 @@ public class ParameterCollection: List<Parameter> {
 	/// <param name="value">The parameter value.</param>
 	/// <param name="dbType">The parameter database type.</param>
 	/// <param name="size">The parameter maximum size, in bytes.</param>
-	public ParameterCollection(string name, object? value, DbType? dbType = null, int? size = null): this(new Parameter(name, value, dbType, size)) {}
+	public ParameterCollection(string name, object? value = null, DbType? dbType = null, int? size = null):
+		this(new Parameter(name, value) { DbType = dbType, Size = size }) {}
 
 	/// <summary>
 	/// Gets the parameter with the specified name.

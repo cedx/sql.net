@@ -8,9 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 /// </summary>
 /// <param name="name">The parameter name.</param>
 /// <param name="value">The parameter value.</param>
-/// <param name="dbType">The parameter database type.</param>
-/// <param name="size">The parameter maximum size, in bytes.</param>
-public sealed class Parameter(string name, object? value = null, DbType? dbType = null, int? size = null) {
+public sealed class Parameter(string name, object? value = null) {
 
 	/// <summary>
 	/// The prefixes used for parameter placeholders.
@@ -20,7 +18,7 @@ public sealed class Parameter(string name, object? value = null, DbType? dbType 
 	/// <summary>
 	/// The database type of this parameter.
 	/// </summary>
-	public DbType? DbType { get; set; } = dbType;
+	public DbType? DbType { get; set; }
 
 	/// <summary>
 	/// Value indicating whether this parameter is input-only, output-only, bidirectional, or a stored procedure return value parameter.
@@ -45,7 +43,7 @@ public sealed class Parameter(string name, object? value = null, DbType? dbType 
 	/// <summary>
 	/// The maximum size of this parameter, in bytes.
 	/// </summary>
-	public int? Size { get; set; } = size;
+	public int? Size { get; set; }
 
 	/// <summary>
 	/// The parameter value.
@@ -67,7 +65,7 @@ public sealed class Parameter(string name, object? value = null, DbType? dbType 
 	/// <param name="parameter">The tuple providing the parameter properties.</param>
 	/// <returns>The parameter corresponding to the specified tuple.</returns>
 	public static implicit operator Parameter((string Name, object? Value, DbType? DbType) parameter) =>
-		new(parameter.Name, parameter.Value, parameter.DbType);
+		new(parameter.Name, parameter.Value) { DbType = parameter.DbType };
 
 	/// <summary>
 	/// Creates a new parameter from the specified tuple.
@@ -75,7 +73,23 @@ public sealed class Parameter(string name, object? value = null, DbType? dbType 
 	/// <param name="parameter">The tuple providing the parameter properties.</param>
 	/// <returns>The parameter corresponding to the specified tuple.</returns>
 	public static implicit operator Parameter((string Name, object? Value, DbType? DbType, int? Size) parameter) =>
-		new(parameter.Name, parameter.Value, parameter.DbType, parameter.Size);
+		new(parameter.Name, parameter.Value) { DbType = parameter.DbType, Size = parameter.Size };
+
+	/// <summary>
+	/// Creates a new parameter from the specified tuple.
+	/// </summary>
+	/// <param name="parameter">The tuple providing the parameter properties.</param>
+	/// <returns>The parameter corresponding to the specified tuple.</returns>
+	public static implicit operator Parameter((string Name, ParameterDirection Direction, DbType? DbType) parameter) =>
+		new(parameter.Name) { DbType = parameter.DbType, Direction = parameter.Direction };
+
+	/// <summary>
+	/// Creates a new parameter from the specified tuple.
+	/// </summary>
+	/// <param name="parameter">The tuple providing the parameter properties.</param>
+	/// <returns>The parameter corresponding to the specified tuple.</returns>
+	public static implicit operator Parameter((string Name, ParameterDirection Direction, DbType? DbType, int? Size) parameter) =>
+		new(parameter.Name) { DbType = parameter.DbType, Direction = parameter.Direction, Size = parameter.Size };
 
 	/// <summary>
 	/// Normalizes the specified parameter name.
