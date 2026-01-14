@@ -10,7 +10,7 @@ using System.Diagnostics.CodeAnalysis;
 /// <param name="value">The parameter value.</param>
 /// <param name="dbType">The parameter database type.</param>
 /// <param name="size">The parameter maximum size, in bytes.</param>
-public sealed class Parameter(string name, object? value, DbType? dbType = null, int? size = null) {
+public sealed class Parameter(string name, object? value = null, DbType? dbType = null, int? size = null) {
 
 	/// <summary>
 	/// The prefixes used for parameter placeholders.
