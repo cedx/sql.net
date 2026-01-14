@@ -11,6 +11,11 @@ using System.Reflection;
 public class InvokeQueryCommand: Cmdlet {
 
 	/// <summary>
+	/// An array of types representing the number, order, and type of the parameters of the underlying method to invoke.
+	/// </summary>
+	private static readonly Type[] parameterTypes = [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(QueryOptions)];
+
+	/// <summary>
 	/// The type of objects to return.
 	/// </summary>
 	[Parameter, ValidateNotNullOrEmpty]
@@ -74,15 +79,12 @@ public class InvokeQueryCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		Type[] types = As.Length <= 1
-			? [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(QueryOptions)]
-			: [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(string), typeof(QueryOptions)];
-
-		var queryOptions = new QueryOptions { Buffered = !Stream, Timeout = Timeout, Transaction = Transaction, Type = CommandType };
-		object?[] arguments = As.Length <= 1 ? [Connection, Command, Parameters, queryOptions] : [Connection, Command, Parameters, SplitOn, queryOptions];
+		var types = As.Length <= 1 ? parameterTypes : [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(string), typeof(QueryOptions)];
 
 		try {
 			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query), As.Length, types)!.MakeGenericMethod(As);
+			var queryOptions = new QueryOptions { Buffered = !Stream, Timeout = Timeout, Transaction = Transaction, Type = CommandType };
+			object?[] arguments = As.Length <= 1 ? [Connection, Command, Parameters, queryOptions] : [Connection, Command, Parameters, SplitOn, queryOptions];
 			WriteObject(method.Invoke(null, arguments), enumerateCollection: !NoEnumerate);
 		}
 		catch (TargetInvocationException e) {

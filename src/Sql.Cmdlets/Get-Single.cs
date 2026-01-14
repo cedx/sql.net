@@ -11,6 +11,11 @@ using System.Reflection;
 public class GetSingleCommand: Cmdlet {
 
 	/// <summary>
+	/// An array of types representing the number, order, and type of the parameters of the underlying method to invoke.
+	/// </summary>
+	private static readonly Type[] parameterTypes = [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions)];
+
+	/// <summary>
 	/// The type of objects to return.
 	/// </summary>
 	[Parameter]
@@ -56,11 +61,9 @@ public class GetSingleCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		Type[] types = [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions)];
-		object?[] arguments = [Connection, Command, Parameters, new CommandOptions { Timeout = Timeout, Transaction = Transaction, Type = CommandType }];
-
 		try {
-			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QuerySingle), 1, types)!.MakeGenericMethod(As);
+			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QuerySingle), 1, parameterTypes)!.MakeGenericMethod(As);
+			object?[] arguments = [Connection, Command, Parameters, new CommandOptions { Timeout = Timeout, Transaction = Transaction, Type = CommandType }];
 			WriteObject(method.Invoke(null, arguments));
 		}
 		catch (TargetInvocationException e) {

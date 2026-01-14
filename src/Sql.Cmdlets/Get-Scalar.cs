@@ -10,6 +10,11 @@ using System.Reflection;
 public class GetScalarCommand: Cmdlet {
 
 	/// <summary>
+	/// An array of types representing the number, order, and type of the parameters of the underlying method to invoke.
+	/// </summary>
+	private static readonly Type[] parameterTypes = [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions)];
+
+	/// <summary>
 	/// The SQL query to be executed.
 	/// </summary>
 	[Parameter(Mandatory = true, Position = 1)]
@@ -49,11 +54,9 @@ public class GetScalarCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		Type[] types = [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(CommandOptions)];
-		object?[] arguments = [Connection, Command, Parameters, new CommandOptions { Timeout = Timeout, Transaction = Transaction, Type = CommandType }];
-
 		try {
-			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.ExecuteScalar), 1, types)!.MakeGenericMethod(typeof(object));
+			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.ExecuteScalar), 1, parameterTypes)!.MakeGenericMethod(typeof(object));
+			object?[] arguments = [Connection, Command, Parameters, new CommandOptions { Timeout = Timeout, Transaction = Transaction, Type = CommandType }];
 			WriteObject(method.Invoke(null, arguments));
 		}
 		catch (TargetInvocationException e) {
