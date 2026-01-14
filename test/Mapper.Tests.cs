@@ -67,5 +67,5 @@ public sealed class MapperTests {
 
 	[TestMethod, DynamicData(nameof(TestData))]
 	public void ChangeType(object? value, Type conversionType, bool isNullable, object? expected) =>
-		AreEqual(expected, new Mapper().ChangeType(value, conversionType, isNullable));
+		AreEqual(expected, Mapper.Instance.ChangeType(value, conversionType, isNullable));
 }

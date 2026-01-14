@@ -9,5 +9,7 @@ public class NewMapperCommand: Cmdlet {
 	/// <summary>
 	/// Performs execution of this command.
 	/// </summary>
-	protected override void ProcessRecord() => WriteObject(new Mapper());
+	protected override void ProcessRecord() => WriteObject(Mapper.Instance);
 }
+
+// TODO rename the cmdlet to `Get-Mapper`

@@ -9,11 +9,6 @@ public static partial class ConnectionExtensions {
 	// TODO (.NET 10) extension(IDbConnection connection)
 
 	/// <summary>
-	/// The data mapper used to map data records to entity objects.
-	/// </summary>
-	private static readonly Mapper mapper = new();
-
-	/// <summary>
 	/// Creates a new command associated with the specified connection.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>

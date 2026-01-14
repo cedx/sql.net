@@ -60,7 +60,19 @@ public static partial class ConnectionExtensions {
 		if (connection.State == ConnectionState.Closed) connection.Open();
 		using var command = CreateCommand(connection, sql, parameters, options);
 		var value = command.ExecuteScalar();
-		return value is null || value is DBNull ? default : (T?) mapper.ChangeType(value, typeof(T));
+		return value is null || value is DBNull ? default : (T?) Mapper.Instance.ChangeType(value, typeof(T));
+	}
+
+	/// <summary>
+	/// TODO
+	/// </summary>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="identifier"></param>
+	/// <returns></returns>
+	public static T Find<T>(this IDbConnection connection, object identifier) where T: new() {
+		var builder = new CommandBuilder(connection);
+		var sql = $"SELECT * FROM {builder.QuoteIdentifier("TODO table")} WHERE ### TODO quote(Id) = @Id OR Id = ? ###";
+		return QuerySingle<T>(connection, sql, new[] { identifier });
 	}
 
 	/// <summary>
@@ -85,7 +97,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The query options.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
 	public static IEnumerable<T> Query<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, QueryOptions? options = null) where T: new() {
-		var records = mapper.CreateInstances<T>(ExecuteReader(connection, sql, parameters, options));
+		var records = Mapper.Instance.CreateInstances<T>(ExecuteReader(connection, sql, parameters, options));
 		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
 	}
 
@@ -101,7 +113,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The query options.</param>
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
 	public static IEnumerable<(T, U)> Query<T, U>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, string splitOn = "Id", QueryOptions? options = null) where T: new() where U: new() {
-		var records = mapper.CreateInstances<T, U>(ExecuteReader(connection, sql, parameters, options), splitOn);
+		var records = Mapper.Instance.CreateInstances<T, U>(ExecuteReader(connection, sql, parameters, options), splitOn);
 		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
 	}
 
@@ -130,7 +142,7 @@ public static partial class ConnectionExtensions {
 	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
 	public static T QueryFirst<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
 		using var reader = ExecuteReader(connection, sql, parameters, options);
-		return reader.Read() ? mapper.CreateInstance<T>(reader) : throw new InvalidOperationException("The result set is empty.");
+		return reader.Read() ? Mapper.Instance.CreateInstance<T>(reader) : throw new InvalidOperationException("The result set is empty.");
 	}
 
 	/// <summary>
@@ -156,7 +168,7 @@ public static partial class ConnectionExtensions {
 	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
 	public static T? QueryFirstOrDefault<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
 		using var reader = ExecuteReader(connection, sql, parameters, options);
-		return reader.Read() ? mapper.CreateInstance<T>(reader) : default;
+		return reader.Read() ? Mapper.Instance.CreateInstance<T>(reader) : default;
 	}
 
 	/// <summary>
@@ -189,7 +201,7 @@ public static partial class ConnectionExtensions {
 		using var reader = ExecuteReader(connection, sql, parameters, options);
 		while (reader.Read()) {
 			if (++rowCount > 1) break;
-			record = mapper.CreateInstance<T>(reader);
+			record = Mapper.Instance.CreateInstance<T>(reader);
 		}
 
 		return rowCount == 1 ? record! : throw new InvalidOperationException("The result set is empty or contains more than one record.");
@@ -223,7 +235,7 @@ public static partial class ConnectionExtensions {
 		using var reader = ExecuteReader(connection, sql, parameters, options);
 		while (reader.Read()) {
 			if (++rowCount > 1) break;
-			record = mapper.CreateInstance<T>(reader);
+			record = Mapper.Instance.CreateInstance<T>(reader);
 		}
 
 		return rowCount == 1 ? record : default;
