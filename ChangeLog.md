@@ -1,5 +1,7 @@
 # Changelog
 
+## Version [2.1.0](https://github.com/cedx/sql.net/compare/v2.0.0...v2.1.0)
+
 ## Version [2.0.0](https://github.com/cedx/sql.net/compare/v1.2.0...v2.0.0)
 - Breaking change: the `Query` and `QueryAsync` methods of the `ConnectionExtensions` class now return a `List<T>` by default.
 - Breaking change: transformed the `CommandOptions` constructor into a parameterless constructor.

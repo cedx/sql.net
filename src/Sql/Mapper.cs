@@ -128,6 +128,16 @@ public sealed class Mapper {
 	}
 
 	/// <summary>
+	/// Gets the table information associated with the specified type.
+	/// </summary>
+	/// <typeparam name="T">The type to inspect.</typeparam>
+	/// <returns>The table information associated with the specified type.</returns>
+	public TableInfo GetTable<T>() where T: new() {
+		var type = typeof(T);
+		return mapping.TryGetValue(type, out var value) ? value : mapping[type] = new TableInfo(type);
+	}
+
+	/// <summary>
 	/// Converts the specified object into an equivalent value of the specified type.
 	/// </summary>
 	/// <param name="value">The object to convert.</param>
@@ -158,15 +168,5 @@ public sealed class Mapper {
 			true when targetType == typeof(string) => isNullable ? default : string.Empty,
 			_ => isNullable ? default : Activator.CreateInstance(targetType)
 		};
-	}
-
-	/// <summary>
-	/// Gets the table information associated with the specified type.
-	/// </summary>
-	/// <typeparam name="T">The type to inspect.</typeparam>
-	/// <returns>The table information associated with the specified type.</returns>
-	internal TableInfo GetTable<T>() where T: new() {
-		var type = typeof(T);
-		return mapping.TryGetValue(type, out var value) ? value : mapping[type] = new TableInfo(type);
 	}
 }
