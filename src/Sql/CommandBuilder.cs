@@ -20,6 +20,11 @@ public class CommandBuilder {
 	public string CatalogSeparator { get; set; } = ".";
 
 	/// <summary>
+	/// The beginning string to use for naming parameters.
+	/// </summary>
+	public string ParameterPrefix { get; set; } = "@";
+
+	/// <summary>
 	/// The beginning string to use when specifying database objects.
 	/// </summary>
 	public string QuotePrefix { get; set; } = "[";
@@ -57,6 +62,7 @@ public class CommandBuilder {
 			case "Oracle.ManagedDataAccess.Client.OracleConnection":
 				CatalogLocation = CatalogLocation.End;
 				CatalogSeparator = "@";
+				ParameterPrefix = ":";
 				QuotePrefix = QuoteSuffix = "\"";
 				break;
 			case "System.Data.OleDb.OleDbConnection":

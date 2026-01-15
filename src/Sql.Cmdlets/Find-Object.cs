@@ -3,7 +3,7 @@ namespace Belin.Sql.Cmdlets;
 using System.Data;
 
 /// <summary>
-/// Finds the entity with the specified primary key.
+/// Finds an entity with the specified primary key.
 /// </summary>
 [Cmdlet(VerbsCommon.Find, "Object"), OutputType(typeof(object))]
 public class FindObjectCommand: Cmdlet {
