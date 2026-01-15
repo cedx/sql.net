@@ -7,7 +7,9 @@
 - Breaking change: transformed the `Mapper` class into a singleton instance.
 - Added new implicit conversions to the `Parameter` class.
 - Added a new overload to the `ParameterCollection` constructor.
+- Added the `CommandBuilder` class.
 - Added the `ColumnInfo.GetValue()` method.
+- Added the `Find()` and `Delete()` methods to the `ConnectionExtensions` class.
 - Made the `Mapper.GetTable()` method public.
 
 ## Version [2.0.0](https://github.com/cedx/sql.net/compare/v1.2.0...v2.0.0)

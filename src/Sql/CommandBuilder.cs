@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.Common;
 
 /// <summary>
-/// TODO
+/// Automatically generates single-table commands.
 /// </summary>
 /// <param name="connection">The connection to the data source.</param>
 public class CommandBuilder {
@@ -35,6 +35,11 @@ public class CommandBuilder {
 	public string SchemaSeparator { get; set; } = ".";
 
 	/// <summary>
+	/// Value indicating whether the ADO.NET provider uses positional parameters instead of named parameters for parameterized queries.
+	/// </summary>
+	public bool UsePositionalParameters { get; set; } = false;
+
+	/// <summary>
 	/// Creates a new command builder.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
@@ -44,6 +49,7 @@ public class CommandBuilder {
 			case "MySqlConnector.MySqlConnection":
 				QuotePrefix = QuoteSuffix = "`";
 				break;
+			case "FirebirdSql.Data.FirebirdClient.FbConnection":
 			case "Microsoft.Data.Sqlite.SqliteConnection":
 			case "Npgsql.NpgsqlConnection":
 				QuotePrefix = QuoteSuffix = "\"";
@@ -53,7 +59,39 @@ public class CommandBuilder {
 				CatalogSeparator = "@";
 				QuotePrefix = QuoteSuffix = "\"";
 				break;
+			case "System.Data.OleDb.OleDbConnection":
+			case "System.Data.Odbc.OdbcConnection":
+				UsePositionalParameters = true;
+				break;
 		}
+	}
+
+	/// <summary>
+	/// Gets the automatically generated command required to perform deletions at the data source.
+	/// </summary>
+	/// <returns>The automatically generated command required to perform deletions.</returns>
+	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
+	public string GetDeleteCommand<T>() where T: new() {
+		var table = Mapper.Instance.GetTable<T>();
+		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
+		return $"DELETE FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : "@Id")}";
+	}
+
+	/// <summary>
+	/// Gets the automatically generated command required to perform selections at the data source.
+	/// </summary>
+	/// <param name="columns">The list of columns to select. By default, all columns.</param>
+	/// <returns>The automatically generated command required to perform selections.</returns>
+	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
+	public string GetSelectCommand<T>(string[]? columns = null) where T: new() {
+		var table = Mapper.Instance.GetTable<T>();
+		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
+		var fieldList = columns switch {
+			null or [] => "*",
+			var names => string.Join(", ", (names.Contains(identityColumn.Name) ? names : [identityColumn.Name, ..names]).Select(QuoteIdentifier))
+		};
+
+		return $"SELECT {fieldList} FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : "@Id")}";
 	}
 
 	/// <summary>

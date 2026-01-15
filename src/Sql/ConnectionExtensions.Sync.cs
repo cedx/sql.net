@@ -64,15 +64,17 @@ public static partial class ConnectionExtensions {
 	}
 
 	/// <summary>
-	/// TODO
+	/// Finds the entity with the specified primary key.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="identifier">TODO The identity column value.</param>
-	/// <returns></returns>
-	public static T Find<T>(this IDbConnection connection, object identifier) where T: new() {
+	/// <param name="id">The primary key value.</param>
+	/// <param name="columns">The list of columns to select. By default, all columns.</param>
+	/// <param name="options">The command options.</param>
+	/// <returns>The entity with the specified primary key, or <see langword="null"/> if not found.</returns>
+	public static T? Find<T>(this IDbConnection connection, object id, string[]? columns = null, CommandOptions? options = null) where T: new() {
 		var builder = new CommandBuilder(connection);
-		var sql = $"SELECT * FROM {builder.QuoteIdentifier("TODO table")} WHERE ### TODO quote(Id) = @Id OR Id = ? ###";
-		return QuerySingle<T>(connection, sql, new[] { identifier });
+		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : "@Id", id);
+		return QuerySingleOrDefault<T>(connection, builder.GetSelectCommand<T>(columns), new(parameter), options);
 	}
 
 	/// <summary>

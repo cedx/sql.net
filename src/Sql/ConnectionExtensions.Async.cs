@@ -69,6 +69,20 @@ public static partial class ConnectionExtensions {
 	}
 
 	/// <summary>
+	/// Finds the entity with the specified primary key.
+	/// </summary>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="id">The primary key value.</param>
+	/// <param name="columns">The list of columns to select. By default, all columns.</param>
+	/// <param name="options">The command options.</param>
+	/// <returns>The entity with the specified primary key, or <see langword="null"/> if not found.</returns>
+	public static async Task<T?> FindAsync<T>(this IDbConnection connection, object id, string[]? columns = null, CommandOptions? options = null) where T: new() {
+		var builder = new CommandBuilder(connection);
+		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : "@Id", id);
+		return await QuerySingleOrDefaultAsync<T>(connection, builder.GetSelectCommand<T>(columns), new(parameter), options);
+	}
+
+	/// <summary>
 	/// Executes a parameterized SQL query and returns a sequence of objects whose properties correspond to the columns.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
