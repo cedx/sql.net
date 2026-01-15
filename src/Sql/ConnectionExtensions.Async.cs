@@ -10,6 +10,21 @@ using System.Dynamic;
 public static partial class ConnectionExtensions {
 
 	/// <summary>
+	/// Deletes the specified entity.
+	/// </summary>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="instance">The entity to be deleted.</param>
+	/// <param name="options">The command options.</param>
+	/// <returns><see langword="false"/> if the specified entity has been deleted, otherwise <see langword="false"/>.</returns>
+	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
+	public static async Task<bool> DeleteAsync<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
+		var identityColumn = Mapper.Instance.GetTable<T>().IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
+		var builder = new CommandBuilder(connection);
+		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : "Id", identityColumn.GetValue(instance));
+		return await ExecuteAsync(connection, builder.GetDeleteCommand<T>(), new(parameter), options) > 0;
+	}
+
+	/// <summary>
 	/// Executes a parameterized SQL statement.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
@@ -78,7 +93,7 @@ public static partial class ConnectionExtensions {
 	/// <returns>The entity with the specified primary key, or <see langword="null"/> if not found.</returns>
 	public static async Task<T?> FindAsync<T>(this IDbConnection connection, object id, string[]? columns = null, CommandOptions? options = null) where T: new() {
 		var builder = new CommandBuilder(connection);
-		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : "@Id", id);
+		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : "Id", id);
 		return await QuerySingleOrDefaultAsync<T>(connection, builder.GetSelectCommand<T>(columns), new(parameter), options);
 	}
 
