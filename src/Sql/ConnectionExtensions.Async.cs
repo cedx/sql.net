@@ -90,7 +90,6 @@ public static partial class ConnectionExtensions {
 	/// <param name="id">The primary key value.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns><see langword="true"/> if an entity with the specified primary key exists, otherwise <see langword="false"/>.</returns>
-	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
 	public static async Task<bool> ExistsAsync<T>(this IDbConnection connection, object id, CommandOptions? options = null) where T: new() {
 		var builder = new CommandBuilder(connection);
 		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : builder.GetParameterName("Id"), id);
