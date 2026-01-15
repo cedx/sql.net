@@ -12,10 +12,10 @@ public class CloseConnectionCommand: Cmdlet {
 	/// The connection to the data source.
 	/// </summary>
 	[Parameter(Mandatory = true, Position = 0, ValueFromPipeline = true)]
-	public required IDbConnection Connection { get; set; }
+	public required IDbConnection InputObject { get; set; }
 
 	/// <summary>
 	/// Performs execution of this command.
 	/// </summary>
-	protected override void ProcessRecord() => Connection.Close();
+	protected override void ProcessRecord() => InputObject.Close();
 }

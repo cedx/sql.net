@@ -12,10 +12,10 @@ public class DenyTransactionCommand: Cmdlet {
 	/// The transaction to roll back.
 	/// </summary>
 	[Parameter(Mandatory = true, Position = 0, ValueFromPipeline = true)]
-	public required IDbTransaction Transaction { get; set; }
+	public required IDbTransaction InputObject { get; set; }
 
 	/// <summary>
 	/// Performs execution of this command.
 	/// </summary>
-	protected override void ProcessRecord() => Transaction.Rollback();
+	protected override void ProcessRecord() => InputObject.Rollback();
 }
