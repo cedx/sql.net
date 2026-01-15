@@ -80,8 +80,15 @@ public class CommandBuilder {
 	public string GetDeleteCommand<T>() where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		return $"DELETE FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : "@Id")}";
+		return $"DELETE FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName("Id"))}";
 	}
+
+	/// <summary>
+	/// Returns the full parameter name corresponding to the specified partial parameter name.
+	/// </summary>
+	/// <param name="parameterName">The partial name of the parameter.</param>
+	/// <returns>The full parameter name corresponding to the specified partial parameter name.</returns>
+	public string GetParameterName(string parameterName) => $"{ParameterPrefix}{parameterName}";
 
 	/// <summary>
 	/// Gets the automatically generated command required to perform selections at the data source.
@@ -89,15 +96,11 @@ public class CommandBuilder {
 	/// <param name="columns">The list of columns to select. By default, all columns.</param>
 	/// <returns>The automatically generated command required to perform selections.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public string GetSelectCommand<T>(string[]? columns = null) where T: new() {
+	public string GetSelectCommand<T>(params string[] columns) where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var fieldList = columns switch {
-			null or [] => "*",
-			var names => string.Join(", ", (names.Contains(identityColumn.Name) ? names : [identityColumn.Name, ..names]).Select(QuoteIdentifier))
-		};
-
-		return $"SELECT {fieldList} FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : "@Id")}";
+		var fieldList = columns is null || columns.Length == 0 ? "*" : string.Join(", ", columns.Select(QuoteIdentifier));
+		return $"SELECT {fieldList} FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName("Id"))}";
 	}
 
 	/// <summary>
