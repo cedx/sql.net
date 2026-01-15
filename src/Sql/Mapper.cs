@@ -57,7 +57,7 @@ public sealed class Mapper {
 	/// <param name="record">A data record providing the properties to be set on the created objects.</param>
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
 	/// <returns>The newly created object pair.</returns>
-	/// <exception cref="InvalidOperationException">The specified split field cannot be found.</exception>
+	/// <exception cref="InvalidOperationException">The split field could not be found.</exception>
 	public (T, U) CreateInstance<T, U>(IDataRecord record, string splitOn = "Id") where T: new() where U: new() {
 		var properties = new List<KeyValuePair<string, object?>>(record.FieldCount);
 		for (var index = 0; index < record.FieldCount; index++) {
@@ -66,7 +66,7 @@ public sealed class Mapper {
 		}
 
 		var splitOnIndex = properties.FindLastIndex(entry => entry.Key == splitOn);
-		if (splitOnIndex <= 0) throw new InvalidOperationException("The specified split field cannot be found.");
+		if (splitOnIndex <= 0) throw new InvalidOperationException("The split field could not be found.");
 
 		var firstObject = properties.Take(splitOnIndex).ToDictionary();
 		var secondObject = properties.Skip(splitOnIndex).ToDictionary();

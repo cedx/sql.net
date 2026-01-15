@@ -6,7 +6,7 @@ using System.Data;
 /// Rolls back the specified database transaction.
 /// </summary>
 [Cmdlet(VerbsLifecycle.Deny, "Transaction"), OutputType(typeof(void))]
-public class DenyTransaction: Cmdlet {
+public class DenyTransactionCommand: Cmdlet {
 
 	/// <summary>
 	/// The transaction to roll back.

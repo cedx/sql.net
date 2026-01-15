@@ -63,7 +63,7 @@ public class GetSingleCommand: Cmdlet {
 	protected override void ProcessRecord() {
 		try {
 			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.QuerySingle), 1, parameterTypes)!.MakeGenericMethod(As);
-			object?[] arguments = [Connection, Command, Parameters, new CommandOptions { Timeout = Timeout, Transaction = Transaction, Type = CommandType }];
+			var arguments = new object[] { Connection, Command, Parameters, new CommandOptions { Timeout = Timeout, Transaction = Transaction, Type = CommandType } };
 			WriteObject(method.Invoke(null, arguments));
 		}
 		catch (TargetInvocationException e) {

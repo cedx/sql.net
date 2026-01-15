@@ -6,7 +6,7 @@ using System.Data;
 /// Commits the specified database transaction.
 /// </summary>
 [Cmdlet(VerbsLifecycle.Approve, "Transaction"), OutputType(typeof(void))]
-public class ApproveTransaction: Cmdlet {
+public class ApproveTransactionCommand: Cmdlet {
 
 	/// <summary>
 	/// The transaction to commit.

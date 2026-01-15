@@ -79,12 +79,11 @@ public class InvokeQueryCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		var types = As.Length <= 1 ? parameterTypes : [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(string), typeof(QueryOptions)];
-
 		try {
+			var types = As.Length <= 1 ? parameterTypes : [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(string), typeof(QueryOptions)];
 			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query), As.Length, types)!.MakeGenericMethod(As);
 			var queryOptions = new QueryOptions { Buffered = !Stream, Timeout = Timeout, Transaction = Transaction, Type = CommandType };
-			object?[] arguments = As.Length <= 1 ? [Connection, Command, Parameters, queryOptions] : [Connection, Command, Parameters, SplitOn, queryOptions];
+			object[] arguments = As.Length <= 1 ? [Connection, Command, Parameters, queryOptions] : [Connection, Command, Parameters, SplitOn, queryOptions];
 			WriteObject(method.Invoke(null, arguments), enumerateCollection: !NoEnumerate);
 		}
 		catch (TargetInvocationException e) {
