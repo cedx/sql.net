@@ -3,26 +3,21 @@ namespace Belin.Sql.Cmdlets;
 using System.Data;
 
 /// <summary>
-/// Finds an entity with the specified primary key.
+/// Checks whether an entity with the specified primary key exists.
 /// </summary>
-[Cmdlet(VerbsCommon.Find, "Object"), OutputType(typeof(object))]
-public class FindObjectCommand: Cmdlet {
+[Cmdlet(VerbsDiagnostic.Test, "Object"), OutputType(typeof(bool))]
+public class TestObjectCommand: Cmdlet {
 
 	/// <summary>
 	/// An array of types representing the number, order, and type of the parameters of the underlying method to invoke.
 	/// </summary>
-	private static readonly Type[] parameterTypes = [typeof(IDbConnection), typeof(object), typeof(string[]), typeof(CommandOptions)];
+	private static readonly Type[] parameterTypes = [typeof(IDbConnection), typeof(object), typeof(CommandOptions)];
 
 	/// <summary>
-	/// The type of object to find.
+	/// The type of object to check.
 	/// </summary>
 	[Parameter(Mandatory = true, Position = 1)]
 	public required Type Class { get; set; }
-
-	/// <summary>
-	/// The list of columns to select. By default, all columns.
-	/// </summary>
-	public string[] Columns { get; set; } = [];
 
 	/// <summary>
 	/// The connection to the data source.
@@ -52,8 +47,8 @@ public class FindObjectCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Find), 1, parameterTypes)!.MakeGenericMethod(Class);
-		var arguments = new object[] { Connection, Id, Columns, new CommandOptions { Timeout = Timeout, Transaction = Transaction } };
+		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Exists), 1, parameterTypes)!.MakeGenericMethod(Class);
+		var arguments = new object[] { Connection, Id, new CommandOptions { Timeout = Timeout, Transaction = Transaction } };
 		WriteObject(method.Invoke(null, arguments));
 	}
 }

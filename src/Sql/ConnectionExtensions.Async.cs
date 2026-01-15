@@ -84,7 +84,7 @@ public static partial class ConnectionExtensions {
 	}
 
 	/// <summary>
-	/// Returns a value indicating whether an entity with the specified primary key exists.
+	/// Checks whether an entity with the specified primary key exists.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="id">The primary key value.</param>

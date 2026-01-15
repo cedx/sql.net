@@ -18,6 +18,7 @@
 		"Approve-Transaction"
 		"Close-Connection"
 		"Deny-Transaction"
+		"Find-Object"
 		"Get-First"
 		"Get-Mapper"
 		"Get-Scalar"
@@ -29,6 +30,8 @@
 		"New-Connection"
 		"New-Parameter"
 		"New-Transaction"
+		"Remove-Object"
+		"Test-Object"
 	)
 
 	RequiredAssemblies = @(
