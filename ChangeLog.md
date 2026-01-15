@@ -10,6 +10,7 @@
 - Added the `CommandBuilder` class.
 - Added the `ColumnInfo.GetValue()` method.
 - Added the `Find()` and `Delete()` methods to the `ConnectionExtensions` class.
+- Added the `Find-Object` and `Remove-Object` cmdlets.
 - Made the `Mapper.GetTable()` method public.
 
 ## Version [2.0.0](https://github.com/cedx/sql.net/compare/v1.2.0...v2.0.0)
