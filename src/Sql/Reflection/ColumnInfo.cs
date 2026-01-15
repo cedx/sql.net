@@ -58,6 +58,13 @@ public sealed class ColumnInfo(PropertyInfo property) {
 	/// The nullability information for the underlying property.
 	/// </summary>
 	private readonly NullabilityInfo nullability = nullabilityContext.Create(property);
+	
+	/// <summary>
+	/// Gets the property value of a specified object.
+	/// </summary>
+	/// <param name="instance">The object whose property value will be returned.</param>
+	/// <returns>The property value of the specified object.</returns>
+	public object? GetValue(object? instance) => property.GetValue(instance);
 
 	/// <summary>
 	/// Sets the property value of a specified object.
