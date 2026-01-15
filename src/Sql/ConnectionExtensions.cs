@@ -26,12 +26,12 @@ public static partial class ConnectionExtensions {
 		if (parameters is not null) foreach (var parameter in parameters) {
 			var commandParameter = command.CreateParameter();
 			commandParameter.ParameterName = parameter.Name;
+			commandParameter.Value = parameter.Value;
 			if (parameter.DbType is not null) commandParameter.DbType = parameter.DbType.Value;
 			if (parameter.Direction is not null) commandParameter.Direction = parameter.Direction.Value;
 			if (parameter.Precision is not null) commandParameter.Precision = parameter.Precision.Value;
 			if (parameter.Scale is not null) commandParameter.Scale = parameter.Scale.Value;
 			if (parameter.Size is not null) commandParameter.Size = parameter.Size.Value;
-			if (parameter.Value is not null) commandParameter.Value = parameter.Value;
 			command.Parameters.Add(commandParameter);
 		}
 

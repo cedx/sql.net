@@ -67,7 +67,7 @@ public static partial class ConnectionExtensions {
 	/// TODO
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="identifier"></param>
+	/// <param name="identifier">TODO The identity column value.</param>
 	/// <returns></returns>
 	public static T Find<T>(this IDbConnection connection, object identifier) where T: new() {
 		var builder = new CommandBuilder(connection);

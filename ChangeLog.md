@@ -1,7 +1,12 @@
 # Changelog
 
 ## Version [3.0.0](https://github.com/cedx/sql.net/compare/v2.0.0...v3.0.0)
+- Breaking change: removed some parameters from the `Parameter` primary constructor.
 - Breaking change: renamed the `New-Mapper` cmdlet to `Get-Mapper`.
+- Breaking change: transformed the `Mapper` class into a singleton instance.
+- Added new implicit conversions to the `Parameter` class.
+- Added a new overload to the `ParameterCollection` constructor.
+- Made the `Mapper.GetTable()` method public.
 
 ## Version [2.0.0](https://github.com/cedx/sql.net/compare/v1.2.0...v2.0.0)
 - Breaking change: the `Query` and `QueryAsync` methods of the `ConnectionExtensions` class now return a `List<T>` by default.
