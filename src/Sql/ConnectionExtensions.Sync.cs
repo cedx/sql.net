@@ -79,18 +79,17 @@ public static partial class ConnectionExtensions {
 	}
 
 	/// <summary>
-	/// Returns a value indicating whether an entity with the specified primary key exist.
+	/// Returns a value indicating whether an entity with the specified primary key exists.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="id">The primary key value.</param>
 	/// <param name="options">The command options.</param>
-	/// <returns><see langword="true"/> if an entity with the specified primary key exist, otherwise <see langword="false"/>.</returns>
+	/// <returns><see langword="true"/> if an entity with the specified primary key exists, otherwise <see langword="false"/>.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
 	public static bool Exists<T>(this IDbConnection connection, object id, CommandOptions? options = null) where T: new() {
-		var identityColumn = Mapper.Instance.GetTable<T>().IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 		var builder = new CommandBuilder(connection);
 		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : builder.GetParameterName("Id"), id);
-		return QueryFirstOrDefault<T>(connection, builder.GetSelectCommand<T>(identityColumn.Name), new(parameter), options) is not null;
+		return ExecuteScalar<bool>(connection, builder.GetExistsCommand<T>(), new(parameter), options);
 	}
 
 	/// <summary>
@@ -104,7 +103,7 @@ public static partial class ConnectionExtensions {
 	public static T? Find<T>(this IDbConnection connection, object id, string[]? columns = null, CommandOptions? options = null) where T: new() {
 		var builder = new CommandBuilder(connection);
 		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : builder.GetParameterName("Id"), id);
-		return QuerySingleOrDefault<T>(connection, builder.GetSelectCommand<T>(columns ?? []), new(parameter), options);
+		return QuerySingleOrDefault<T>(connection, builder.GetFindCommand<T>(columns ?? []), new(parameter), options);
 	}
 
 	/// <summary>

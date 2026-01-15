@@ -84,6 +84,20 @@ public static partial class ConnectionExtensions {
 	}
 
 	/// <summary>
+	/// Returns a value indicating whether an entity with the specified primary key exists.
+	/// </summary>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="id">The primary key value.</param>
+	/// <param name="options">The command options.</param>
+	/// <returns><see langword="true"/> if an entity with the specified primary key exists, otherwise <see langword="false"/>.</returns>
+	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
+	public static async Task<bool> ExistsAsync<T>(this IDbConnection connection, object id, CommandOptions? options = null) where T: new() {
+		var builder = new CommandBuilder(connection);
+		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : builder.GetParameterName("Id"), id);
+		return await ExecuteScalarAsync<bool>(connection, builder.GetExistsCommand<T>(), new(parameter), options);
+	}
+
+	/// <summary>
 	/// Finds an entity with the specified primary key.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
@@ -94,7 +108,7 @@ public static partial class ConnectionExtensions {
 	public static async Task<T?> FindAsync<T>(this IDbConnection connection, object id, string[]? columns = null, CommandOptions? options = null) where T: new() {
 		var builder = new CommandBuilder(connection);
 		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : builder.GetParameterName("Id"), id);
-		return await QuerySingleOrDefaultAsync<T>(connection, builder.GetSelectCommand<T>(columns ?? []), new(parameter), options);
+		return await QuerySingleOrDefaultAsync<T>(connection, builder.GetFindCommand<T>(columns ?? []), new(parameter), options);
 	}
 
 	/// <summary>

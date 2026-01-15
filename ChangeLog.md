@@ -9,7 +9,7 @@
 - Added a new overload to the `ParameterCollection` constructor.
 - Added the `CommandBuilder` class.
 - Added the `ColumnInfo.GetValue()` method.
-- Added the `Find()` and `Delete()` methods to the `ConnectionExtensions` class.
+- Added the `Delete()`, `Exists()` and `Find()` methods to the `ConnectionExtensions` class.
 - Added the `Find-Object` and `Remove-Object` cmdlets.
 - Made the `Mapper.GetTable()` method public.
 

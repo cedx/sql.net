@@ -73,14 +73,38 @@ public class CommandBuilder {
 	}
 
 	/// <summary>
-	/// Gets the automatically generated command required to perform deletions at the data source.
+	/// Gets the generated command to delete an entity.
 	/// </summary>
-	/// <returns>The automatically generated command required to perform deletions.</returns>
+	/// <returns>The generated command to delete an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
 	public string GetDeleteCommand<T>() where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 		return $"DELETE FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName("Id"))}";
+	}
+	
+	/// <summary>
+	/// Gets the generated command to check the existence of an entity.
+	/// </summary>
+	/// <returns>The generated command to check the existence of an entity.</returns>
+	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
+	public string GetExistsCommand<T>() where T: new() {
+		var table = Mapper.Instance.GetTable<T>();
+		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
+		return $"SELECT 1 FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName("Id"))}";
+	}
+
+	/// <summary>
+	/// Gets the generated command to find an entity.
+	/// </summary>
+	/// <param name="columns">The list of columns to select. By default, all columns.</param>
+	/// <returns>The generated command to find an entity.</returns>
+	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
+	public string GetFindCommand<T>(params string[] columns) where T: new() {
+		var table = Mapper.Instance.GetTable<T>();
+		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
+		var fieldList = columns is null || columns.Length == 0 ? "*" : string.Join(", ", columns.Select(QuoteIdentifier));
+		return $"SELECT {fieldList} FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName("Id"))}";
 	}
 
 	/// <summary>
@@ -89,19 +113,6 @@ public class CommandBuilder {
 	/// <param name="parameterName">The partial name of the parameter.</param>
 	/// <returns>The full parameter name corresponding to the specified partial parameter name.</returns>
 	public string GetParameterName(string parameterName) => $"{ParameterPrefix}{parameterName}";
-
-	/// <summary>
-	/// Gets the automatically generated command required to perform selections at the data source.
-	/// </summary>
-	/// <param name="columns">The list of columns to select. By default, all columns.</param>
-	/// <returns>The automatically generated command required to perform selections.</returns>
-	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public string GetSelectCommand<T>(params string[] columns) where T: new() {
-		var table = Mapper.Instance.GetTable<T>();
-		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var fieldList = columns is null || columns.Length == 0 ? "*" : string.Join(", ", columns.Select(QuoteIdentifier));
-		return $"SELECT {fieldList} FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName("Id"))}";
-	}
 
 	/// <summary>
 	/// Given an unquoted identifier, returns the correct quoted form of that identifier.
