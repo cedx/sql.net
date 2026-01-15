@@ -19,6 +19,7 @@
 		"Close-Connection"
 		"Deny-Transaction"
 		"Get-First"
+		"Get-Mapper"
 		"Get-Scalar"
 		"Get-Single"
 		"Invoke-NonQuery"
@@ -26,7 +27,6 @@
 		"Invoke-Reader"
 		"New-Command"
 		"New-Connection"
-		"New-Mapper"
 		"New-Parameter"
 		"New-Transaction"
 	)

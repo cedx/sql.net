@@ -1,6 +1,7 @@
 # Changelog
 
-## Version [2.1.0](https://github.com/cedx/sql.net/compare/v2.0.0...v2.1.0)
+## Version [3.0.0](https://github.com/cedx/sql.net/compare/v2.0.0...v3.0.0)
+- Breaking change: renamed the `New-Mapper` cmdlet to `Get-Mapper`.
 
 ## Version [2.0.0](https://github.com/cedx/sql.net/compare/v1.2.0...v2.0.0)
 - Breaking change: the `Query` and `QueryAsync` methods of the `ConnectionExtensions` class now return a `List<T>` by default.
