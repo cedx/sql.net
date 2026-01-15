@@ -16,7 +16,7 @@ public class FindObjectCommand: Cmdlet {
 	/// <summary>
 	/// The type of object to return.
 	/// </summary>
-	[Parameter(Mandatory = true)]
+	[Parameter(Mandatory = true, Position = 1)]
 	public required Type Class { get; set; }
 
 	/// <summary>
@@ -33,7 +33,7 @@ public class FindObjectCommand: Cmdlet {
 	/// <summary>
 	/// The primary key value.
 	/// </summary>
-	[Parameter(Mandatory = true)]
+	[Parameter(Mandatory = true, Position = 2)]
 	public required object Id { get; set; }
 
 	/// <summary>
