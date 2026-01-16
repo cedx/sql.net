@@ -22,8 +22,7 @@ public sealed class TableInfo(Type type) {
 	/// <summary>
 	/// The single identity column, if applicable.
 	/// </summary>
-	public ColumnInfo? IdentityColumn => Columns.Values.SingleOrDefault(column => column.IsIdentity)
-		?? (Columns.TryGetValue("Id", out var column) ? column : null);
+	public ColumnInfo? IdentityColumn => Columns.Values.SingleOrDefault(column => column.IsIdentity) ?? (Columns.TryGetValue("Id", out var column) ? column : null);
 
 	/// <summary>
 	/// The table name.

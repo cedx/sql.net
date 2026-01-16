@@ -18,8 +18,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns><see langword="true"/> if the specified entity has been deleted, otherwise <see langword="false"/>.</returns>
 	public static async Task<bool> DeleteAsync<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
-		var (text, parameters) = new CommandBuilder(connection).GetDeleteCommand(instance);
-		return await ExecuteAsync(connection, text, parameters, options) > 0;
+		var command = new CommandBuilder(connection).GetDeleteCommand(instance);
+		return await ExecuteAsync(connection, command.Text, command.Parameters, options) > 0;
 	}
 
 	/// <summary>
@@ -90,8 +90,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns><see langword="true"/> if an entity with the specified primary key exists, otherwise <see langword="false"/>.</returns>
 	public static async Task<bool> ExistsAsync<T>(this IDbConnection connection, object id, CommandOptions? options = null) where T: new() {
-		var (text, parameters) = new CommandBuilder(connection).GetExistsCommand<T>(id);
-		return await ExecuteScalarAsync<bool>(connection, text, parameters, options);
+		var command = new CommandBuilder(connection).GetExistsCommand<T>(id);
+		return await ExecuteScalarAsync<bool>(connection, command.Text, command.Parameters, options);
 	}
 
 	/// <summary>
@@ -104,8 +104,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns>The entity with the specified primary key, or <see langword="null"/> if not found.</returns>
 	public static async Task<T?> FindAsync<T>(this IDbConnection connection, object id, string[]? columns = null, CommandOptions? options = null) where T: new() {
-		var (text, parameters) = new CommandBuilder(connection).GetFindCommand<T>(id, columns ?? []);
-		return await QuerySingleOrDefaultAsync<T>(connection, text, parameters, options);
+		var command = new CommandBuilder(connection).GetFindCommand<T>(id, columns ?? []);
+		return await QuerySingleOrDefaultAsync<T>(connection, command.Text, command.Parameters, options);
 	}
 
 	/// <summary>
@@ -116,8 +116,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="instance">The entity to insert.</param>
 	/// <param name="options">The command options.</param>
 	public static async Task InsertAsync<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
-		var (text, parameters) = new CommandBuilder(connection).GetInsertCommand(instance);
-		await ExecuteAsync(connection, text, parameters, options);
+		var command = new CommandBuilder(connection).GetInsertCommand(instance);
+		await ExecuteAsync(connection, command.Text, command.Parameters, options);
 		// TODO return the last insert ID !!!
 	}
 
@@ -308,7 +308,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns>The number of rows affected.</returns>
 	public static async Task<int> UpdateAsync<T>(this IDbConnection connection, T instance, string[]? columns = null, CommandOptions? options = null) where T: new() {
-		var (text, parameters) = new CommandBuilder(connection).GetUpdateCommand(instance, columns ?? []);
-		return await ExecuteAsync(connection, text, parameters, options);
+		var command = new CommandBuilder(connection).GetUpdateCommand(instance, columns ?? []);
+		return await ExecuteAsync(connection, command.Text, command.Parameters, options);
 	}
 }
