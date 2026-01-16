@@ -1,6 +1,6 @@
 namespace Belin.Sql.Reflection;
 
-using System.Collections.Generic;
+using System.Collections.Frozen;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
@@ -17,7 +17,7 @@ public sealed class TableInfo(Type type) {
 		.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
 		.Where(property => !property.IsDefined(typeof(NotMappedAttribute)) && ((property.CanRead && property.CanWrite) || property.IsDefined(typeof(ColumnAttribute))))
 		.Select(property => new ColumnInfo(property))
-		.ToDictionary(column => column.Name);
+		.ToFrozenDictionary(column => column.Name);
 
 	/// <summary>
 	/// The single identity column, if applicable.
