@@ -33,6 +33,7 @@
 		"Publish-Object"
 		"Remove-Object"
 		"Test-Object"
+		"Update-Object"
 	)
 
 	RequiredAssemblies = @(
