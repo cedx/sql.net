@@ -1,5 +1,6 @@
 namespace Belin.Sql;
 
+using Belin.Sql.Reflection;
 using System.Data;
 using System.Data.Common;
 using System.Dynamic;
@@ -18,8 +19,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns><see langword="true"/> if the specified entity has been deleted, otherwise <see langword="false"/>.</returns>
 	public static async Task<bool> DeleteAsync<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
-		var command = new CommandBuilder(connection).GetDeleteCommand(instance);
-		return await ExecuteAsync(connection, command.Text, command.Parameters, options) > 0;
+		var (text, parameters) = new CommandBuilder(connection).GetDeleteCommand(instance);
+		return await ExecuteAsync(connection, text, parameters, options) > 0;
 	}
 
 	/// <summary>
@@ -90,8 +91,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns><see langword="true"/> if an entity with the specified primary key exists, otherwise <see langword="false"/>.</returns>
 	public static async Task<bool> ExistsAsync<T>(this IDbConnection connection, object id, CommandOptions? options = null) where T: new() {
-		var command = new CommandBuilder(connection).GetExistsCommand<T>(id);
-		return await ExecuteScalarAsync<bool>(connection, command.Text, command.Parameters, options);
+		var (text, parameters) = new CommandBuilder(connection).GetExistsCommand<T>(id);
+		return await ExecuteScalarAsync<bool>(connection, text, parameters, options);
 	}
 
 	/// <summary>
@@ -104,8 +105,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns>The entity with the specified primary key, or <see langword="null"/> if not found.</returns>
 	public static async Task<T?> FindAsync<T>(this IDbConnection connection, object id, string[]? columns = null, CommandOptions? options = null) where T: new() {
-		var command = new CommandBuilder(connection).GetFindCommand<T>(id, columns ?? []);
-		return await QuerySingleOrDefaultAsync<T>(connection, command.Text, command.Parameters, options);
+		var (text, parameters) = new CommandBuilder(connection).GetFindCommand<T>(id, columns ?? []);
+		return await QuerySingleOrDefaultAsync<T>(connection, text, parameters, options);
 	}
 
 	/// <summary>
@@ -115,10 +116,12 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="instance">The entity to insert.</param>
 	/// <param name="options">The command options.</param>
-	public static async Task InsertAsync<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
-		var command = new CommandBuilder(connection).GetInsertCommand(instance);
-		await ExecuteAsync(connection, command.Text, command.Parameters, options);
-		// TODO return the last insert ID !!!
+	/// <returns>The generated primary key value.</returns>
+	public static async Task<long> InsertAsync<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
+		var (text, parameters) = new CommandBuilder(connection).GetInsertCommand(instance);
+		var id = await ExecuteScalarAsync<long>(connection, text, parameters, options);
+		if (Mapper.Instance.GetTable<T>().IdentityColumn is ColumnInfo column) column.SetValue(instance, Mapper.Instance.ChangeType(id, column));
+		return id;
 	}
 
 	/// <summary>
@@ -308,7 +311,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns>The number of rows affected.</returns>
 	public static async Task<int> UpdateAsync<T>(this IDbConnection connection, T instance, string[]? columns = null, CommandOptions? options = null) where T: new() {
-		var command = new CommandBuilder(connection).GetUpdateCommand(instance, columns ?? []);
-		return await ExecuteAsync(connection, command.Text, command.Parameters, options);
+		var (text, parameters) = new CommandBuilder(connection).GetUpdateCommand(instance, columns ?? []);
+		return await ExecuteAsync(connection, text, parameters, options);
 	}
 }
