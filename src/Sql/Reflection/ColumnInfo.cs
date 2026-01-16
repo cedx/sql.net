@@ -64,12 +64,12 @@ public sealed class ColumnInfo(PropertyInfo property) {
 	/// </summary>
 	/// <param name="instance">The object whose property value will be returned.</param>
 	/// <returns>The property value of the specified object.</returns>
-	public object? GetValue(object? instance) => property.GetValue(instance);
+	public object? GetValue<T>(T instance) where T: new() => property.GetValue(instance);
 
 	/// <summary>
 	/// Sets the property value of a specified object.
 	/// </summary>
 	/// <param name="instance">The object whose property value will be set.</param>
 	/// <param name="value">The new property value.</param>
-	public void SetValue(object? instance, object? value) => property.SetValue(instance, value);
+	public void SetValue<T>(T instance, object? value) where T: new() => property.SetValue(instance, value);
 }
