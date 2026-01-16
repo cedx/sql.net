@@ -12,8 +12,9 @@ public static partial class ConnectionExtensions {
 	/// <summary>
 	/// Deletes the specified entity.
 	/// </summary>
+	/// <typeparam name="T">The entity type.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="instance">The entity to be deleted.</param>
+	/// <param name="instance">The entity to delete.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns><see langword="true"/> if the specified entity has been deleted, otherwise <see langword="false"/>.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
@@ -86,6 +87,7 @@ public static partial class ConnectionExtensions {
 	/// <summary>
 	/// Checks whether an entity with the specified primary key exists.
 	/// </summary>
+	/// <typeparam name="T">The entity type.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="id">The primary key value.</param>
 	/// <param name="options">The command options.</param>
@@ -99,6 +101,7 @@ public static partial class ConnectionExtensions {
 	/// <summary>
 	/// Finds an entity with the specified primary key.
 	/// </summary>
+	/// <typeparam name="T">The entity type.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="id">The primary key value.</param>
 	/// <param name="columns">The list of columns to select. By default, all columns.</param>

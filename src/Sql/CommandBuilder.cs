@@ -75,6 +75,7 @@ public class CommandBuilder {
 	/// <summary>
 	/// Gets the generated command to delete an entity.
 	/// </summary>
+	/// <typeparam name="T">The entity type.</typeparam>
 	/// <returns>The generated command to delete an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
 	public string GetDeleteCommand<T>() where T: new() {
@@ -86,6 +87,7 @@ public class CommandBuilder {
 	/// <summary>
 	/// Gets the generated command to check the existence of an entity.
 	/// </summary>
+	/// <typeparam name="T">The entity type.</typeparam>
 	/// <returns>The generated command to check the existence of an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
 	public string GetExistsCommand<T>() where T: new() {
@@ -97,6 +99,7 @@ public class CommandBuilder {
 	/// <summary>
 	/// Gets the generated command to find an entity.
 	/// </summary>
+	/// <typeparam name="T">The entity type.</typeparam>
 	/// <param name="columns">The list of columns to select. By default, all columns.</param>
 	/// <returns>The generated command to find an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>

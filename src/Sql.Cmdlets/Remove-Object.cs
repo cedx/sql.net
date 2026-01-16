@@ -15,7 +15,7 @@ public class RemoveObjectCommand: Cmdlet {
 	public required IDbConnection Connection { get; set; }
 
 	/// <summary>
-	/// The entity to be deleted.
+	/// The entity to delete.
 	/// </summary>
 	[Parameter(Mandatory = true, Position = 1, ValueFromPipeline = true)]
 	public required object InputObject { get; set; }
