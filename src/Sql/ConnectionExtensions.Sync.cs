@@ -281,4 +281,18 @@ public static partial class ConnectionExtensions {
 
 		return rowCount == 1 ? record : default;
 	}
+
+	/// <summary>
+	/// Updates the specified entity.
+	/// </summary>
+	/// <typeparam name="T">The entity type.</typeparam>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="instance">The entity to update.</param>
+	/// <param name="columns">The list of columns to update. By default, all columns.</param>
+	/// <param name="options">The command options.</param>
+	/// <returns>The number of rows affected.</returns>
+	public static int Update<T>(this IDbConnection connection, T instance, string[]? columns = null, CommandOptions? options = null) where T: new() {
+		var (text, parameters) = new CommandBuilder(connection).GetUpdateCommand(instance, columns ?? []);
+		return Execute(connection, text, parameters, options);
+	}
 }

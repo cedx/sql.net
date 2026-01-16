@@ -18,7 +18,7 @@ public static partial class ConnectionExtensions {
 	/// <returns>The newly created command.</returns>
 	public static IDbCommand CreateCommand(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) {
 		var command = connection.CreateCommand();
-		command.CommandText = sql;
+		command.CommandText = text;
 		command.CommandTimeout = options?.Timeout ?? 30;
 		command.CommandType = options?.Type ?? CommandType.Text;
 		command.Transaction = options?.Transaction;

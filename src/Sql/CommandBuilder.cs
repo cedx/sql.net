@@ -120,13 +120,13 @@ public class CommandBuilder {
 	public Command GetFindCommand<T>(object id, params string[] columns) where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var sql = $"""
+		var text = $"""
 			SELECT {(columns is null || columns.Length == 0 ? "*" : string.Join(", ", columns.Select(QuoteIdentifier)))}
 			FROM {QuoteIdentifier(table.Name)}
 			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(identityColumn.Name))}
 			""";
 
-		return new(sql, new(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id));
+		return new(text, new(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id));
 	}
 
 	/// <summary>
@@ -138,12 +138,12 @@ public class CommandBuilder {
 	public Command GetInsertCommand<T>(T instance) where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var fields = table.Columns.Values.Where(column => column.CanRead && !column.IsComputed).ToArray();
-		var sql = $"""
+		var text = $"""
 			INSERT INTO {QuoteIdentifier(table.Name)} ({string.Join(", ", fields.Select(field => QuoteIdentifier(field.Name)))})
 			VALUES ({string.Join(", ", fields.Select(field => UsePositionalParameters ? "?" : GetParameterName(field.Name)))})
 			""";
 
-		return new(sql, [.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(instance)))]);
+		return new(text, [.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(instance)))]);
 	}
 	
 	/// <summary>
@@ -161,13 +161,13 @@ public class CommandBuilder {
 			.Where(column => column.CanRead && !column.IsComputed)
 			.ToArray();
 
-		var sql = $"""
+		var text = $"""
 			UPDATE {QuoteIdentifier(table.Name)}
 			SET {string.Join(", ", fields.Select(field => $"{QuoteIdentifier(field.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(field.Name))}"))}
 			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(identityColumn.Name))}
 			""";
 
-		return new(sql, [
+		return new(text, [
 			.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(instance))),
 			(GetParameterName(identityColumn.Name), identityColumn.GetValue(instance))
 		]);
