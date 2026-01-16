@@ -85,7 +85,7 @@ public class CommandBuilder {
 				break;
 		}
 	}
-	
+
 	/// <summary>
 	/// Gets the generated command to delete an entity.
 	/// </summary>
@@ -171,7 +171,7 @@ public class CommandBuilder {
 			.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(instance)))
 		]);
 	}
-	
+
 	/// <summary>
 	/// Gets the generated command to update an entity.
 	/// </summary>

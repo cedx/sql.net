@@ -13,7 +13,7 @@ public static class EnumerableExtensions {
 	/// <typeparam name="T">The type of enumerable elements.</typeparam>
 	/// <returns>A list that contains elements from the input sequence.</returns>
 	public static List<T> AsList<T>(this IEnumerable<T> enumerable) => enumerable switch {
-    List<T> list => list,
-    _ => Enumerable.ToList(enumerable)
+		List<T> list => list,
+		_ => Enumerable.ToList(enumerable)
 	};
 }

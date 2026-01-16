@@ -58,7 +58,7 @@ public sealed class ColumnInfo(PropertyInfo property) {
 	/// The nullability information for the underlying property.
 	/// </summary>
 	private readonly NullabilityInfo nullability = nullabilityContext.Create(property);
-	
+
 	/// <summary>
 	/// Gets the property value of a specified object.
 	/// </summary>
