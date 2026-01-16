@@ -22,6 +22,7 @@ public class FindObjectCommand: Cmdlet {
 	/// <summary>
 	/// The list of columns to select. By default, all columns.
 	/// </summary>
+	[Parameter]
 	public string[] Columns { get; set; } = [];
 
 	/// <summary>

@@ -30,6 +30,7 @@
 		"New-Connection"
 		"New-Parameter"
 		"New-Transaction"
+		"Publish-Object"
 		"Remove-Object"
 		"Test-Object"
 	)
