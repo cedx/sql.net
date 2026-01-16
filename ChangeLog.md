@@ -7,6 +7,7 @@
 - Breaking change: transformed the `Mapper` class into a singleton instance.
 - Added new implicit conversions to the `Parameter` class.
 - Added a new overload to the `ParameterCollection` constructor.
+- Added the `Command` record.
 - Added the `CommandBuilder` class.
 - Added the `ColumnInfo.GetValue()` method.
 - Added the `Delete()`, `Exists()` and `Find()` methods to the `ConnectionExtensions` class.
