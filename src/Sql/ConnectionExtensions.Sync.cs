@@ -16,12 +16,9 @@ public static partial class ConnectionExtensions {
 	/// <param name="instance">The entity to delete.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns><see langword="true"/> if the specified entity has been deleted, otherwise <see langword="false"/>.</returns>
-	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
 	public static bool Delete<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
-		var identityColumn = Mapper.Instance.GetTable<T>().IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var builder = new CommandBuilder(connection);
-		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : builder.GetParameterName("Id"), identityColumn.GetValue(instance));
-		return Execute(connection, builder.GetDeleteCommand<T>(), new(parameter), options) > 0;
+		var (sql, parameters) = new CommandBuilder(connection).GetDeleteCommand(instance);
+		return Execute(connection, sql, parameters, options) > 0;
 	}
 
 	/// <summary>
@@ -88,9 +85,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns><see langword="true"/> if an entity with the specified primary key exists, otherwise <see langword="false"/>.</returns>
 	public static bool Exists<T>(this IDbConnection connection, object id, CommandOptions? options = null) where T: new() {
-		var builder = new CommandBuilder(connection);
-		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : builder.GetParameterName("Id"), id);
-		return ExecuteScalar<bool>(connection, builder.GetExistsCommand<T>(), new(parameter), options);
+		var (sql, parameters) = new CommandBuilder(connection).GetExistsCommand<T>(id);
+		return ExecuteScalar<bool>(connection, sql, parameters, options);
 	}
 
 	/// <summary>

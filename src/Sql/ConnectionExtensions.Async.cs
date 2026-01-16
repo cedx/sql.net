@@ -17,12 +17,9 @@ public static partial class ConnectionExtensions {
 	/// <param name="instance">The entity to delete.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns><see langword="true"/> if the specified entity has been deleted, otherwise <see langword="false"/>.</returns>
-	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
 	public static async Task<bool> DeleteAsync<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
-		var identityColumn = Mapper.Instance.GetTable<T>().IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var builder = new CommandBuilder(connection);
-		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : builder.GetParameterName("Id"), identityColumn.GetValue(instance));
-		return await ExecuteAsync(connection, builder.GetDeleteCommand<T>(), new(parameter), options) > 0;
+		var (sql, parameters) = new CommandBuilder(connection).GetDeleteCommand(instance);
+		return await ExecuteAsync(connection, sql, parameters, options) > 0;
 	}
 
 	/// <summary>
@@ -93,9 +90,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns><see langword="true"/> if an entity with the specified primary key exists, otherwise <see langword="false"/>.</returns>
 	public static async Task<bool> ExistsAsync<T>(this IDbConnection connection, object id, CommandOptions? options = null) where T: new() {
-		var builder = new CommandBuilder(connection);
-		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : builder.GetParameterName("Id"), id);
-		return await ExecuteScalarAsync<bool>(connection, builder.GetExistsCommand<T>(), new(parameter), options);
+		var (sql, parameters) = new CommandBuilder(connection).GetExistsCommand<T>(id);
+		return await ExecuteScalarAsync<bool>(connection, sql, parameters, options);
 	}
 
 	/// <summary>
@@ -108,9 +104,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns>The entity with the specified primary key, or <see langword="null"/> if not found.</returns>
 	public static async Task<T?> FindAsync<T>(this IDbConnection connection, object id, string[]? columns = null, CommandOptions? options = null) where T: new() {
-		var builder = new CommandBuilder(connection);
-		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : builder.GetParameterName("Id"), id);
-		return await QuerySingleOrDefaultAsync<T>(connection, builder.GetFindCommand<T>(columns ?? []), new(parameter), options);
+		var (sql, parameters) = new CommandBuilder(connection).GetFindCommand<T>(id, columns ?? []);
+		return await QuerySingleOrDefaultAsync<T>(connection, sql, parameters, options);
 	}
 
 	/// <summary>

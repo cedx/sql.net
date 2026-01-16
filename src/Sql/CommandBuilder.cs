@@ -1,5 +1,6 @@
 namespace Belin.Sql;
 
+using Command = (string Sql, ParameterCollection Parameters);
 using System.Data;
 using System.Data.Common;
 
@@ -71,39 +72,48 @@ public class CommandBuilder {
 				break;
 		}
 	}
-
+	
 	/// <summary>
 	/// Gets the generated command to delete an entity.
 	/// </summary>
 	/// <typeparam name="T">The entity type.</typeparam>
+	/// <param name="instance">The entity to delete.</param>
 	/// <returns>The generated command to delete an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public string GetDeleteCommand<T>() where T: new() {
+	public Command GetDeleteCommand<T>(T instance) where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		return $"DELETE FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName("Id"))}";
+		return (
+			$"DELETE FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(identityColumn.Name))}",
+			new(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), identityColumn.GetValue(instance))
+		);
 	}
-	
+
 	/// <summary>
 	/// Gets the generated command to check the existence of an entity.
 	/// </summary>
 	/// <typeparam name="T">The entity type.</typeparam>
+	/// <param name="id">The value of the entity's primary key.</param>
 	/// <returns>The generated command to check the existence of an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public string GetExistsCommand<T>() where T: new() {
+	public Command GetExistsCommand<T>(object id) where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		return $"SELECT 1 FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName("Id"))}";
+		return (
+			$"SELECT 1 FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(identityColumn.Name))}",
+			new(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id)
+		);
 	}
 
 	/// <summary>
 	/// Gets the generated command to find an entity.
 	/// </summary>
 	/// <typeparam name="T">The entity type.</typeparam>
+	/// <param name="id">The value of the entity's primary key.</param>
 	/// <param name="columns">The list of columns to select. By default, all columns.</param>
 	/// <returns>The generated command to find an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public string GetFindCommand<T>(params string[] columns) where T: new() {
+	public Command GetFindCommand<T>(object id, params string[] columns) where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 		var fieldList = columns is null || columns.Length == 0 ? "*" : string.Join(", ", columns.Select(QuoteIdentifier));
