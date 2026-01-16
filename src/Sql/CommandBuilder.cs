@@ -1,6 +1,5 @@
 namespace Belin.Sql;
 
-using Command = (string Sql, ParameterCollection Parameters);
 using System.Data;
 using System.Data.Common;
 
@@ -83,10 +82,12 @@ public class CommandBuilder {
 	public Command GetDeleteCommand<T>(T instance) where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		return (
-			$"DELETE FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(identityColumn.Name))}",
-			new(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), identityColumn.GetValue(instance))
-		);
+		var text = $"""
+			DELETE FROM {QuoteIdentifier(table.Name)}
+			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(identityColumn.Name))}
+			""";
+
+		return new(text, new(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), identityColumn.GetValue(instance)));
 	}
 
 	/// <summary>
@@ -99,10 +100,13 @@ public class CommandBuilder {
 	public Command GetExistsCommand<T>(object id) where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		return (
-			$"SELECT 1 FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(identityColumn.Name))}",
-			new(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id)
-		);
+		var text = $"""
+			SELECT 1
+			FROM {QuoteIdentifier(table.Name)}
+			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(identityColumn.Name))}
+			""";
+
+		return new(text, new(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id));
 	}
 
 	/// <summary>
@@ -116,16 +120,58 @@ public class CommandBuilder {
 	public Command GetFindCommand<T>(object id, params string[] columns) where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var fieldList = columns is null || columns.Length == 0 ? "*" : string.Join(", ", columns.Select(QuoteIdentifier));
-		return $"SELECT {fieldList} FROM {QuoteIdentifier(table.Name)} WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName("Id"))}";
+		var sql = $"""
+			SELECT {(columns is null || columns.Length == 0 ? "*" : string.Join(", ", columns.Select(QuoteIdentifier)))}
+			FROM {QuoteIdentifier(table.Name)}
+			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(identityColumn.Name))}
+			""";
+
+		return new(sql, new(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id));
 	}
 
 	/// <summary>
-	/// Returns the full parameter name corresponding to the specified partial parameter name.
+	/// Gets the generated command to insert an entity.
 	/// </summary>
-	/// <param name="parameterName">The partial name of the parameter.</param>
-	/// <returns>The full parameter name corresponding to the specified partial parameter name.</returns>
-	public string GetParameterName(string parameterName) => $"{ParameterPrefix}{parameterName}";
+	/// <typeparam name="T">The entity type.</typeparam>
+	/// <param name="instance">The entity to insert.</param>
+	/// <returns>The generated command to insert an entity.</returns>
+	public Command GetInsertCommand<T>(T instance) where T: new() {
+		var table = Mapper.Instance.GetTable<T>();
+		var fields = table.Columns.Values.Where(column => column.CanRead && !column.IsComputed).ToArray();
+		var sql = $"""
+			INSERT INTO {QuoteIdentifier(table.Name)} ({string.Join(", ", fields.Select(field => QuoteIdentifier(field.Name)))})
+			VALUES ({string.Join(", ", fields.Select(field => UsePositionalParameters ? "?" : GetParameterName(field.Name)))})
+			""";
+
+		return new(sql, [.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(instance)))]);
+	}
+	
+	/// <summary>
+	/// Gets the generated command to update an entity.
+	/// </summary>
+	/// <typeparam name="T">The entity type.</typeparam>
+	/// <param name="instance">The entity to update.</param>
+	/// <param name="columns">The list of columns to update. By default, all columns.</param>
+	/// <returns>The generated command to update an entity.</returns>
+	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
+	public Command GetUpdateCommand<T>(T instance, params string[] columns) where T: new() {
+		var table = Mapper.Instance.GetTable<T>();
+		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
+		var fields = (columns is null || columns.Length == 0 ? table.Columns.Values : table.Columns.Values.Where(column => columns.Contains(column.Name)))
+			.Where(column => column.CanRead && !column.IsComputed)
+			.ToArray();
+
+		var sql = $"""
+			UPDATE {QuoteIdentifier(table.Name)}
+			SET {string.Join(", ", fields.Select(field => $"{QuoteIdentifier(field.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(field.Name))}"))}
+			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(identityColumn.Name))}
+			""";
+
+		return new(sql, [
+			.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(instance))),
+			(GetParameterName(identityColumn.Name), identityColumn.GetValue(instance))
+		]);
+	}
 
 	/// <summary>
 	/// Given an unquoted identifier, returns the correct quoted form of that identifier.
@@ -145,4 +191,11 @@ public class CommandBuilder {
 		if (quotedIdentifier.EndsWith(QuoteSuffix, StringComparison.Ordinal)) quotedIdentifier = quotedIdentifier[..^QuoteSuffix.Length];
 		return quotedIdentifier.Replace(QuoteSuffix + QuoteSuffix, QuoteSuffix);
 	}
+
+	/// <summary>
+	/// Returns the full parameter name corresponding to the specified partial parameter name.
+	/// </summary>
+	/// <param name="parameterName">The partial name of the parameter.</param>
+	/// <returns>The full parameter name corresponding to the specified partial parameter name.</returns>
+	internal string GetParameterName(string parameterName) => $"{ParameterPrefix}{parameterName}";
 }

@@ -3,15 +3,15 @@
 ## Version [3.0.0](https://github.com/cedx/sql.net/compare/v2.0.0...v3.0.0)
 - Breaking change: removed some parameters from the `Parameter` primary constructor.
 - Breaking change: renamed the `New-Mapper` cmdlet to `Get-Mapper`.
-- Breaking change: renamed the `-Transaction` parameter of `Close-Connection`, `Approve-Transaction` and `Deny-Transaction` cmdlets to `-InputObject`.
+- Breaking change: renamed the `-Transaction` parameter of `Approve-Transaction`, `Close-Connection` and `Deny-Transaction` cmdlets to `-InputObject`.
 - Breaking change: transformed the `Mapper` class into a singleton instance.
 - Added new implicit conversions to the `Parameter` class.
 - Added a new overload to the `ParameterCollection` constructor.
 - Added the `Command` record.
 - Added the `CommandBuilder` class.
 - Added the `ColumnInfo.GetValue()` method.
-- Added the `Delete()`, `Exists()` and `Find()` methods to the `ConnectionExtensions` class.
-- Added the `Find-Object`, `Remove-Object` and `Test-Object` cmdlets.
+- Added the `Delete()`, `Exists()`, `Find()`, `Insert()` and `Update()` methods to the `ConnectionExtensions` class.
+- Added the `Find-Object`, `Publish-Object`, `Remove-Object`, `Test-Object` and `Update-Object` cmdlets.
 - Made the `Mapper.GetTable()` method public.
 
 ## Version [2.0.0](https://github.com/cedx/sql.net/compare/v1.2.0...v2.0.0)

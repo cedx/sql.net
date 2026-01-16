@@ -17,21 +17,21 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns><see langword="true"/> if the specified entity has been deleted, otherwise <see langword="false"/>.</returns>
 	public static bool Delete<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
-		var (sql, parameters) = new CommandBuilder(connection).GetDeleteCommand(instance);
-		return Execute(connection, sql, parameters, options) > 0;
+		var (text, parameters) = new CommandBuilder(connection).GetDeleteCommand(instance);
+		return Execute(connection, text, parameters, options) > 0;
 	}
 
 	/// <summary>
 	/// Executes a parameterized SQL statement.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The number of rows affected.</returns>
-	public static int Execute(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) {
+	public static int Execute(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
-		using var command = CreateCommand(connection, sql, parameters, options);
+		using var command = CreateCommand(connection, text, parameters, options);
 		return command.ExecuteNonQuery();
 	}
 
@@ -39,13 +39,13 @@ public static partial class ConnectionExtensions {
 	/// Executes a parameterized SQL query and returns a data reader.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The data reader that can be used to access the results.</returns>
-	public static IDataReader ExecuteReader(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) {
+	public static IDataReader ExecuteReader(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
-		using var command = CreateCommand(connection, sql, parameters, options);
+		using var command = CreateCommand(connection, text, parameters, options);
 		return command.ExecuteReader();
 	}
 
@@ -53,25 +53,25 @@ public static partial class ConnectionExtensions {
 	/// Executes a parameterized SQL query that selects a single value.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The first column of the first row.</returns>
-	public static object? ExecuteScalar(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
-		ExecuteScalar<object>(connection, sql, parameters, options);
+	public static object? ExecuteScalar(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) =>
+		ExecuteScalar<object>(connection, text, parameters, options);
 
 	/// <summary>
 	/// Executes a parameterized SQL query that selects a single value.
 	/// </summary>
 	/// <typeparam name="T">The type of object to return.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The first column of the first row.</returns>
-	public static T? ExecuteScalar<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) {
+	public static T? ExecuteScalar<T>(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
-		using var command = CreateCommand(connection, sql, parameters, options);
+		using var command = CreateCommand(connection, text, parameters, options);
 		var value = command.ExecuteScalar();
 		return value is null || value is DBNull ? default : (T?) Mapper.Instance.ChangeType(value, typeof(T));
 	}
@@ -85,8 +85,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns><see langword="true"/> if an entity with the specified primary key exists, otherwise <see langword="false"/>.</returns>
 	public static bool Exists<T>(this IDbConnection connection, object id, CommandOptions? options = null) where T: new() {
-		var (sql, parameters) = new CommandBuilder(connection).GetExistsCommand<T>(id);
-		return ExecuteScalar<bool>(connection, sql, parameters, options);
+		var (text, parameters) = new CommandBuilder(connection).GetExistsCommand<T>(id);
+		return ExecuteScalar<bool>(connection, text, parameters, options);
 	}
 
 	/// <summary>
@@ -99,34 +99,46 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns>The entity with the specified primary key, or <see langword="null"/> if not found.</returns>
 	public static T? Find<T>(this IDbConnection connection, object id, string[]? columns = null, CommandOptions? options = null) where T: new() {
-		var builder = new CommandBuilder(connection);
-		var parameter = new Parameter(builder.UsePositionalParameters ? "?1" : builder.GetParameterName("Id"), id);
-		return QuerySingleOrDefault<T>(connection, builder.GetFindCommand<T>(columns ?? []), new(parameter), options);
+		var (text, parameters) = new CommandBuilder(connection).GetFindCommand<T>(id, columns ?? []);
+		return QuerySingleOrDefault<T>(connection, text, parameters, options);
+	}
+
+	/// <summary>
+	/// Inserts the specified entity.
+	/// </summary>
+	/// <typeparam name="T">The entity type.</typeparam>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="instance">The entity to insert.</param>
+	/// <param name="options">The command options.</param>
+	public static void Insert<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
+		var (text, parameters) = new CommandBuilder(connection).GetInsertCommand(instance);
+		Execute(connection, text, parameters, options);
+		// TODO return the last insert ID !!!
 	}
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns a sequence of objects whose properties correspond to the columns.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The query options.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
 	/// <remarks>Each row can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
-	public static IEnumerable<ExpandoObject> Query(this IDbConnection connection, string sql, ParameterCollection? parameters = null, QueryOptions? options = null) =>
-		Query<ExpandoObject>(connection, sql, parameters, options);
+	public static IEnumerable<ExpandoObject> Query(this IDbConnection connection, string text, ParameterCollection? parameters = null, QueryOptions? options = null) =>
+		Query<ExpandoObject>(connection, text, parameters, options);
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns a sequence of objects whose properties correspond to the columns.
 	/// </summary>
 	/// <typeparam name="T">The type of objects to return.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The query options.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
-	public static IEnumerable<T> Query<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, QueryOptions? options = null) where T: new() {
-		var records = Mapper.Instance.CreateInstances<T>(ExecuteReader(connection, sql, parameters, options));
+	public static IEnumerable<T> Query<T>(this IDbConnection connection, string text, ParameterCollection? parameters = null, QueryOptions? options = null) where T: new() {
+		var records = Mapper.Instance.CreateInstances<T>(ExecuteReader(connection, text, parameters, options));
 		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
 	}
 
@@ -136,13 +148,13 @@ public static partial class ConnectionExtensions {
 	/// <typeparam name="T">The type of the first objects.</typeparam>
 	/// <typeparam name="U">The type of the second objects.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
 	/// <param name="options">The query options.</param>
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
-	public static IEnumerable<(T, U)> Query<T, U>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, string splitOn = "Id", QueryOptions? options = null) where T: new() where U: new() {
-		var records = Mapper.Instance.CreateInstances<T, U>(ExecuteReader(connection, sql, parameters, options), splitOn);
+	public static IEnumerable<(T, U)> Query<T, U>(this IDbConnection connection, string text, ParameterCollection? parameters = null, string splitOn = "Id", QueryOptions? options = null) where T: new() where U: new() {
+		var records = Mapper.Instance.CreateInstances<T, U>(ExecuteReader(connection, text, parameters, options), splitOn);
 		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
 	}
 
@@ -150,27 +162,27 @@ public static partial class ConnectionExtensions {
 	/// Executes a parameterized SQL query and returns the first row.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The first row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
 	/// <remarks>The row values can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
-	public static ExpandoObject QueryFirst(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
-		QueryFirst<ExpandoObject>(connection, sql, parameters, options);
+	public static ExpandoObject QueryFirst(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) =>
+		QueryFirst<ExpandoObject>(connection, text, parameters, options);
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the first row.
 	/// </summary>
 	/// <typeparam name="T">The type of objects to return.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The first row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
-	public static T QueryFirst<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
-		using var reader = ExecuteReader(connection, sql, parameters, options);
+	public static T QueryFirst<T>(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
+		using var reader = ExecuteReader(connection, text, parameters, options);
 		return reader.Read() ? Mapper.Instance.CreateInstance<T>(reader) : throw new InvalidOperationException("The result set is empty.");
 	}
 
@@ -178,25 +190,25 @@ public static partial class ConnectionExtensions {
 	/// Executes a parameterized SQL query and returns the first row.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
 	/// <remarks>The row values can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
-	public static ExpandoObject? QueryFirstOrDefault(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
-		QueryFirstOrDefault<ExpandoObject>(connection, sql, parameters, options);
+	public static ExpandoObject? QueryFirstOrDefault(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) =>
+		QueryFirstOrDefault<ExpandoObject>(connection, text, parameters, options);
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the first row.
 	/// </summary>
 	/// <typeparam name="T">The type of objects to return.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
-	public static T? QueryFirstOrDefault<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
-		using var reader = ExecuteReader(connection, sql, parameters, options);
+	public static T? QueryFirstOrDefault<T>(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
+		using var reader = ExecuteReader(connection, text, parameters, options);
 		return reader.Read() ? Mapper.Instance.CreateInstance<T>(reader) : default;
 	}
 
@@ -204,30 +216,30 @@ public static partial class ConnectionExtensions {
 	/// Executes a parameterized SQL query and returns the single row.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The single row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty or contains more than one record.</exception>
 	/// <remarks>The row values can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
-	public static ExpandoObject QuerySingle(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
-		QuerySingle<ExpandoObject>(connection, sql, parameters, options);
+	public static ExpandoObject QuerySingle(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) =>
+		QuerySingle<ExpandoObject>(connection, text, parameters, options);
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the single row.
 	/// </summary>
 	/// <typeparam name="T">The type of objects to return.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The single row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty or contains more than one record.</exception>
-	public static T QuerySingle<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
+	public static T QuerySingle<T>(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
 		T? record = default;
 		var rowCount = 0;
 
-		using var reader = ExecuteReader(connection, sql, parameters, options);
+		using var reader = ExecuteReader(connection, text, parameters, options);
 		while (reader.Read()) {
 			if (++rowCount > 1) break;
 			record = Mapper.Instance.CreateInstance<T>(reader);
@@ -240,28 +252,28 @@ public static partial class ConnectionExtensions {
 	/// Executes a parameterized SQL query and returns the single row.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
 	/// <remarks>The row values can be accessed via <c>dynamic</c> or by casting to a <see cref="IDictionary{string, object?}"/>.</remarks>
-	public static ExpandoObject? QuerySingleOrDefault(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) =>
-		QuerySingleOrDefault<ExpandoObject>(connection, sql, parameters, options);
+	public static ExpandoObject? QuerySingleOrDefault(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) =>
+		QuerySingleOrDefault<ExpandoObject>(connection, text, parameters, options);
 
 	/// <summary>
 	/// Executes a parameterized SQL query and returns the single row.
 	/// </summary>
 	/// <typeparam name="T">The type of objects to return.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="sql">The SQL query to be executed.</param>
+	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
-	public static T? QuerySingleOrDefault<T>(this IDbConnection connection, string sql, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
+	public static T? QuerySingleOrDefault<T>(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) where T: new() {
 		T? record = default;
 		var rowCount = 0;
 
-		using var reader = ExecuteReader(connection, sql, parameters, options);
+		using var reader = ExecuteReader(connection, text, parameters, options);
 		while (reader.Read()) {
 			if (++rowCount > 1) break;
 			record = Mapper.Instance.CreateInstance<T>(reader);
