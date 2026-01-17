@@ -1,8 +1,8 @@
 namespace Belin.Sql;
 
+using Belin.Sql.Reflection;
 using System.Data;
 using System.Data.Common;
-using static System.Net.Mime.MediaTypeNames;
 
 /// <summary>
 /// Automatically generates single-table commands.
@@ -99,7 +99,7 @@ public class CommandBuilder {
 
 		var parameter = new Parameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), identityColumn.GetValue(instance));
 		var text = $"""
-			DELETE FROM {QuoteIdentifier(table.Name)}
+			DELETE FROM {GetTableName(table)}
 			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
 			""";
 
@@ -120,7 +120,7 @@ public class CommandBuilder {
 		var parameter = new Parameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id);
 		var text = $"""
 			SELECT 1
-			FROM {QuoteIdentifier(table.Name)}
+			FROM {GetTableName(table)}
 			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
 			""";
 
@@ -142,7 +142,7 @@ public class CommandBuilder {
 		var parameter = new Parameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id);
 		var text = $"""
 			SELECT {(columns is null || columns.Length == 0 ? "*" : string.Join(", ", columns.Select(QuoteIdentifier)))}
-			FROM {QuoteIdentifier(table.Name)}
+			FROM {GetTableName(table)}
 			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
 			""";
 
@@ -162,7 +162,7 @@ public class CommandBuilder {
 
 		var fields = table.Columns.Values.Where(column => column.CanRead && !column.IsComputed).ToArray();
 		var text = $"""
-			INSERT INTO {QuoteIdentifier(table.Name)} ({string.Join(", ", fields.Select(field => QuoteIdentifier(field.Name)))})
+			INSERT INTO {GetTableName(table)} ({string.Join(", ", fields.Select(field => QuoteIdentifier(field.Name)))})
 			VALUES ({string.Join(", ", fields.Select(field => UsePositionalParameters ? "?" : GetParameterName(field.Name)))})
 			{(SupportsReturningClause ? $"RETURNING {QuoteIdentifier(identityColumn.Name)}" : $"; SELECT {lastInsertIdFunction};")}
 			""";
@@ -189,7 +189,7 @@ public class CommandBuilder {
 			.ToArray();
 
 		var text = $"""
-			UPDATE {QuoteIdentifier(table.Name)}
+			UPDATE {GetTableName(table)}
 			SET {string.Join(", ", fields.Select(field => $"{QuoteIdentifier(field.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(field.Name))}"))}
 			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(identityColumn.Name))}
 			""";
@@ -224,5 +224,13 @@ public class CommandBuilder {
 	/// </summary>
 	/// <param name="parameterName">The partial name of the parameter.</param>
 	/// <returns>The full parameter name corresponding to the specified partial parameter name.</returns>
-	internal string GetParameterName(string parameterName) => $"{ParameterPrefix}{parameterName}";
+	private string GetParameterName(string parameterName) => $"{ParameterPrefix}{parameterName}";
+
+	/// <summary>
+	/// Returns the fully qualified name corresponding to the specified table.
+	/// </summary>
+	/// <param name="table">The table.</param>
+	/// <returns>The fully qualified name corresponding to the specified table.</returns>
+	private string GetTableName(TableInfo table) =>
+		string.IsNullOrEmpty(table.Schema) ? $"{QuoteIdentifier(table.Name)}" : $"{QuoteIdentifier(table.Schema)}{SchemaSeparator}{QuoteIdentifier(table.Name)}";
 }

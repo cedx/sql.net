@@ -10,6 +10,7 @@
 - Added the `Command` record.
 - Added the `CommandBuilder` class.
 - Added the `ColumnInfo.GetValue()` method.
+- Added the `TableInfo.Schema` property.
 - Added the `Delete()`, `Exists()`, `Find()`, `Insert()` and `Update()` methods to the `ConnectionExtensions` class.
 - Added the `Find-Object`, `Publish-Object`, `Remove-Object`, `Test-Object` and `Update-Object` cmdlets.
 - Made the `Mapper.GetTable()` method public.

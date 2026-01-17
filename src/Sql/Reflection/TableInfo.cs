@@ -28,4 +28,9 @@ public sealed class TableInfo(Type type) {
 	/// The table name.
 	/// </summary>
 	public string Name { get; } = type.GetCustomAttribute<TableAttribute>()?.Name ?? type.Name;
+
+	/// <summary>
+	/// The table schema.
+	/// </summary>
+	public string? Schema { get; } = type.GetCustomAttribute<TableAttribute>()?.Schema;
 }
