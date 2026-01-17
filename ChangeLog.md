@@ -1,5 +1,8 @@
 # Changelog
 
+## Version [3.0.1](https://github.com/cedx/sql.net/compare/v3.0.0...v3.0.1)
+- Fixed the `Publish-Object`, `Remove-Object` and `Update-Object` cmdlets.
+
 ## Version [3.0.0](https://github.com/cedx/sql.net/compare/v2.0.0...v3.0.0)
 - Breaking change: removed some parameters from the `Parameter` primary constructor.
 - Breaking change: renamed the `New-Mapper` cmdlet to `Get-Mapper`.
