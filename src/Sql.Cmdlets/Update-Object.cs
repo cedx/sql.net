@@ -1,6 +1,7 @@
 namespace Belin.Sql.Cmdlets;
 
 using System.Data;
+using System.Reflection;
 
 /// <summary>
 /// Updates the specified entity.
@@ -42,10 +43,13 @@ public class UpdateObjectCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		var entityType = InputObject.GetType();
-		var parameterTypes = new[] { typeof(IDbConnection), entityType, typeof(string[]), typeof(CommandOptions) };
-		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Update), 1, parameterTypes)!.MakeGenericMethod(entityType);
-		var arguments = new object[] { Connection, InputObject, Columns, new CommandOptions { Timeout = Timeout, Transaction = Transaction } };
-		WriteObject(method.Invoke(null, arguments));
+		try {
+			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Update))!.MakeGenericMethod(InputObject.GetType());
+			var arguments = new object[] { Connection, InputObject, Columns, new CommandOptions { Timeout = Timeout, Transaction = Transaction } };
+			WriteObject(method.Invoke(null, arguments));
+		}
+		catch (TargetInvocationException e) {
+			WriteError(new ErrorRecord(e.InnerException, "Update-Object:TargetInvocationException", ErrorCategory.InvalidOperation, null));
+		}
 	}
 }

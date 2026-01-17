@@ -1,6 +1,7 @@
 namespace Belin.Sql.Cmdlets;
 
 using System.Data;
+using System.Reflection;
 
 /// <summary>
 /// Finds an entity with the specified primary key.
@@ -53,8 +54,13 @@ public class FindObjectCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Find), 1, parameterTypes)!.MakeGenericMethod(Class);
-		var arguments = new object[] { Connection, Id, Columns, new CommandOptions { Timeout = Timeout, Transaction = Transaction } };
-		WriteObject(method.Invoke(null, arguments));
+		try {
+			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Find))!.MakeGenericMethod(Class);
+			var arguments = new object[] { Connection, Id, Columns, new CommandOptions { Timeout = Timeout, Transaction = Transaction } };
+			WriteObject(method.Invoke(null, arguments));
+		}
+		catch (TargetInvocationException e) {
+			WriteError(new ErrorRecord(e.InnerException, "Find-Object:TargetInvocationException", ErrorCategory.InvalidOperation, null));
+		}
 	}
 }

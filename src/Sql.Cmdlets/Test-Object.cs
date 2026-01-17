@@ -1,6 +1,7 @@
 namespace Belin.Sql.Cmdlets;
 
 using System.Data;
+using System.Reflection;
 
 /// <summary>
 /// Checks whether an entity with the specified primary key exists.
@@ -47,8 +48,13 @@ public class TestObjectCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
-		var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Exists), 1, parameterTypes)!.MakeGenericMethod(Class);
-		var arguments = new object[] { Connection, Id, new CommandOptions { Timeout = Timeout, Transaction = Transaction } };
-		WriteObject(method.Invoke(null, arguments));
+		try {
+			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Exists))!.MakeGenericMethod(Class);
+			var arguments = new object[] { Connection, Id, new CommandOptions { Timeout = Timeout, Transaction = Transaction } };
+			WriteObject(method.Invoke(null, arguments));
+		}
+		catch (TargetInvocationException e) {
+			WriteError(new ErrorRecord(e.InnerException, "Test-Object:TargetInvocationException", ErrorCategory.InvalidOperation, null));
+		}
 	}
 }
