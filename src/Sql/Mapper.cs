@@ -58,7 +58,7 @@ public sealed class Mapper {
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
 	/// <returns>The newly created object pair.</returns>
 	/// <exception cref="InvalidOperationException">The split field could not be found.</exception>
-	public (T, U) CreateInstance<T, U>(IDataRecord record, string splitOn = "Id") where T: new() where U: new() {
+	public (TItem1, TItem2) CreateInstance<TItem1, TItem2>(IDataRecord record, string splitOn = "Id") where TItem1: new() where TItem2: new() {
 		var properties = new List<KeyValuePair<string, object?>>(record.FieldCount);
 		for (var index = 0; index < record.FieldCount; index++) {
 			var value = record[index];
@@ -71,8 +71,8 @@ public sealed class Mapper {
 		var firstObject = properties.Take(splitOnIndex).ToDictionary();
 		var secondObject = properties.Skip(splitOnIndex).ToDictionary();
 		return (
-			firstObject.Values.All(value => value is null) ? default! : CreateInstance<T>(firstObject),
-			secondObject.Values.All(value => value is null) ? default! : CreateInstance<U>(secondObject)
+			firstObject.Values.All(value => value is null) ? default! : CreateInstance<TItem1>(firstObject),
+			secondObject.Values.All(value => value is null) ? default! : CreateInstance<TItem2>(secondObject)
 		);
 	}
 
@@ -132,8 +132,8 @@ public sealed class Mapper {
 	/// <param name="reader">A data reader providing the properties to be set on the created objects.</param>
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
 	/// <returns>An enumerable of newly created object pairs.</returns>
-	public IEnumerable<(T, U)> CreateInstances<T, U>(IDataReader reader, string splitOn = "Id") where T: new() where U: new() {
-		while (reader.Read()) yield return CreateInstance<T, U>(reader, splitOn);
+	public IEnumerable<(TItem1, TItem2)> CreateInstances<TItem1, TItem2>(IDataReader reader, string splitOn = "Id") where TItem1: new() where TItem2: new() {
+		while (reader.Read()) yield return CreateInstance<TItem1, TItem2>(reader, splitOn);
 		reader.Close();
 	}
 

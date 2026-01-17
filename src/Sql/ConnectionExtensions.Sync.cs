@@ -156,8 +156,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
 	/// <param name="options">The query options.</param>
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
-	public static IEnumerable<(T, U)> Query<T, U>(this IDbConnection connection, string text, ParameterCollection? parameters = null, string splitOn = "Id", QueryOptions? options = null) where T: new() where U: new() {
-		var records = Mapper.Instance.CreateInstances<T, U>(ExecuteReader(connection, text, parameters, options), splitOn);
+	public static IEnumerable<(TItem1, TItem2)> Query<TItem1, TItem2>(this IDbConnection connection, string text, ParameterCollection? parameters = null, string splitOn = "Id", QueryOptions? options = null) where TItem1: new() where TItem2: new() {
+		var records = Mapper.Instance.CreateInstances<TItem1, TItem2>(ExecuteReader(connection, text, parameters, options), splitOn);
 		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
 	}
 

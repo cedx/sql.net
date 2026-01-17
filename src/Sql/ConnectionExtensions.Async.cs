@@ -164,8 +164,8 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The query options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
-	public static async Task<IEnumerable<(T, U)>> QueryAsync<T, U>(this IDbConnection connection, string text, ParameterCollection? parameters = null, string splitOn = "Id", QueryOptions? options = null, CancellationToken cancellationToken = default) where T: new() where U: new() {
-		var records = Mapper.Instance.CreateInstances<T, U>(await ExecuteReaderAsync(connection, text, parameters, options, cancellationToken), splitOn);
+	public static async Task<IEnumerable<(TItem1, TItem2)>> QueryAsync<TItem1, TItem2>(this IDbConnection connection, string text, ParameterCollection? parameters = null, string splitOn = "Id", QueryOptions? options = null, CancellationToken cancellationToken = default) where TItem1: new() where TItem2: new() {
+		var records = Mapper.Instance.CreateInstances<TItem1, TItem2>(await ExecuteReaderAsync(connection, text, parameters, options, cancellationToken), splitOn);
 		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
 	}
 
