@@ -7,7 +7,6 @@ using System.Reflection;
 /// <summary>
 /// Provides information about a database table.
 /// </summary>
-/// <param name="type">The type information providing the table metadata.</param>
 public sealed class TableInfo {
 
 	/// <summary>
