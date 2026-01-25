@@ -8,29 +8,43 @@ using System.Reflection;
 /// Provides information about a database table.
 /// </summary>
 /// <param name="type">The type information providing the table metadata.</param>
-public sealed class TableInfo(Type type) {
+public sealed class TableInfo {
 
 	/// <summary>
 	/// The table columns.
 	/// </summary>
-	public IReadOnlyDictionary<string, ColumnInfo> Columns { get; } = type
-		.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
-		.Where(property => !property.IsDefined(typeof(NotMappedAttribute)) && ((property.CanRead && property.CanWrite) || property.IsDefined(typeof(ColumnAttribute))))
-		.Select(property => new ColumnInfo(property))
-		.ToFrozenDictionary(column => column.Name, StringComparer.OrdinalIgnoreCase);
+	public IReadOnlyDictionary<string, ColumnInfo> Columns { get; }
 
 	/// <summary>
 	/// The single identity column, if applicable.
 	/// </summary>
-	public ColumnInfo? IdentityColumn => Columns.Values.SingleOrDefault(column => column.IsIdentity) ?? (Columns.TryGetValue("Id", out var column) ? column : null);
+	public ColumnInfo? IdentityColumn { get; }
 
 	/// <summary>
 	/// The table name.
 	/// </summary>
-	public string Name { get; } = type.GetCustomAttribute<TableAttribute>()?.Name ?? type.Name;
+	public string Name { get; }
 
 	/// <summary>
 	/// The table schema.
 	/// </summary>
-	public string? Schema { get; } = type.GetCustomAttribute<TableAttribute>()?.Schema;
+	public string? Schema { get; }
+
+	/// <summary>
+	/// Creates new table information.
+	/// </summary>
+	/// <param name="type">The type information providing the table metadata.</param>
+	public TableInfo(Type type) {
+		var table = type.GetCustomAttribute<TableAttribute>();
+		var columns = type
+			.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+			.Where(property => !property.IsDefined(typeof(NotMappedAttribute)) && ((property.CanRead && property.CanWrite) || property.IsDefined(typeof(ColumnAttribute))))
+			.Select(property => new ColumnInfo(property))
+			.ToFrozenDictionary(column => column.Name, StringComparer.OrdinalIgnoreCase);
+
+		Columns = columns;
+		IdentityColumn = columns.Values.SingleOrDefault(column => column.IsIdentity) ?? (columns.TryGetValue("Id", out var column) ? column : null);
+		Name = table?.Name ?? type.Name;
+		Schema = table?.Schema;
+	}
 }
