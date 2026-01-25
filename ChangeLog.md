@@ -1,5 +1,8 @@
 # Changelog
 
+## Version [3.1.0](https://github.com/cedx/sql.net/compare/v3.0.1...v3.1.0)
+- Improved the performance of `ColumnInfo` and `TableInfo` classes.
+
 ## Version [3.0.1](https://github.com/cedx/sql.net/compare/v3.0.0...v3.0.1)
 - Fixed the `Publish-Object`, `Remove-Object` and `Update-Object` cmdlets.
 
