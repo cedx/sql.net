@@ -34,5 +34,6 @@
 *.jpg binary
 *.pdf binary
 *.png binary
+*.sqlite binary
 *.webp binary
 *.woff2 binary
