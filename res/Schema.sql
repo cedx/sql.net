@@ -3,7 +3,7 @@ CREATE TABLE "Characters" (
 	"Id" integer PRIMARY KEY,
 	"FirstName" text NOT NULL CHECK (LENGTH("FirstName") > 0),
 	"LastName" text,
-	"Gender" text NOT NULL CHECK ("Gender" IN ('Balrog', 'Dark Lord', 'Dwarf', 'Elf', 'Hobbit', 'Human', 'Istari'))
+	"Gender" text NOT NULL CHECK ("Gender" IN ('Balrog', 'DarkLord', 'Dwarf', 'Elf', 'Hobbit', 'Human', 'Istari'))
 );
 
 CREATE INDEX "IX_Characters_Gender" ON "Characters" ("Gender");
@@ -23,4 +23,4 @@ INSERT INTO "Characters" ("FirstName", "LastName", "Gender") VALUES
 	('Pippin', 'Took', 'Hobbit'),
 	('Sam', 'Gamgee', 'Hobbit'),
 	('Saruman', NULL, 'Istari'),
-	('Sauron', NULL, 'Dark Lord');
+	('Sauron', NULL, 'DarkLord');
