@@ -30,6 +30,11 @@ public sealed class TableInfo {
 	public string? Schema { get; }
 
 	/// <summary>
+	/// The entity type associated with this table.
+	/// </summary>
+	public Type Type { get; }
+
+	/// <summary>
 	/// Creates new table information.
 	/// </summary>
 	/// <param name="type">The type information providing the table metadata.</param>
@@ -45,5 +50,6 @@ public sealed class TableInfo {
 		IdentityColumn = columns.Values.SingleOrDefault(column => column.IsIdentity) ?? (columns.TryGetValue("Id", out var column) ? column : null);
 		Name = table?.Name ?? type.Name;
 		Schema = table?.Schema;
+		Type = type;
 	}
 }
