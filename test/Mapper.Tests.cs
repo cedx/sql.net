@@ -1,5 +1,7 @@
 namespace Belin.Sql;
 
+using Belin.Sql.Fixtures;
+
 /// <summary>
 /// Tests the features of the <see cref="Mapper"/> class.
 /// </summary>
@@ -68,4 +70,25 @@ public sealed class MapperTests {
 	[TestMethod, DynamicData(nameof(TestData))]
 	public void ChangeType(object? value, Type conversionType, bool isNullable, object? expected) =>
 		AreEqual(expected, Mapper.Instance.ChangeType(value, conversionType, isNullable));
+
+	[TestMethod]
+	public void CreateInstance() {
+		var properties = new Dictionary<string, object?> {
+			["Class"] = "Bard/minstrel",
+			["FirstName"] = "Cédric",
+			["Gender"] = CharacterGender.Balrog.ToString(),
+			["LastName"] = null
+		};
+
+		dynamic instance = Mapper.Instance.CreateInstance(properties);
+		AreEqual("Bard/minstrel", instance.Class);
+		AreEqual("Cédric", instance.FirstName);
+		AreEqual(CharacterGender.Balrog.ToString(), instance.Gender);
+		IsNull(instance.LastName);
+
+		var character = Mapper.Instance.CreateInstance<Character>(properties);
+		AreEqual("Cédric", character.FirstName);
+		AreEqual(CharacterGender.Balrog, character.Gender);
+		AreEqual("", character.LastName);
+	}
 }
