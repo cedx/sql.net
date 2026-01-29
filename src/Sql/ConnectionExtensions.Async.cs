@@ -79,7 +79,7 @@ public static partial class ConnectionExtensions {
 		if (connection.State == ConnectionState.Closed) await ((DbConnection) connection).OpenAsync(cancellationToken);
 		using var command = (DbCommand) CreateCommand(connection, text, parameters, options);
 		var value = await command.ExecuteScalarAsync(cancellationToken);
-		return value is null || value is DBNull ? default : (T?) Mapper.Instance.ChangeType(value, typeof(T));
+		return value is null || value is DBNull ? default : (T?) Mapper.ChangeType(value, typeof(T));
 	}
 
 	/// <summary>
@@ -120,7 +120,7 @@ public static partial class ConnectionExtensions {
 	public static async Task<long> InsertAsync<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
 		var (text, parameters) = new CommandBuilder(connection).GetInsertCommand(instance);
 		var id = await ExecuteScalarAsync<long>(connection, text, parameters, options);
-		if (Mapper.Instance.GetTable<T>().IdentityColumn is ColumnInfo column) column.SetValue(instance, Mapper.Instance.ChangeType(id, column));
+		if (Mapper.Instance.GetTable<T>().IdentityColumn is ColumnInfo column) column.SetValue(instance, Mapper.ChangeType(id, column));
 		return id;
 	}
 

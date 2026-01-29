@@ -153,7 +153,7 @@ public sealed class Mapper {
 	/// <param name="value">The object to convert.</param>
 	/// <param name="column">The column providing the type of object to return.</param>
 	/// <returns>The value of the given type corresponding to the specified object.</returns>
-	internal object? ChangeType(object? value, ColumnInfo column) => ChangeType(value, column.Type, column.IsNullable);
+	internal static object? ChangeType(object? value, ColumnInfo column) => ChangeType(value, column.Type, column.IsNullable);
 
 	/// <summary>
 	/// Converts the specified object into an equivalent value of the specified type.
@@ -162,7 +162,7 @@ public sealed class Mapper {
 	/// <param name="conversionType">The type of object to return.</param>
 	/// <param name="isNullable">Value indicating whether the specified conversion type is nullable.</param>
 	/// <returns>The value of the given type corresponding to the specified object.</returns>
-	internal object? ChangeType(object? value, Type conversionType, bool isNullable = true) {
+	internal static object? ChangeType(object? value, Type conversionType, bool isNullable = true) {
 		var nullableType = Nullable.GetUnderlyingType(conversionType);
 		var targetType = nullableType ?? conversionType;
 
