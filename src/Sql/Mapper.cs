@@ -52,8 +52,8 @@ public sealed class Mapper {
 	/// <summary>
 	/// Creates a new object pair of the given types from the specified data record.
 	/// </summary>
-	/// <typeparam name="T">The type of the first object.</typeparam>
-	/// <typeparam name="U">The type of the second object.</typeparam>
+	/// <typeparam name="TItem1">The type of the first object.</typeparam>
+	/// <typeparam name="TItem2">The type of the second object.</typeparam>
 	/// <param name="record">A data record providing the properties to be set on the created objects.</param>
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
 	/// <returns>The newly created object pair.</returns>
@@ -127,8 +127,8 @@ public sealed class Mapper {
 	/// <summary>
 	/// Creates new object pairs of the given types from the specified data reader.
 	/// </summary>
-	/// <typeparam name="T">The type of the first object.</typeparam>
-	/// <typeparam name="U">The type of the second object.</typeparam>
+	/// <typeparam name="TItem1">The type of the first object.</typeparam>
+	/// <typeparam name="TItem2">The type of the second object.</typeparam>
 	/// <param name="reader">A data reader providing the properties to be set on the created objects.</param>
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
 	/// <returns>An enumerable of newly created object pairs.</returns>

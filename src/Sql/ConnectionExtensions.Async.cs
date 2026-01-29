@@ -155,8 +155,8 @@ public static partial class ConnectionExtensions {
 	/// <summary>
 	/// Executes a parameterized SQL query and returns a sequence of object pairs whose properties correspond to the columns.
 	/// </summary>
-	/// <typeparam name="T">The type of the first objects.</typeparam>
-	/// <typeparam name="U">The type of the second objects.</typeparam>
+	/// <typeparam name="TItem1">The type of the first objects.</typeparam>
+	/// <typeparam name="TItem2">The type of the second objects.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
