@@ -11,7 +11,7 @@ public sealed class MapperTests {
 	/// <summary>
 	/// The test data used by the <see cref="ChangeType"/> method.
 	/// </summary>
-	private static IEnumerable<object?[]> TestData => [
+	private static IEnumerable<object?[]> ChangeTypeData => [
 		[null, typeof(bool), false, false],
 		[null, typeof(bool?), true, null],
 		[0, typeof(bool), false, false],
@@ -67,7 +67,7 @@ public sealed class MapperTests {
 		["-123", typeof(int?), true, -123]
 	];
 
-	[TestMethod, DynamicData(nameof(TestData))]
+	[TestMethod, DynamicData(nameof(ChangeTypeData))]
 	public void ChangeType(object? value, Type conversionType, bool isNullable, object? expected) =>
 		AreEqual(expected, Mapper.ChangeType(value, conversionType, isNullable));
 
@@ -90,5 +90,46 @@ public sealed class MapperTests {
 		AreEqual("Cédric", character.FirstName);
 		AreEqual(CharacterGender.Balrog, character.Gender);
 		AreEqual("", character.LastName);
+	}
+
+	[TestMethod]
+	public void SplitOn() {
+		var dataRow = new List<KeyValuePair<string, object?>> {
+			new("Id", 123),
+			new("LongLabel", "Hello World!"),
+			new("ShortLabel", null),
+			new("Id", 456),
+			new("FirstName", "Cédric"),
+			new("LastName", "Belin"),
+			new("RowID", 789)
+		};
+
+		var singleRecord = new Dictionary<string, object?> {
+			["Id"] = 123,
+			["LongLabel"] = "Hello World!",
+			["ShortLabel"] = null,
+			["FirstName"] = "Cédric",
+			["LastName"] = "Belin",
+			["RowID"] = 789
+		};
+
+		var records = Mapper.SplitOn(dataRow);
+		HasCount(1, records);
+		CollectionAssert.AreEqual(singleRecord, records[0]);
+
+		records = Mapper.SplitOn(dataRow, "_NonExistent_");
+		HasCount(1, records);
+		CollectionAssert.AreEqual(singleRecord, records[0]);
+
+		records = Mapper.SplitOn(dataRow, "Id");
+		HasCount(2, records);
+		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 123, ["LongLabel"] = "Hello World!", ["ShortLabel"] = null }, records[0]);
+		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 456, ["FirstName"] = "Cédric", ["LastName"] = "Belin", ["RowID"] = 789 }, records[1]);
+
+		records = Mapper.SplitOn(dataRow, "Id", "RowID", "_Unused_");
+		HasCount(3, records);
+		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 123, ["LongLabel"] = "Hello World!", ["ShortLabel"] = null }, records[0]);
+		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 456, ["FirstName"] = "Cédric", ["LastName"] = "Belin" }, records[1]);
+		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["RowID"] = 789 }, records[2]);
 	}
 }

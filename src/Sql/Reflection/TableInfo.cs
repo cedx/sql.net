@@ -44,7 +44,7 @@ public sealed class TableInfo {
 			.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
 			.Where(property => !property.IsDefined(typeof(NotMappedAttribute)) && ((property.CanRead && property.CanWrite) || property.IsDefined(typeof(ColumnAttribute))))
 			.Select(property => new ColumnInfo(property))
-			.ToFrozenDictionary(column => column.Name, StringComparer.OrdinalIgnoreCase);
+			.ToFrozenDictionary(column => column.Name);
 
 		Columns = columns;
 		IdentityColumn = columns.Values.SingleOrDefault(column => column.IsIdentity) ?? (columns.TryGetValue("Id", out var column) ? column : null);

@@ -66,7 +66,7 @@ public sealed class Mapper {
 	/// <typeparam name="TItem2">The type of the second object.</typeparam>
 	/// <typeparam name="TItem3">The type of the third object.</typeparam>
 	/// <param name="record">A data record providing the properties to be set on the created objects.</param>
-	/// <param name="splitOn">The fields from which to split and read the second and third objects.</param>
+	/// <param name="splitOn">The fields from which to split and read the next objects.</param>
 	/// <returns>The newly created object tuple.</returns>
 	public (TItem1, TItem2, TItem3) CreateInstance<TItem1, TItem2, TItem3>(IDataRecord record, (string, string)? splitOn = null) where TItem1 : new() where TItem2 : new() where TItem3 : new() {
 		var (firstField, secondField) = splitOn ?? ("Id", "Id");
@@ -86,7 +86,7 @@ public sealed class Mapper {
 	/// <typeparam name="TItem3">The type of the third object.</typeparam>
 	/// <typeparam name="TItem4">The type of the fourth object.</typeparam>
 	/// <param name="record">A data record providing the properties to be set on the created objects.</param>
-	/// <param name="splitOn">The fields from which to split and read the second, third and fourth objects.</param>
+	/// <param name="splitOn">The fields from which to split and read the next objects.</param>
 	/// <returns>The newly created object tuple.</returns>
 	public (TItem1, TItem2, TItem3, TItem4) CreateInstance<TItem1, TItem2, TItem3, TItem4>(IDataRecord record, (string, string, string)? splitOn = null) where TItem1 : new() where TItem2 : new() where TItem3 : new() where TItem4 : new() {
 		var (firstField, secondField, thirdField) = splitOn ?? ("Id", "Id", "Id");
@@ -167,7 +167,7 @@ public sealed class Mapper {
 	/// <typeparam name="TItem2">The type of the second object.</typeparam>
 	/// <typeparam name="TItem3">The type of the third object.</typeparam>
 	/// <param name="reader">A data reader providing the properties to be set on the created objects.</param>
-	/// <param name="splitOn">The field from which to split and read the second and third objects.</param>
+	/// <param name="splitOn">The fields from which to split and read the next objects.</param>
 	/// <returns>An enumerable of newly created object tuples.</returns>
 	public IEnumerable<(TItem1, TItem2, TItem3)> CreateInstances<TItem1, TItem2, TItem3>(IDataReader reader, (string, string)? splitOn = null) where TItem1: new() where TItem2: new() where TItem3: new() {
 		while (reader.Read()) yield return CreateInstance<TItem1, TItem2, TItem3>(reader, splitOn);
@@ -182,7 +182,7 @@ public sealed class Mapper {
 	/// <typeparam name="TItem3">The type of the third object.</typeparam>
 	/// <typeparam name="TItem4">The type of the fourth object.</typeparam>
 	/// <param name="reader">A data reader providing the properties to be set on the created objects.</param>
-	/// <param name="splitOn">The field from which to split and read the second, third and fourth objects.</param>
+	/// <param name="splitOn">The fields from which to split and read the next objects.</param>
 	/// <returns>An enumerable of newly created object tuples.</returns>
 	public IEnumerable<(TItem1, TItem2, TItem3, TItem4)> CreateInstances<TItem1, TItem2, TItem3, TItem4>(IDataReader reader, (string, string, string)? splitOn = null) where TItem1: new() where TItem2: new() where TItem3: new() where TItem4: new() {
 		while (reader.Read()) yield return CreateInstance<TItem1, TItem2, TItem3, TItem4>(reader, splitOn);
@@ -196,7 +196,7 @@ public sealed class Mapper {
 	/// <returns>The table information associated with the specified type.</returns>
 	public TableInfo GetTable<T>() where T: new() {
 		var type = typeof(T);
-		return mapping.TryGetValue(type, out var value) ? value : mapping[type] = new TableInfo(type);
+		return mapping.TryGetValue(type, out var table) ? table : mapping[type] = new TableInfo(type);
 	}
 
 	/// <summary>
@@ -236,8 +236,8 @@ public sealed class Mapper {
 	/// Splits the specified data record according to the specified fields.
 	/// </summary>
 	/// <param name="record">The data record to split.</param>
-	/// <param name="fields">The fields from which to divide and read the next data.</param>
-	/// <returns>A list of dictionaries representing the </returns>
+	/// <param name="fields">The fields from which to split and read the next objects.</param>
+	/// <returns>A list of dictionaries representing the objects extracted from the data record.</returns>
 	internal static List<Dictionary<string, object?>> SplitOn(IDataRecord record, params string[] fields) {
 		var properties = new List<KeyValuePair<string, object?>>(record.FieldCount);
 		for (var index = 0; index < record.FieldCount; index++) {
@@ -252,10 +252,10 @@ public sealed class Mapper {
 	/// Splits the specified data record according to the specified fields.
 	/// </summary>
 	/// <param name="record">The data record to split.</param>
-	/// <param name="fields">The fields from which to divide and read the next data.</param>
-	/// <returns>A list of dictionaries representing the </returns>
+	/// <param name="fields">The fields from which to split and read the next objects.</param>
+	/// <returns>A list of dictionaries representing the objects extracted from the data record.</returns>
 	internal static List<Dictionary<string, object?>> SplitOn(List<KeyValuePair<string, object?>> record, params string[] fields) {
-		if (fields.Length == 0) return [record.ToDictionary()];
+		if (fields.Length == 0) return [record.DistinctBy(entry => entry.Key).ToDictionary()];
 
 		var dataRow = new List<KeyValuePair<string, object?>>(record.Count);
 		var fieldQueue = new Queue<string>(fields);
@@ -263,8 +263,8 @@ public sealed class Mapper {
 
 		var splitOn = fieldQueue.Dequeue();
 		foreach (var (index, entry) in record.Index()) {
-			if (index > 0 && entry.Key.Equals(splitOn, StringComparison.OrdinalIgnoreCase)) {
-				records.Add(dataRow.ToDictionary());
+			if (index > 0 && entry.Key.Equals(splitOn)) {
+				records.Add(dataRow.DistinctBy(entry => entry.Key).ToDictionary());
 				dataRow.Clear();
 				if (fieldQueue.TryDequeue(out var field)) splitOn = field;
 			}
@@ -272,7 +272,7 @@ public sealed class Mapper {
 			dataRow.Add(entry);
 		}
 
-		records.Add(dataRow.ToDictionary());
+		records.Add(dataRow.DistinctBy(entry => entry.Key).ToDictionary());
 		return records;
 	}
 }
