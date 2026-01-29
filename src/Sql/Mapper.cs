@@ -1,6 +1,7 @@
 namespace Belin.Sql;
 
 using Belin.Sql.Reflection;
+using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
 using System.Globalization;
@@ -39,15 +40,8 @@ public sealed class Mapper {
 	/// <typeparam name="T">The object type.</typeparam>
 	/// <param name="record">A data record providing the properties to be set on the created object.</param>
 	/// <returns>The newly created object.</returns>
-	public T CreateInstance<T>(IDataRecord record) where T: new() {
-		var properties = new Dictionary<string, object?>();
-		for (var index = 0; index < record.FieldCount; index++) {
-			var value = record[index];
-			properties.TryAdd(record.GetName(index), value is DBNull ? null : value);
-		}
-
-		return CreateInstance<T>(properties);
-	}
+	public T CreateInstance<T>(IDataRecord record) where T: new() =>
+		CreateInstance<T>(SplitOn(record).Single());
 
 	/// <summary>
 	/// Creates a new object pair of the given types from the specified data record.
@@ -57,22 +51,51 @@ public sealed class Mapper {
 	/// <param name="record">A data record providing the properties to be set on the created objects.</param>
 	/// <param name="splitOn">The field from which to split and read the second object.</param>
 	/// <returns>The newly created object pair.</returns>
-	/// <exception cref="InvalidOperationException">The split field could not be found.</exception>
 	public (TItem1, TItem2) CreateInstance<TItem1, TItem2>(IDataRecord record, string splitOn = "Id") where TItem1: new() where TItem2: new() {
-		var properties = new List<KeyValuePair<string, object?>>(record.FieldCount);
-		for (var index = 0; index < record.FieldCount; index++) {
-			var value = record[index];
-			properties.Add(new(record.GetName(index), value is DBNull ? null : value));
-		}
-
-		var splitOnIndex = properties.FindLastIndex(entry => entry.Key == splitOn);
-		if (splitOnIndex <= 0) throw new InvalidOperationException("The split field could not be found.");
-
-		var firstObject = properties.Take(splitOnIndex).ToDictionary();
-		var secondObject = properties.Skip(splitOnIndex).ToDictionary();
+		var records = SplitOn(record, splitOn);
 		return (
-			firstObject.Values.All(value => value is null) ? default! : CreateInstance<TItem1>(firstObject),
-			secondObject.Values.All(value => value is null) ? default! : CreateInstance<TItem2>(secondObject)
+			records[0].Values.All(value => value is null) ? default! : CreateInstance<TItem1>(records[0]),
+			records.Count == 1 || records[1].Values.All(value => value is null) ? default! : CreateInstance<TItem2>(records[1])
+		);
+	}
+
+	/// <summary>
+	/// Creates a new object tuple of the given types from the specified data record.
+	/// </summary>
+	/// <typeparam name="TItem1">The type of the first object.</typeparam>
+	/// <typeparam name="TItem2">The type of the second object.</typeparam>
+	/// <typeparam name="TItem3">The type of the third object.</typeparam>
+	/// <param name="record">A data record providing the properties to be set on the created objects.</param>
+	/// <param name="splitOn">The fields from which to split and read the second and third objects.</param>
+	/// <returns>The newly created object tuple.</returns>
+	public (TItem1, TItem2, TItem3) CreateInstance<TItem1, TItem2, TItem3>(IDataRecord record, (string, string)? splitOn = null) where TItem1 : new() where TItem2 : new() where TItem3 : new() {
+		var (firstField, secondField) = splitOn ?? ("Id", "Id");
+		var records = SplitOn(record, firstField, secondField);
+		return (
+			records[0].Values.All(value => value is null) ? default! : CreateInstance<TItem1>(records[0]),
+			records.Count == 1 || records[1].Values.All(value => value is null) ? default! : CreateInstance<TItem2>(records[1]),
+			records.Count == 2 || records[2].Values.All(value => value is null) ? default! : CreateInstance<TItem3>(records[2])
+		);
+	}
+
+	/// <summary>
+	/// Creates a new object tuple of the given types from the specified data record.
+	/// </summary>
+	/// <typeparam name="TItem1">The type of the first object.</typeparam>
+	/// <typeparam name="TItem2">The type of the second object.</typeparam>
+	/// <typeparam name="TItem3">The type of the third object.</typeparam>
+	/// <typeparam name="TItem4">The type of the fourth object.</typeparam>
+	/// <param name="record">A data record providing the properties to be set on the created objects.</param>
+	/// <param name="splitOn">The fields from which to split and read the second, third and fourth objects.</param>
+	/// <returns>The newly created object tuple.</returns>
+	public (TItem1, TItem2, TItem3, TItem4) CreateInstance<TItem1, TItem2, TItem3, TItem4>(IDataRecord record, (string, string, string)? splitOn = null) where TItem1 : new() where TItem2 : new() where TItem3 : new() where TItem4 : new() {
+		var (firstField, secondField, thirdField) = splitOn ?? ("Id", "Id", "Id");
+		var records = SplitOn(record, firstField, secondField, thirdField);
+		return (
+			records[0].Values.All(value => value is null) ? default! : CreateInstance<TItem1>(records[0]),
+			records.Count == 1 || records[1].Values.All(value => value is null) ? default! : CreateInstance<TItem2>(records[1]),
+			records.Count == 2 || records[2].Values.All(value => value is null) ? default! : CreateInstance<TItem3>(records[2]),
+			records.Count == 3 || records[3].Values.All(value => value is null) ? default! : CreateInstance<TItem4>(records[3])
 		);
 	}
 
@@ -136,6 +159,35 @@ public sealed class Mapper {
 		while (reader.Read()) yield return CreateInstance<TItem1, TItem2>(reader, splitOn);
 		reader.Close();
 	}
+	
+	/// <summary>
+	/// Creates new object tuples of the given types from the specified data reader.
+	/// </summary>
+	/// <typeparam name="TItem1">The type of the first object.</typeparam>
+	/// <typeparam name="TItem2">The type of the second object.</typeparam>
+	/// <typeparam name="TItem3">The type of the third object.</typeparam>
+	/// <param name="reader">A data reader providing the properties to be set on the created objects.</param>
+	/// <param name="splitOn">The field from which to split and read the second and third objects.</param>
+	/// <returns>An enumerable of newly created object tuples.</returns>
+	public IEnumerable<(TItem1, TItem2, TItem3)> CreateInstances<TItem1, TItem2, TItem3>(IDataReader reader, (string, string)? splitOn = null) where TItem1: new() where TItem2: new() where TItem3: new() {
+		while (reader.Read()) yield return CreateInstance<TItem1, TItem2, TItem3>(reader, splitOn);
+		reader.Close();
+	}
+		
+	/// <summary>
+	/// Creates new object tuples of the given types from the specified data reader.
+	/// </summary>
+	/// <typeparam name="TItem1">The type of the first object.</typeparam>
+	/// <typeparam name="TItem2">The type of the second object.</typeparam>
+	/// <typeparam name="TItem3">The type of the third object.</typeparam>
+	/// <typeparam name="TItem4">The type of the fourth object.</typeparam>
+	/// <param name="reader">A data reader providing the properties to be set on the created objects.</param>
+	/// <param name="splitOn">The field from which to split and read the second, third and fourth objects.</param>
+	/// <returns>An enumerable of newly created object tuples.</returns>
+	public IEnumerable<(TItem1, TItem2, TItem3, TItem4)> CreateInstances<TItem1, TItem2, TItem3, TItem4>(IDataReader reader, (string, string, string)? splitOn = null) where TItem1: new() where TItem2: new() where TItem3: new() where TItem4: new() {
+		while (reader.Read()) yield return CreateInstance<TItem1, TItem2, TItem3, TItem4>(reader, splitOn);
+		reader.Close();
+	}
 
 	/// <summary>
 	/// Gets the table information associated with the specified type.
@@ -178,5 +230,49 @@ public sealed class Mapper {
 			true when targetType == typeof(string) => isNullable ? default : string.Empty,
 			_ => isNullable ? default : Activator.CreateInstance(targetType)
 		};
+	}
+	
+	/// <summary>
+	/// Splits the specified data record according to the specified fields.
+	/// </summary>
+	/// <param name="record">The data record to split.</param>
+	/// <param name="fields">The fields from which to divide and read the next data.</param>
+	/// <returns>A list of dictionaries representing the </returns>
+	internal static List<Dictionary<string, object?>> SplitOn(IDataRecord record, params string[] fields) {
+		var properties = new List<KeyValuePair<string, object?>>(record.FieldCount);
+		for (var index = 0; index < record.FieldCount; index++) {
+			var value = record[index];
+			properties.Add(new(record.GetName(index), value is DBNull ? null : value));
+		}
+
+		return SplitOn(properties, fields);
+	}
+
+	/// <summary>
+	/// Splits the specified data record according to the specified fields.
+	/// </summary>
+	/// <param name="record">The data record to split.</param>
+	/// <param name="fields">The fields from which to divide and read the next data.</param>
+	/// <returns>A list of dictionaries representing the </returns>
+	internal static List<Dictionary<string, object?>> SplitOn(List<KeyValuePair<string, object?>> record, params string[] fields) {
+		if (fields.Length == 0) return [record.ToDictionary()];
+
+		var dataRow = new List<KeyValuePair<string, object?>>(record.Count);
+		var fieldQueue = new Queue<string>(fields);
+		var records = new List<Dictionary<string, object?>>(fields.Length + 1);
+
+		var splitOn = fieldQueue.Dequeue();
+		foreach (var (index, entry) in record.Index()) {
+			if (index > 0 && entry.Key.Equals(splitOn, StringComparison.OrdinalIgnoreCase)) {
+				records.Add(dataRow.ToDictionary());
+				dataRow.Clear();
+				if (fieldQueue.TryDequeue(out var field)) splitOn = field;
+			}
+
+			dataRow.Add(entry);
+		}
+
+		records.Add(dataRow.ToDictionary());
+		return records;
 	}
 }

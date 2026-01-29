@@ -1,5 +1,9 @@
 # Changelog
 
+## Version [3.2.0](https://github.com/cedx/sql.net/compare/v3.1.0...v3.2.0)
+- Added new `CreateInstance()` and `CreateInstances()` overloads to the `Mapper` class.
+- Added the `TableInfo.Type` property.
+
 ## Version [3.1.0](https://github.com/cedx/sql.net/compare/v3.0.1...v3.1.0)
 - Improved the performance of `ColumnInfo` and `TableInfo` classes.
 
