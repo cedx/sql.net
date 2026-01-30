@@ -1,6 +1,7 @@
 namespace Belin.Sql;
 
 using Belin.Sql.Reflection;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Dynamic;
@@ -104,6 +105,14 @@ public sealed class Mapper {
 	/// <param name="properties">A dictionary providing the properties to be set on the created object.</param>
 	/// <returns>The newly created object.</returns>
 	public ExpandoObject CreateInstance(IDictionary<string, object?> properties) => CreateInstance<ExpandoObject>(properties);
+	
+	/// <summary>
+	/// Creates a new dynamic object from the specified hash table.
+	/// </summary>
+	/// <param name="properties">A hash table providing the properties to be set on the created object.</param>
+	/// <returns>The newly created object.</returns>
+	public ExpandoObject CreateInstance(Hashtable properties) =>
+		CreateInstance<ExpandoObject>(properties.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString() ?? "", entry => entry.Value));
 
 	/// <summary>
 	/// Creates a new object of a given type from the specified dictionary.
@@ -127,6 +136,15 @@ public sealed class Mapper {
 
 		return instance;
 	}
+	
+	/// <summary>
+	/// Creates a new object of a given type from the specified hash table.
+	/// </summary>
+	/// <typeparam name="T">The object type.</typeparam>
+	/// <param name="properties">A hash table providing the properties to be set on the created object.</param>
+	/// <returns>The newly created object.</returns>
+	public T CreateInstance<T>(Hashtable properties) where T: new() =>
+		CreateInstance<T>(properties.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString() ?? "", entry => entry.Value));
 
 	/// <summary>
 	/// Creates new dynamic objects from the specified data reader.
