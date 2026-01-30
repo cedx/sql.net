@@ -10,11 +10,6 @@ using System.Reflection;
 public class TestObjectCommand: Cmdlet {
 
 	/// <summary>
-	/// An array of types representing the number, order, and type of the parameters of the underlying method to invoke.
-	/// </summary>
-	private static readonly Type[] parameterTypes = [typeof(IDbConnection), typeof(object), typeof(CommandOptions)];
-
-	/// <summary>
 	/// The type of object to check.
 	/// </summary>
 	[Parameter(Mandatory = true, Position = 1)]

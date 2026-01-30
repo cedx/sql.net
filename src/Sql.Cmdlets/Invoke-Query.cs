@@ -13,12 +13,17 @@ public class InvokeQueryCommand: Cmdlet {
 	/// <summary>
 	/// An array of types representing the number, order, and type of the parameters of the underlying method to invoke.
 	/// </summary>
-	private static readonly Type[] parameterTypes = [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(QueryOptions)];
+	private static readonly Type[][] parameterTypes = [
+		[typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(QueryOptions)],
+		[typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(string), typeof(QueryOptions)],
+		[typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof((string, string)?), typeof(QueryOptions)],
+		[typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof((string, string, string)?), typeof(QueryOptions)]
+	];
 
 	/// <summary>
 	/// The type of objects to return.
 	/// </summary>
-	[Parameter, ValidateNotNullOrEmpty]
+	[Parameter, ValidateCount(1, 4)]
 	public Type[] As { get; set; } = [typeof(ExpandoObject)];
 
 	/// <summary>
@@ -54,8 +59,8 @@ public class InvokeQueryCommand: Cmdlet {
 	/// <summary>
 	/// The field from which to split and read the next object.
 	/// </summary>
-	[Parameter, ValidateNotNullOrWhiteSpace]
-	public string SplitOn { get; set; } = "Id";
+	[Parameter, ValidateCount(1, 3), ValidateNotNullOrWhiteSpace]
+	public string[] SplitOn { get; set; } = ["Id"];
 
 	/// <summary>
 	/// Value indicating whether to prevent from buffering the rows in memory.
@@ -79,11 +84,16 @@ public class InvokeQueryCommand: Cmdlet {
 	/// Performs execution of this command.
 	/// </summary>
 	protected override void ProcessRecord() {
+		var queryOptions = new QueryOptions { Buffered = !Stream, Timeout = Timeout, Transaction = Transaction, Type = CommandType };
+		object[] arguments = As.Length switch {
+			1 => [Connection, Command, Parameters, queryOptions],
+			2 => [Connection, Command, Parameters, SplitOn[0], queryOptions],
+			3 => [Connection, Command, Parameters, ValueTuple.Create(SplitOn[0], SplitOn.Length <= 1 ? "Id" : SplitOn[1]), queryOptions],
+			_ => [Connection, Command, Parameters, ValueTuple.Create(SplitOn[0], SplitOn.Length <= 1 ? "Id" : SplitOn[1], SplitOn.Length <= 2 ? "Id" : SplitOn[2]), queryOptions]
+		};
+
 		try {
-			var types = As.Length <= 1 ? parameterTypes : [typeof(IDbConnection), typeof(string), typeof(ParameterCollection), typeof(string), typeof(QueryOptions)];
-			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query), As.Length, types)!.MakeGenericMethod(As);
-			var queryOptions = new QueryOptions { Buffered = !Stream, Timeout = Timeout, Transaction = Transaction, Type = CommandType };
-			object[] arguments = As.Length <= 1 ? [Connection, Command, Parameters, queryOptions] : [Connection, Command, Parameters, SplitOn, queryOptions];
+			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Query), As.Length, parameterTypes[As.Length - 1])!.MakeGenericMethod(As);
 			WriteObject(method.Invoke(null, arguments), enumerateCollection: !NoEnumerate);
 		}
 		catch (TargetInvocationException e) {

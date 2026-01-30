@@ -10,11 +10,6 @@ using System.Reflection;
 public class FindObjectCommand: Cmdlet {
 
 	/// <summary>
-	/// An array of types representing the number, order, and type of the parameters of the underlying method to invoke.
-	/// </summary>
-	private static readonly Type[] parameterTypes = [typeof(IDbConnection), typeof(object), typeof(string[]), typeof(CommandOptions)];
-
-	/// <summary>
 	/// The type of object to find.
 	/// </summary>
 	[Parameter(Mandatory = true, Position = 1)]
