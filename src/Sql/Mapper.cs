@@ -40,8 +40,7 @@ public sealed class Mapper {
 	/// <typeparam name="T">The object type.</typeparam>
 	/// <param name="record">A data record providing the properties to be set on the created object.</param>
 	/// <returns>The newly created object.</returns>
-	public T CreateInstance<T>(IDataRecord record) where T: new() =>
-		CreateInstance<T>(SplitOn(record).Single());
+	public T CreateInstance<T>(IDataRecord record) where T: new() => CreateInstance<T>(SplitOn(record).First());
 
 	/// <summary>
 	/// Creates a new object pair of the given types from the specified data record.
@@ -255,24 +254,27 @@ public sealed class Mapper {
 	/// <param name="fields">The fields from which to split and read the next objects.</param>
 	/// <returns>A list of dictionaries representing the objects extracted from the data record.</returns>
 	internal static List<Dictionary<string, object?>> SplitOn(List<KeyValuePair<string, object?>> record, params string[] fields) {
-		if (fields.Length == 0) return [record.DistinctBy(entry => entry.Key).ToDictionary()];
+		var properties = new Dictionary<string, object?>(record.Count);
+		if (fields.Length == 0) {
+			foreach (var (key, value) in record) properties.TryAdd(key, value);
+			return [properties];
+		}
 
-		var dataRow = new List<KeyValuePair<string, object?>>(record.Count);
 		var fieldQueue = new Queue<string>(fields);
 		var records = new List<Dictionary<string, object?>>(fields.Length + 1);
-
 		var splitOn = fieldQueue.Dequeue();
-		foreach (var (index, entry) in record.Index()) {
-			if (index > 0 && entry.Key.Equals(splitOn)) {
-				records.Add(dataRow.DistinctBy(entry => entry.Key).ToDictionary());
-				dataRow.Clear();
+
+		foreach (var (index, (key, value)) in record.Index()) {
+			if (index > 0 && key.Equals(splitOn)) {
+				records.Add(properties);
+				properties = new Dictionary<string, object?>(record.Count);
 				if (fieldQueue.TryDequeue(out var field)) splitOn = field;
 			}
 
-			dataRow.Add(entry);
+			properties.TryAdd(key, value);
 		}
 
-		records.Add(dataRow.DistinctBy(entry => entry.Key).ToDictionary());
+		records.Add(properties);
 		return records;
 	}
 }

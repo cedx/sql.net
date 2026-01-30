@@ -24,7 +24,7 @@ public sealed class MapperTests {
 		[null, typeof(char), false, char.MinValue],
 		[null, typeof(char?), true, null],
 		[0, typeof(char), false, char.MinValue],
-		[0, typeof(char?), true, char.MinValue],
+		[65_535, typeof(char?), true, char.MaxValue],
 		[97, typeof(char), false, 'a'],
 		[98, typeof(char?), true, 'b'],
 		["a", typeof(char), false, 'a'],
