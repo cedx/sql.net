@@ -14,7 +14,7 @@ public sealed class ParameterTests {
 	[DataRow("@bar", "@bar")]
 	[DataRow(":baz", ":baz")]
 	[DataRow("$qux", "$qux")]
-	public void Name(string name, string expected) => AreEqual(expected, new Parameter(name, null).Name);
+	public void Name(string name, string expected) => AreEqual(expected, new Parameter(name).Name);
 
 	[TestMethod]
 	public void Value() {
