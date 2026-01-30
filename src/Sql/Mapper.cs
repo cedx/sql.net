@@ -54,7 +54,7 @@ public sealed class Mapper {
 		var records = SplitOn(record, splitOn);
 		return (
 			records[0].Values.All(value => value is null) ? default! : CreateInstance<TItem1>(records[0]),
-			records.Count == 1 || records[1].Values.All(value => value is null) ? default! : CreateInstance<TItem2>(records[1])
+			records.Count <= 1 || records[1].Values.All(value => value is null) ? default! : CreateInstance<TItem2>(records[1])
 		);
 	}
 
@@ -72,8 +72,8 @@ public sealed class Mapper {
 		var records = SplitOn(record, firstField, secondField);
 		return (
 			records[0].Values.All(value => value is null) ? default! : CreateInstance<TItem1>(records[0]),
-			records.Count == 1 || records[1].Values.All(value => value is null) ? default! : CreateInstance<TItem2>(records[1]),
-			records.Count == 2 || records[2].Values.All(value => value is null) ? default! : CreateInstance<TItem3>(records[2])
+			records.Count <= 1 || records[1].Values.All(value => value is null) ? default! : CreateInstance<TItem2>(records[1]),
+			records.Count <= 2 || records[2].Values.All(value => value is null) ? default! : CreateInstance<TItem3>(records[2])
 		);
 	}
 
@@ -92,9 +92,9 @@ public sealed class Mapper {
 		var records = SplitOn(record, firstField, secondField, thirdField);
 		return (
 			records[0].Values.All(value => value is null) ? default! : CreateInstance<TItem1>(records[0]),
-			records.Count == 1 || records[1].Values.All(value => value is null) ? default! : CreateInstance<TItem2>(records[1]),
-			records.Count == 2 || records[2].Values.All(value => value is null) ? default! : CreateInstance<TItem3>(records[2]),
-			records.Count == 3 || records[3].Values.All(value => value is null) ? default! : CreateInstance<TItem4>(records[3])
+			records.Count <= 1 || records[1].Values.All(value => value is null) ? default! : CreateInstance<TItem2>(records[1]),
+			records.Count <= 2 || records[2].Values.All(value => value is null) ? default! : CreateInstance<TItem3>(records[2]),
+			records.Count <= 3 || records[3].Values.All(value => value is null) ? default! : CreateInstance<TItem4>(records[3])
 		);
 	}
 

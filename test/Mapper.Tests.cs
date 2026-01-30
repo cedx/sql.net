@@ -94,7 +94,7 @@ public sealed class MapperTests {
 
 	[TestMethod]
 	public void SplitOn() {
-		var dataRow = new List<KeyValuePair<string, object?>> {
+		var record = new List<KeyValuePair<string, object?>> {
 			new("Id", 123),
 			new("LongLabel", "Hello World!"),
 			new("ShortLabel", null),
@@ -104,7 +104,7 @@ public sealed class MapperTests {
 			new("RowID", 789)
 		};
 
-		var singleRecord = new Dictionary<string, object?> {
+		var properties = new Dictionary<string, object?> {
 			["Id"] = 123,
 			["LongLabel"] = "Hello World!",
 			["ShortLabel"] = null,
@@ -113,20 +113,20 @@ public sealed class MapperTests {
 			["RowID"] = 789
 		};
 
-		var records = Mapper.SplitOn(dataRow);
+		var records = Mapper.SplitOn(record);
 		HasCount(1, records);
-		CollectionAssert.AreEqual(singleRecord, records[0]);
+		CollectionAssert.AreEqual(properties, records[0]);
 
-		records = Mapper.SplitOn(dataRow, "_NonExistent_");
+		records = Mapper.SplitOn(record, "_NonExistent_");
 		HasCount(1, records);
-		CollectionAssert.AreEqual(singleRecord, records[0]);
+		CollectionAssert.AreEqual(properties, records[0]);
 
-		records = Mapper.SplitOn(dataRow, "Id");
+		records = Mapper.SplitOn(record, "Id");
 		HasCount(2, records);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 123, ["LongLabel"] = "Hello World!", ["ShortLabel"] = null }, records[0]);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 456, ["FirstName"] = "Cédric", ["LastName"] = "Belin", ["RowID"] = 789 }, records[1]);
 
-		records = Mapper.SplitOn(dataRow, "Id", "RowID", "_Unused_");
+		records = Mapper.SplitOn(record, "Id", "RowID", "_Unused_");
 		HasCount(3, records);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 123, ["LongLabel"] = "Hello World!", ["ShortLabel"] = null }, records[0]);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 456, ["FirstName"] = "Cédric", ["LastName"] = "Belin" }, records[1]);
