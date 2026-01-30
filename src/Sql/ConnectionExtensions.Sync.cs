@@ -153,11 +153,46 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="text">The SQL query to be executed.</param>
 	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="splitOn">The field from which to split and read the second object.</param>
+	/// <param name="splitOn">The field from which to split and read the next object.</param>
 	/// <param name="options">The query options.</param>
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
 	public static IEnumerable<(TItem1, TItem2)> Query<TItem1, TItem2>(this IDbConnection connection, string text, ParameterCollection? parameters = null, string splitOn = "Id", QueryOptions? options = null) where TItem1: new() where TItem2: new() {
 		var records = Mapper.Instance.CreateInstances<TItem1, TItem2>(ExecuteReader(connection, text, parameters, options), splitOn);
+		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+	}
+	
+	/// <summary>
+	/// Executes a parameterized SQL query and returns a sequence of object tuples whose properties correspond to the columns.
+	/// </summary>
+	/// <typeparam name="TItem1">The type of the first objects.</typeparam>
+	/// <typeparam name="TItem2">The type of the second objects.</typeparam>
+	/// <typeparam name="TItem3">The type of the third objects.</typeparam>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="text">The SQL query to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL query.</param>
+	/// <param name="splitOn">The fields from which to split and read the next objects.</param>
+	/// <param name="options">The query options.</param>
+	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
+	public static IEnumerable<(TItem1, TItem2, TItem3)> Query<TItem1, TItem2, TItem3>(this IDbConnection connection, string text, ParameterCollection? parameters = null, (string, string)? splitOn = null, QueryOptions? options = null) where TItem1: new() where TItem2: new() where TItem3: new() {
+		var records = Mapper.Instance.CreateInstances<TItem1, TItem2, TItem3>(ExecuteReader(connection, text, parameters, options), splitOn);
+		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+	}
+
+	/// <summary>
+	/// Executes a parameterized SQL query and returns a sequence of object tuples whose properties correspond to the columns.
+	/// </summary>
+	/// <typeparam name="TItem1">The type of the first objects.</typeparam>
+	/// <typeparam name="TItem2">The type of the second objects.</typeparam>
+	/// <typeparam name="TItem3">The type of the third objects.</typeparam>
+	/// <typeparam name="TItem4">The type of the fourth objects.</typeparam>
+	/// <param name="connection">The connection to the data source.</param>
+	/// <param name="text">The SQL query to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL query.</param>
+	/// <param name="splitOn">The fields from which to split and read the next objects.</param>
+	/// <param name="options">The query options.</param>
+	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
+	public static IEnumerable<(TItem1, TItem2, TItem3, TItem4)> Query<TItem1, TItem2, TItem3, TItem4>(this IDbConnection connection, string text, ParameterCollection? parameters = null, (string, string, string)? splitOn = null, QueryOptions? options = null) where TItem1: new() where TItem2: new() where TItem3: new() where TItem4: new() {
+		var records = Mapper.Instance.CreateInstances<TItem1, TItem2, TItem3, TItem4>(ExecuteReader(connection, text, parameters, options), splitOn);
 		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
 	}
 

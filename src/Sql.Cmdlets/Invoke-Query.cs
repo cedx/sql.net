@@ -52,7 +52,7 @@ public class InvokeQueryCommand: Cmdlet {
 	public ParameterCollection Parameters { get; set; } = [];
 
 	/// <summary>
-	/// The field from which to split and read a second object.
+	/// The field from which to split and read the next object.
 	/// </summary>
 	[Parameter, ValidateNotNullOrWhiteSpace]
 	public string SplitOn { get; set; } = "Id";

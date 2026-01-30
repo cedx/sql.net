@@ -2,6 +2,7 @@
 
 ## Version [3.2.0](https://github.com/cedx/sql.net/compare/v3.1.0...v3.2.0)
 - Added new `CreateInstance()` and `CreateInstances()` overloads to the `Mapper` class.
+- Added new `Query()` and `QueryAsync()` overloads to the `ConnectionExtensions` class.
 - Added the `TableInfo.Type` property.
 
 ## Version [3.1.0](https://github.com/cedx/sql.net/compare/v3.0.1...v3.1.0)

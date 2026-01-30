@@ -14,7 +14,7 @@ public class PublishObjectCommand: Cmdlet {
 	/// </summary>
 	[Parameter(Mandatory = true, Position = 0)]
 	public required IDbConnection Connection { get; set; }
-	
+
 	/// <summary>
 	/// The entity to insert.
 	/// </summary>

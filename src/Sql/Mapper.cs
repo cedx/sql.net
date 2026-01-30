@@ -48,7 +48,7 @@ public sealed class Mapper {
 	/// <typeparam name="TItem1">The type of the first object.</typeparam>
 	/// <typeparam name="TItem2">The type of the second object.</typeparam>
 	/// <param name="record">A data record providing the properties to be set on the created objects.</param>
-	/// <param name="splitOn">The field from which to split and read the second object.</param>
+	/// <param name="splitOn">The field from which to split and read the next object.</param>
 	/// <returns>The newly created object pair.</returns>
 	public (TItem1, TItem2) CreateInstance<TItem1, TItem2>(IDataRecord record, string splitOn = "Id") where TItem1: new() where TItem2: new() {
 		var records = SplitOn(record, splitOn);
@@ -67,7 +67,7 @@ public sealed class Mapper {
 	/// <param name="record">A data record providing the properties to be set on the created objects.</param>
 	/// <param name="splitOn">The fields from which to split and read the next objects.</param>
 	/// <returns>The newly created object tuple.</returns>
-	public (TItem1, TItem2, TItem3) CreateInstance<TItem1, TItem2, TItem3>(IDataRecord record, (string, string)? splitOn = null) where TItem1 : new() where TItem2 : new() where TItem3 : new() {
+	public (TItem1, TItem2, TItem3) CreateInstance<TItem1, TItem2, TItem3>(IDataRecord record, (string, string)? splitOn = null) where TItem1: new() where TItem2: new() where TItem3: new() {
 		var (firstField, secondField) = splitOn ?? ("Id", "Id");
 		var records = SplitOn(record, firstField, secondField);
 		return (
@@ -87,7 +87,7 @@ public sealed class Mapper {
 	/// <param name="record">A data record providing the properties to be set on the created objects.</param>
 	/// <param name="splitOn">The fields from which to split and read the next objects.</param>
 	/// <returns>The newly created object tuple.</returns>
-	public (TItem1, TItem2, TItem3, TItem4) CreateInstance<TItem1, TItem2, TItem3, TItem4>(IDataRecord record, (string, string, string)? splitOn = null) where TItem1 : new() where TItem2 : new() where TItem3 : new() where TItem4 : new() {
+	public (TItem1, TItem2, TItem3, TItem4) CreateInstance<TItem1, TItem2, TItem3, TItem4>(IDataRecord record, (string, string, string)? splitOn = null) where TItem1: new() where TItem2: new() where TItem3: new() where TItem4: new() {
 		var (firstField, secondField, thirdField) = splitOn ?? ("Id", "Id", "Id");
 		var records = SplitOn(record, firstField, secondField, thirdField);
 		return (
@@ -152,13 +152,13 @@ public sealed class Mapper {
 	/// <typeparam name="TItem1">The type of the first object.</typeparam>
 	/// <typeparam name="TItem2">The type of the second object.</typeparam>
 	/// <param name="reader">A data reader providing the properties to be set on the created objects.</param>
-	/// <param name="splitOn">The field from which to split and read the second object.</param>
+	/// <param name="splitOn">The field from which to split and read the next object.</param>
 	/// <returns>An enumerable of newly created object pairs.</returns>
 	public IEnumerable<(TItem1, TItem2)> CreateInstances<TItem1, TItem2>(IDataReader reader, string splitOn = "Id") where TItem1: new() where TItem2: new() {
 		while (reader.Read()) yield return CreateInstance<TItem1, TItem2>(reader, splitOn);
 		reader.Close();
 	}
-	
+
 	/// <summary>
 	/// Creates new object tuples of the given types from the specified data reader.
 	/// </summary>
@@ -172,7 +172,7 @@ public sealed class Mapper {
 		while (reader.Read()) yield return CreateInstance<TItem1, TItem2, TItem3>(reader, splitOn);
 		reader.Close();
 	}
-		
+
 	/// <summary>
 	/// Creates new object tuples of the given types from the specified data reader.
 	/// </summary>
@@ -230,7 +230,7 @@ public sealed class Mapper {
 			_ => isNullable ? default : Activator.CreateInstance(targetType)
 		};
 	}
-	
+
 	/// <summary>
 	/// Splits the specified data record according to the specified fields.
 	/// </summary>
