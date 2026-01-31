@@ -33,6 +33,11 @@ public sealed class TableInfo {
 	/// The entity type associated with this table.
 	/// </summary>
 	public Type Type { get; }
+	
+	/// <summary>
+	/// TODO The lock used to safely instanciate the <see cref="ColumnInfo"/> objects.
+	/// </summary>
+	private readonly Lock lockObject = new();
 
 	/// <summary>
 	/// Creates new table information.
@@ -43,7 +48,7 @@ public sealed class TableInfo {
 		var columns = type
 			.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
 			.Where(property => !property.IsDefined(typeof(NotMappedAttribute)) && ((property.CanRead && property.CanWrite) || property.IsDefined(typeof(ColumnAttribute))))
-			.Select(property => new ColumnInfo(property))
+			.Select(property => { lock (lockObject) { return new ColumnInfo(property); } })
 			.ToFrozenDictionary(column => column.Name);
 
 		Columns = columns;
