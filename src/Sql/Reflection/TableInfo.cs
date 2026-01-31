@@ -1,6 +1,6 @@
 namespace Belin.Sql.Reflection;
 
-using System.Collections.Frozen;
+using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
@@ -39,12 +39,14 @@ public sealed class TableInfo {
 	/// </summary>
 	/// <param name="type">The type information providing the table metadata.</param>
 	public TableInfo(Type type) {
+		var properties =
+			from property in type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+			where !property.IsDefined(typeof(NotMappedAttribute)) && ((property.CanRead && property.CanWrite) || property.IsDefined(typeof(ColumnAttribute)))
+			select property;
+
 		var table = type.GetCustomAttribute<TableAttribute>();
-		var columns = type
-			.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
-			.Where(property => !property.IsDefined(typeof(NotMappedAttribute)) && ((property.CanRead && property.CanWrite) || property.IsDefined(typeof(ColumnAttribute))))
-			.Select(property => new ColumnInfo(property))
-			.ToFrozenDictionary(column => column.Name);
+		var columns = new ConcurrentDictionary<string, ColumnInfo>();
+		foreach (var property in properties) columns.TryAdd(property.Name, new ColumnInfo(property));
 
 		Columns = columns;
 		IdentityColumn = columns.Values.SingleOrDefault(column => column.IsIdentity) ?? (columns.TryGetValue("Id", out var column) ? column : null);
