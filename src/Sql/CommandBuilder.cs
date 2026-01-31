@@ -141,7 +141,7 @@ public class CommandBuilder {
 
 		var parameter = new Parameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id);
 		var text = $"""
-			SELECT {(columns is null || columns.Length == 0 ? "*" : string.Join(", ", columns.Select(QuoteIdentifier)))}
+			SELECT {(columns.Length == 0 ? "*" : string.Join(", ", columns.Select(QuoteIdentifier)))}
 			FROM {GetTableName(table)}
 			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
 			""";
@@ -184,7 +184,7 @@ public class CommandBuilder {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 
-		var fields = (columns is null || columns.Length == 0 ? table.Columns.Values : table.Columns.Values.Where(column => columns.Contains(column.Name)))
+		var fields = (columns.Length == 0 ? table.Columns.Values : table.Columns.Values.Where(column => columns.Contains(column.Name)))
 			.Where(column => column.CanRead && !column.IsComputed)
 			.ToArray();
 

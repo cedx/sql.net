@@ -8,7 +8,7 @@ using System.Data.SQLite;
 /// </summary>
 /// <param name="testContext">The test context.</param>
 [TestClass]
-public sealed class ConnectionExtensionsTests(TestContext testContext) {
+public sealed class ConnectionExtensionsQueryTests(TestContext testContext) {
 
 	/// <summary>
 	/// The connection to the data source.
@@ -20,14 +20,6 @@ public sealed class ConnectionExtensionsTests(TestContext testContext) {
 
 	[TestCleanup]
 	public void TestCleanup() => connection.Close();
-
-	[TestMethod]
-	public async Task ExecuteScalar() {
-		var sql = "SELECT COUNT(*) FROM Characters WHERE Gender = @Gender";
-		var parameters = new ParameterCollection("Gender", CharacterGender.Balrog.ToString());
-		AreEqual(2, connection.ExecuteScalar<int>(sql, parameters));
-		AreEqual(2, await connection.ExecuteScalarAsync<int>(sql, parameters, cancellationToken: testContext.CancellationToken));
-	}
 
 	[TestMethod]
 	public async Task Query() {
