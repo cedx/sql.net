@@ -41,25 +41,31 @@ public sealed class ConnectionExtensionsTests(TestContext testContext) {
 	//	HasCount(3, records);
 	//}
 
-	//[TestMethod]
-	//public async Task QueryFirst() {
-	//	var sql = "SELECT * FROM Characters WHERE FullName = @FullName";
-	//	var parameters = new ParameterCollection("FullName", "Sauron");
+	[TestMethod]
+	public async Task QueryFirst() {
+		var sql = "SELECT * FROM Characters WHERE FullName = @FullName";
+		var parameters = new ParameterCollection("FullName", "Sauron");
 
-	//	var record = connection.QueryFirst<Character>(sql, parameters);
-	//	AreEqual("Sauron", record.FirstName);
-	//	AreEqual(CharacterGender.DarkLord, record.Gender);
-	//}
+		var record = connection.QueryFirst<Character>(sql, parameters);
+		AreEqual("Sauron", record.FirstName);
+		AreEqual(CharacterGender.DarkLord, record.Gender);
 
-	//[TestMethod]
-	//public async Task QuerySingle() {
-	//	var sql = "SELECT * FROM Characters WHERE Gender = @Gender ORDER BY FullName";
-	//	var parameters = new ParameterCollection("Gender", CharacterGender.Elf.ToString());
+		record = await connection.QueryFirstAsync<Character>(sql, parameters, cancellationToken: testContext.CancellationToken);
+		AreEqual("Sauron", record.FirstName);
+		AreEqual(CharacterGender.DarkLord, record.Gender);
+	}
 
-	//	var records = connection.Query<Character>(sql, parameters).AsList();
-	//	HasCount(3, records);
+	[TestMethod]
+	public async Task QuerySingle() {
+		var sql = "SELECT * FROM Characters WHERE FullName = @FullName";
+		var parameters = new ParameterCollection("FullName", "Saruman");
 
-	//	records = (await connection.QueryAsync<Character>(sql, parameters, cancellationToken: testContext.CancellationToken)).AsList();
-	//	HasCount(3, records);
-	//}
+		var record = connection.QuerySingle<Character>(sql, parameters);
+		AreEqual("Saruman", record.FirstName);
+		AreEqual(CharacterGender.Istari, record.Gender);
+
+		record = await connection.QuerySingleAsync<Character>(sql, parameters, cancellationToken: testContext.CancellationToken);
+		AreEqual("Saruman", record.FirstName);
+		AreEqual(CharacterGender.Istari, record.Gender);
+	}
 }
