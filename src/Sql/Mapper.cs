@@ -2,7 +2,7 @@ namespace Belin.Sql;
 
 using Belin.Sql.Reflection;
 using System.Collections;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Data;
 using System.Dynamic;
 using System.Globalization;
@@ -21,7 +21,7 @@ public sealed class Mapper {
 	/// <summary>
 	/// The mapping between the entity types and their associated database tables.
 	/// </summary>
-	private static readonly Dictionary<Type, TableInfo> mapping = [];
+	private static readonly ConcurrentDictionary<Type, TableInfo> mapping = [];
 
 	/// <summary>
 	/// Creates a new data mapper.
