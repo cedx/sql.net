@@ -213,7 +213,8 @@ public sealed class Mapper {
 	/// <returns>The table information associated with the specified type.</returns>
 	public TableInfo GetTable<T>() where T: new() {
 		var type = typeof(T);
-		return mapping.TryGetValue(type, out var table) ? table : mapping[type] = new TableInfo(type);
+		mapping.TryAdd(type, new TableInfo(type));
+		return mapping[type];
 	}
 
 	/// <summary>
