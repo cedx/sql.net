@@ -211,10 +211,7 @@ public sealed class Mapper {
 	/// </summary>
 	/// <typeparam name="T">The type to inspect.</typeparam>
 	/// <returns>The table information associated with the specified type.</returns>
-	public TableInfo GetTable<T>() where T: new() {
-		var type = typeof(T);
-		return mapping.GetOrAdd(type, new TableInfo(type));
-	}
+	public TableInfo GetTable<T>() where T: new() => mapping.GetOrAdd(typeof(T), type => new TableInfo(type));
 
 	/// <summary>
 	/// Converts the specified object into an equivalent value of the specified type.
