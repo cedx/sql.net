@@ -49,6 +49,11 @@ public sealed class ColumnInfo {
 	public Type Type => property.PropertyType;
 
 	/// <summary>
+	/// TODO
+	/// </summary>
+	private readonly Lock initLock = new();
+
+	/// <summary>
 	/// The property information providing the column metadata.
 	/// </summary>
 	private readonly PropertyInfo property;
@@ -63,8 +68,11 @@ public sealed class ColumnInfo {
 		var databaseGeneratedOption = property.GetCustomAttribute<DatabaseGeneratedAttribute>()?.DatabaseGeneratedOption ?? DatabaseGeneratedOption.None;
 		IsComputed = databaseGeneratedOption != DatabaseGeneratedOption.None;
 		IsIdentity = databaseGeneratedOption == DatabaseGeneratedOption.Identity;
-		IsNullable = Nullable.GetUnderlyingType(property.PropertyType) is not null || nullabilityContext.Create(property).WriteState != NullabilityState.NotNull;
 		Name = property.GetCustomAttribute<ColumnAttribute>()?.Name ?? property.Name;
+
+		lock (initLock) {
+			IsNullable = Nullable.GetUnderlyingType(property.PropertyType) is not null || nullabilityContext.Create(property).WriteState != NullabilityState.NotNull;
+		}
 	}
 
 	/// <summary>
