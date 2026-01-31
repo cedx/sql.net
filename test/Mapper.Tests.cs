@@ -95,11 +95,12 @@ public sealed class MapperTests {
 	[TestMethod]
 	public void GetTable() {
 		var table = Mapper.Instance.GetTable<Character>();
+		HasCount(5, table.Columns.Keys);
+		AreEqual(table.Columns[nameof(Character.Id)], table.IdentityColumn);
 		AreEqual("Characters", table.Name);
 		AreEqual("main", table.Schema);
 		AreEqual(typeof(Character), table.Type);
 
-		HasCount(5, table.Columns.Keys);
 		IsTrue(table.Columns[nameof(Character.FirstName)].CanWrite);
 		IsTrue(table.Columns[nameof(Character.FullName)].IsComputed);
 		AreEqual(typeof(CharacterGender), table.Columns[nameof(Character.Gender)].Type);
