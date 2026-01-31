@@ -13,6 +13,10 @@
 		<File Path="License.md" />
 		<File Path="ReadMe.md" />
 	</Folder>
+	<Folder Name="/Resources/">
+		<File Path="res/Database.sqlite" />
+		<File Path="res/Schema.sql" />
+	</Folder>
 	<Folder Name="/Scripts/">
 		<File Path="Debug.ps1" />
 		<File Path="Invoke.ps1" />

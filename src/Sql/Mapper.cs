@@ -285,7 +285,7 @@ public sealed class Mapper {
 		foreach (var (index, (key, value)) in record.Index()) {
 			if (index > 0 && key.Equals(splitOn)) {
 				records.Add(properties);
-				properties = new Dictionary<string, object?>(record.Count);
+				properties = new Dictionary<string, object?>(record.Count - index);
 				if (fieldQueue.TryDequeue(out var field)) splitOn = field;
 			}
 

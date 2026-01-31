@@ -3,6 +3,7 @@ CREATE TABLE "Characters" (
 	"Id" integer PRIMARY KEY,
 	"FirstName" text NOT NULL CHECK (LENGTH("FirstName") > 0),
 	"LastName" text,
+	"FullName" text AS (trim(concat("FirstName", ' ', "LastName"))) STORED,
 	"Gender" text NOT NULL CHECK ("Gender" IN ('Balrog', 'DarkLord', 'Dwarf', 'Elf', 'Hobbit', 'Human', 'Istari'))
 );
 

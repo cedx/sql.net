@@ -1,5 +1,7 @@
 namespace Belin.Sql.Fixtures;
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 /// <summary>
 /// Represents a fictional character from a well-known saga.
 /// </summary>
@@ -11,9 +13,20 @@ public sealed class Character {
 	public string FirstName { get; set; } = "";
 
 	/// <summary>
+	/// The full name.
+	/// </summary>
+	[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+	public string FullName { get; set; } = "";
+
+	/// <summary>
 	/// The character's gender.
 	/// </summary>
 	public CharacterGender Gender { get; set; } = CharacterGender.Human;
+
+	/// <summary>
+	/// The character's identifier.
+	/// </summary>
+	public int Id { get; set; }
 
 	/// <summary>
 	/// The last name.
