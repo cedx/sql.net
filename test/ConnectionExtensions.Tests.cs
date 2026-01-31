@@ -29,17 +29,25 @@ public sealed class ConnectionExtensionsTests(TestContext testContext) {
 		AreEqual(2, await connection.ExecuteScalarAsync<int>(sql, parameters, cancellationToken: testContext.CancellationToken));
 	}
 
-	//[TestMethod]
-	//public async Task Query() {
-	//	var sql = "SELECT * FROM Characters WHERE Gender = @Gender ORDER BY FullName";
-	//	var parameters = new ParameterCollection("Gender", CharacterGender.Elf.ToString());
+	[TestMethod]
+	public async Task Query() {
+		var sql = "SELECT * FROM Characters WHERE Gender = @Gender ORDER BY FullName";
+		var parameters = new ParameterCollection("Gender", CharacterGender.Elf.ToString());
 
-	//	var records = connection.Query<Character>(sql, parameters).AsList();
-	//	HasCount(3, records);
+		var records = connection.Query<Character>(sql, parameters).AsList();
+		HasCount(3, records);
 
-	//	records = (await connection.QueryAsync<Character>(sql, parameters, cancellationToken: testContext.CancellationToken)).AsList();
-	//	HasCount(3, records);
-	//}
+		var elrond = records[0];
+		AreEqual("Elrond", elrond.FullName);
+		AreEqual(CharacterGender.Elf, elrond.Gender);
+
+		records = (await connection.QueryAsync<Character>(sql, parameters, cancellationToken: testContext.CancellationToken)).AsList();
+		HasCount(3, records);
+
+		var galadriel = records[1];
+		AreEqual("Galadriel", galadriel.FullName);
+		AreEqual(CharacterGender.Elf, galadriel.Gender);
+	}
 
 	[TestMethod]
 	public async Task QueryFirst() {
