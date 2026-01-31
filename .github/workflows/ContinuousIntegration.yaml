@@ -16,10 +16,9 @@ jobs:
         with:
           dotnet-version: 10
       - name: Set up PowerShell
-        shell: bash
         run: |
-          wget --output-document=var/PowerShell.deb --quiet "https://github.com/PowerShell/PowerShell/releases/download/v7.5.4/powershell_7.5.4-1.deb_amd64.deb"
-          sudo apt-get --assume-yes --quiet install ./var/PowerShell.deb
+          Invoke-WebRequest https://github.com/PowerShell/PowerShell/releases/download/v7.5.4/PowerShell-7.5.4-win-x64.msi -OutFile var/PowerShell.msi
+          msiexec /package var/PowerShell.msi /passive
       - name: Install dependencies
         run: ./Invoke.ps1 Install
       - name: Run tests
