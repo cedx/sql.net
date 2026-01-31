@@ -4,8 +4,7 @@
 #>
 Describe "Get-Mapper" {
 	BeforeAll {
-		Import-Module "$PSScriptRoot/../../Sql.psd1"
-		. "$PSScriptRoot/../Fixtures/Character.ps1"
+		. "$PSScriptRoot/BeforeAll.ps1"
 	}
 
 	Describe "CreateInstance()" {

@@ -16,7 +16,7 @@ public sealed class ConnectionExtensionsExecuteTests(TestContext testContext) {
 	private SQLiteConnection connection = default!;
 
 	[TestInitialize]
-	public void TestInitialize() => connection = new SQLiteConnection($"DataSource={Path.Join(AppContext.BaseDirectory, "../res/Database.sqlite")}");
+	public void TestInitialize() => connection = That.CreateInMemoryDatabase();
 
 	[TestCleanup]
 	public void TestCleanup() => connection.Close();
