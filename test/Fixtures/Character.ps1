@@ -4,6 +4,7 @@ using namespace System.ComponentModel.DataAnnotations.Schema
 .SYNOPSIS
 	Represents a fictional character from a well-known saga.
 #>
+[Table("Characters", Schema = "main")]
 class Character {
 
 	<#
@@ -29,6 +30,7 @@ class Character {
 	.SYNOPSIS
 		The character's identifier.
 	#>
+	[DatabaseGenerated([DatabaseGeneratedOption]::Identity)]
 	[int] $Id = 0
 
 	<#

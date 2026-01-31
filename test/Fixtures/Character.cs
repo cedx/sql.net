@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 /// <summary>
 /// Represents a fictional character from a well-known saga.
 /// </summary>
+[Table("Characters", Schema = "main")]
 public sealed class Character {
 
 	/// <summary>
@@ -26,6 +27,7 @@ public sealed class Character {
 	/// <summary>
 	/// The character's identifier.
 	/// </summary>
+	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	public int Id { get; set; }
 
 	/// <summary>

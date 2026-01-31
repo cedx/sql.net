@@ -93,6 +93,21 @@ public sealed class MapperTests {
 	}
 
 	[TestMethod]
+	public void GetTable() {
+		var table = Mapper.Instance.GetTable<Character>();
+		AreEqual("Characters", table.Name);
+		AreEqual("main", table.Schema);
+		AreEqual(typeof(Character), table.Type);
+
+		HasCount(5, table.Columns.Keys);
+		IsTrue(table.Columns[nameof(Character.FirstName)].CanWrite);
+		IsTrue(table.Columns[nameof(Character.FullName)].IsComputed);
+		AreEqual(typeof(CharacterGender), table.Columns[nameof(Character.Gender)].Type);
+		IsTrue(table.Columns[nameof(Character.Id)].IsIdentity);
+		AreEqual(typeof(string), table.Columns[nameof(Character.LastName)].Type);
+	}
+
+	[TestMethod]
 	public void SplitOn() {
 		var record = new List<KeyValuePair<string, object?>> {
 			new("Id", 123),
