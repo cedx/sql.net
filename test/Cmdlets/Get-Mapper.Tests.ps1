@@ -35,17 +35,18 @@ Describe "Get-Mapper" {
 	Describe "GetTable()" {
 		It "should return information about the tables and columns of an entity type" {
 			$table = (Get-SqlMapper).GetTable[Character]()
+			$table.Schema | Should -BeExactly main
+			$table.Name | Should -BeExactly Characters
+			$table.Type | Should -Be ([Character])
+
 			$table.Columns.Keys | Should -HaveCount 5
 			$table.IdentityColumn | Should -Be $table.Columns["Id"]
-			$table.Name | Should -BeExactly "Characters"
-			$table.Schema | Should -BeExactly "main"
-			$table.Type | Should -Be ([Character])
+			$table.Columns["Gender"].Type | Should -Be ([CharacterGender])
+			$table.Columns["LastName"].Type | Should -Be ([string])
 
 			$table.Columns["FirstName"].CanWrite | Should -BeTrue
 			$table.Columns["FullName"].IsComputed | Should -BeTrue
-			$table.Columns["Gender"].Type | Should -Be ([CharacterGender])
 			$table.Columns["Id"].IsIdentity | Should -BeTrue
-			$table.Columns["LastName"].Type | Should -Be ([string])
 		}
 	}
 }

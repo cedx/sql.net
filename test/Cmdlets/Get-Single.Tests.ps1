@@ -23,7 +23,7 @@ Describe "Get-Single" {
 	It "should return the single record produced by the SQL query" {
 		$sql = "SELECT * FROM Characters WHERE FullName = @FullName"
 		$record = Get-SqlSingle $connection -As ([Character]) -Command $sql -Parameters @{ FullName = "Saruman" }
-		$record.FirstName | Should -BeExactly "Saruman"
+		$record.FirstName | Should -BeExactly Saruman
 		$record.Gender | Should -Be ([CharacterGender]::Istari)
 	}
 }

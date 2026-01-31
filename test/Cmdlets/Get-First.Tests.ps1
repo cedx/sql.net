@@ -23,7 +23,7 @@ Describe "Get-First" {
 	It "should return the first record produced by the SQL query" {
 		$sql = "SELECT * FROM Characters WHERE FullName = @FullName"
 		$record = Get-SqlFirst $connection -As ([Character]) -Command $sql -Parameters @{ FullName = "Sauron" }
-		$record.FirstName | Should -BeExactly "Sauron"
+		$record.FirstName | Should -BeExactly Sauron
 		$record.Gender | Should -Be ([CharacterGender]::DarkLord)
 	}
 }

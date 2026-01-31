@@ -23,5 +23,9 @@ Describe "Get-Scalar" {
 		$sql = "SELECT COUNT(*) FROM Characters WHERE Gender = @Gender"
 		$value = Get-SqlScalar $connection -Command $sql -Parameters @{ Gender = "Balrog" }
 		$value | Should -Be 2
+
+		$sql = "SELECT tbl_name FROM sqlite_schema WHERE type = 'table' AND name = @Name"
+		$value = Get-SqlScalar $connection -Command $sql -Parameters @{ Name = "Characters" }
+		$value | Should -BeExactly Characters
 	}
 }

@@ -26,11 +26,11 @@ Describe "Invoke-Query" {
 		$records | Should -HaveCount 3
 
 		$elrond = $records[0]
-		$elrond.FullName | Should -BeExactly "Elrond"
+		$elrond.FullName | Should -BeExactly Elrond
 		$elrond.Gender | Should -Be ([CharacterGender]::Elf)
 
 		$galadriel = $records[1]
-		$galadriel.FullName | Should -BeExactly "Galadriel"
+		$galadriel.FullName | Should -BeExactly Galadriel
 		$galadriel.Gender | Should -Be ([CharacterGender]::Elf)
 	}
 }
