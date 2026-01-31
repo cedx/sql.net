@@ -17,8 +17,8 @@ jobs:
           dotnet-version: 10
       - name: Set up PowerShell
         run: |
-          Invoke-WebRequest "https://github.com/PowerShell/PowerShell/releases/download/v7.5.4/PowerShell-7.5.4-win-x64.msi" -OutFile var/PowerShell.msi
-          msiexec /package ./var/PowerShell.msi /passive
+          Invoke-WebRequest "https://github.com/PowerShell/PowerShell/releases/download/v7.5.4/PowerShell-7.5.4-win-x64.msi" -OutFile var\PowerShell.msi
+          msiexec /norestart /quiet /package var\PowerShell.msi
       - name: Install dependencies
         run: ./Invoke.ps1 Install
       - name: Run tests
