@@ -21,11 +21,20 @@ public sealed class ConnectionExtensionsEntityTests(TestContext testContext) {
 	[TestCleanup]
 	public void TestCleanup() => connection.Close();
 
-	//[TestMethod]
-	//public async Task ExecuteScalar() {
-	//	var sql = "SELECT COUNT(*) FROM Characters WHERE Gender = @Gender";
-	//	var parameters = new ParameterCollection("Gender", CharacterGender.Balrog.ToString());
-	//	AreEqual(2, connection.ExecuteScalar<int>(sql, parameters));
-	//	AreEqual(2, await connection.ExecuteScalarAsync<int>(sql, parameters, cancellationToken: testContext.CancellationToken));
-	//}
+	[TestMethod]
+	public async Task Delete() {
+		var sql = "SELECT * FROM Characters WHERE Id = @Id";
+
+		var record = connection.QuerySingleOrDefault<Character>(sql, new("Id", 1));
+		IsNotNull(record);
+		IsTrue(connection.Delete(record));
+		IsFalse(connection.Delete(record));
+		IsNull(connection.QuerySingleOrDefault<Character>(sql, new("Id", 1)));
+
+		record = await connection.QuerySingleOrDefaultAsync<Character>(sql, new("Id", 2), cancellationToken: testContext.CancellationToken);
+		IsNotNull(record);
+		IsTrue(await connection.DeleteAsync(record, cancellationToken: testContext.CancellationToken));
+		IsFalse(await connection.DeleteAsync(record, cancellationToken: testContext.CancellationToken));
+		IsNull(await connection.QuerySingleOrDefaultAsync<Character>(sql, new("Id", 2), cancellationToken: testContext.CancellationToken));
+	}
 }

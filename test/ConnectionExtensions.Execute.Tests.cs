@@ -40,8 +40,8 @@ public sealed class ConnectionExtensionsExecuteTests(TestContext testContext) {
 		AreEqual(2, connection.ExecuteScalar<int>(sql, parameters));
 		AreEqual(2, await connection.ExecuteScalarAsync<int>(sql, parameters, cancellationToken: testContext.CancellationToken));
 
-		sql = "SELECT tbl_name FROM sqlite_schema WHERE type = 'table' AND name = @Name";
-		parameters = new ParameterCollection("Name", "Characters");
+		sql = "SELECT tbl_name FROM sqlite_schema WHERE type = @Type AND name = @Name";
+		parameters = new ParameterCollection([("Name", "Characters"), ("Type", "table")]);
 		AreEqual("Characters", connection.ExecuteScalar<string>(sql, parameters));
 		AreEqual("Characters", await connection.ExecuteScalarAsync<string>(sql, parameters, cancellationToken: testContext.CancellationToken));
 	}
