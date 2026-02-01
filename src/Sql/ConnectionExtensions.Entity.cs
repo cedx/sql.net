@@ -28,10 +28,11 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="instance">The entity to delete.</param>
 	/// <param name="options">The command options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns><see langword="true"/> if the specified entity has been deleted, otherwise <see langword="false"/>.</returns>
-	public static async Task<bool> DeleteAsync<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
+	public static async Task<bool> DeleteAsync<T>(this IDbConnection connection, T instance, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		var (text, parameters) = new CommandBuilder(connection).GetDeleteCommand(instance);
-		return await ExecuteAsync(connection, text, parameters, options) > 0;
+		return await ExecuteAsync(connection, text, parameters, options, cancellationToken) > 0;
 	}
 
 	/// <summary>
@@ -54,10 +55,11 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="id">The primary key value.</param>
 	/// <param name="options">The command options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns><see langword="true"/> if an entity with the specified primary key exists, otherwise <see langword="false"/>.</returns>
-	public static async Task<bool> ExistsAsync<T>(this IDbConnection connection, object id, CommandOptions? options = null) where T: new() {
+	public static async Task<bool> ExistsAsync<T>(this IDbConnection connection, object id, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		var (text, parameters) = new CommandBuilder(connection).GetExistsCommand<T>(id);
-		return await ExecuteScalarAsync<bool>(connection, text, parameters, options);
+		return await ExecuteScalarAsync<bool>(connection, text, parameters, options, cancellationToken);
 	}
 
 	/// <summary>
@@ -82,10 +84,11 @@ public static partial class ConnectionExtensions {
 	/// <param name="id">The primary key value.</param>
 	/// <param name="columns">The list of columns to select. By default, all columns.</param>
 	/// <param name="options">The command options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The entity with the specified primary key, or <see langword="null"/> if not found.</returns>
-	public static async Task<T?> FindAsync<T>(this IDbConnection connection, object id, string[]? columns = null, CommandOptions? options = null) where T: new() {
+	public static async Task<T?> FindAsync<T>(this IDbConnection connection, object id, string[]? columns = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		var (text, parameters) = new CommandBuilder(connection).GetFindCommand<T>(id, columns ?? []);
-		return await QuerySingleOrDefaultAsync<T>(connection, text, parameters, options);
+		return await QuerySingleOrDefaultAsync<T>(connection, text, parameters, options, cancellationToken);
 	}
 
 	/// <summary>
@@ -110,10 +113,11 @@ public static partial class ConnectionExtensions {
 	/// <param name="connection">The connection to the data source.</param>
 	/// <param name="instance">The entity to insert.</param>
 	/// <param name="options">The command options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The generated primary key value.</returns>
-	public static async Task<long> InsertAsync<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
+	public static async Task<long> InsertAsync<T>(this IDbConnection connection, T instance, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		var (text, parameters) = new CommandBuilder(connection).GetInsertCommand(instance);
-		var id = await ExecuteScalarAsync<long>(connection, text, parameters, options);
+		var id = await ExecuteScalarAsync<long>(connection, text, parameters, options, cancellationToken);
 		if (Mapper.Instance.GetTable<T>().IdentityColumn is ColumnInfo column) column.SetValue(instance, Mapper.ChangeType(id, column));
 		return id;
 	}
@@ -140,9 +144,10 @@ public static partial class ConnectionExtensions {
 	/// <param name="instance">The entity to update.</param>
 	/// <param name="columns">The list of columns to update. By default, all columns.</param>
 	/// <param name="options">The command options.</param>
+	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The number of rows affected.</returns>
-	public static async Task<int> UpdateAsync<T>(this IDbConnection connection, T instance, string[]? columns = null, CommandOptions? options = null) where T: new() {
+	public static async Task<int> UpdateAsync<T>(this IDbConnection connection, T instance, string[]? columns = null, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		var (text, parameters) = new CommandBuilder(connection).GetUpdateCommand(instance, columns ?? []);
-		return await ExecuteAsync(connection, text, parameters, options);
+		return await ExecuteAsync(connection, text, parameters, options, cancellationToken);
 	}
 }
