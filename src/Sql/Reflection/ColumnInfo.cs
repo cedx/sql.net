@@ -11,6 +11,7 @@ public sealed class ColumnInfo {
 	/// <summary>
 	/// The nullability context.
 	/// </summary>
+	[ThreadStatic]
 	private static readonly NullabilityInfoContext nullabilityContext = new();
 
 	/// <summary>

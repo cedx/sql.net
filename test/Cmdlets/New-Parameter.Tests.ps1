@@ -4,7 +4,7 @@
 #>
 Describe "New-Parameter" {
 	BeforeAll {
-		Import-Module "$PSScriptRoot/../../Sql.psd1"
+		. "$PSScriptRoot/BeforeAll.ps1"
 	}
 
 	It "should normalize the parameter name" -ForEach @(
