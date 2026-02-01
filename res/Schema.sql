@@ -7,7 +7,9 @@ CREATE TABLE "Characters" (
 	"gender" text NOT NULL CHECK ("gender" IN ('Balrog', 'DarkLord', 'Dwarf', 'Elf', 'Hobbit', 'Human', 'Istari'))
 );
 
+CREATE INDEX "IX_Characters_FullName" ON "Characters" ("fullName");
 CREATE INDEX "IX_Characters_Gender" ON "Characters" ("gender");
+
 INSERT INTO "Characters" ("firstName", "lastName", "gender") VALUES
 	('Aragorn', NULL, 'Human'),
 	('Balin', NULL, 'Dwarf'),
