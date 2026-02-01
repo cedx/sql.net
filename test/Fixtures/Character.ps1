@@ -11,12 +11,14 @@ class Character {
 	.SYNOPSIS
 		The first name.
 	#>
+	[Column("firstName")]
 	[string] $FirstName = ""
 
 	<#
 	.SYNOPSIS
 		The full name.
 	#>
+	[Column("fullName")]
 	[DatabaseGenerated([DatabaseGeneratedOption]::Computed)]
 	[string] $FullName = ""
 
@@ -24,12 +26,14 @@ class Character {
 	.SYNOPSIS
 		The character's gender.
 	#>
+	[Column("gender")]
 	[CharacterGender] $Gender = [CharacterGender]::Human
 
 	<#
 	.SYNOPSIS
 		The character's identifier.
 	#>
+	[Column("ID")]
 	[DatabaseGenerated([DatabaseGeneratedOption]::Identity)]
 	[int] $Id = 0
 
@@ -37,6 +41,7 @@ class Character {
 	.SYNOPSIS
 		The last name.
 	#>
+	[Column("lastName")]
 	[string] $LastName = ""
 }
 

@@ -1,14 +1,14 @@
 DROP TABLE IF EXISTS "Characters";
 CREATE TABLE "Characters" (
-	"Id" integer PRIMARY KEY,
-	"FirstName" text NOT NULL CHECK (LENGTH("FirstName") > 0),
-	"LastName" text,
-	"FullName" text AS (trim(concat("FirstName", ' ', "LastName"))) STORED,
-	"Gender" text NOT NULL CHECK ("Gender" IN ('Balrog', 'DarkLord', 'Dwarf', 'Elf', 'Hobbit', 'Human', 'Istari'))
+	"ID" integer PRIMARY KEY,
+	"firstName" text NOT NULL CHECK (LENGTH("firstName") > 0),
+	"lastName" text,
+	"fullName" text AS (trim(concat("firstName", ' ', "lastName"))) STORED,
+	"gender" text NOT NULL CHECK ("gender" IN ('Balrog', 'DarkLord', 'Dwarf', 'Elf', 'Hobbit', 'Human', 'Istari'))
 );
 
-CREATE INDEX "IX_Characters_Gender" ON "Characters" ("Gender");
-INSERT INTO "Characters" ("FirstName", "LastName", "Gender") VALUES
+CREATE INDEX "IX_Characters_Gender" ON "Characters" ("gender");
+INSERT INTO "Characters" ("firstName", "lastName", "gender") VALUES
 	('Aragorn', NULL, 'Human'),
 	('Balin', NULL, 'Dwarf'),
 	('Boromir', NULL, 'Human'),

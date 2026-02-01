@@ -11,28 +11,31 @@ public sealed class Character {
 	/// <summary>
 	/// The first name.
 	/// </summary>
+	[Column("firstName")]
 	public string FirstName { get; set; } = "";
 
 	/// <summary>
 	/// The full name.
 	/// </summary>
-	[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+	[Column("fullName"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
 	public string FullName { get; set; } = "";
 
 	/// <summary>
 	/// The character's gender.
 	/// </summary>
+	[Column("gender")]
 	public CharacterGender Gender { get; set; } = CharacterGender.Human;
 
 	/// <summary>
 	/// The character's identifier.
 	/// </summary>
-	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+	[Column("ID"), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	public int Id { get; set; }
 
 	/// <summary>
 	/// The last name.
 	/// </summary>
+	[Column("lastName")]
 	public string LastName { get; set; } = "";
 }
 
