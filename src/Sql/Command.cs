@@ -5,4 +5,4 @@ namespace Belin.Sql;
 /// </summary>
 /// <param name="Text">The text of the SQL statement.</param>
 /// <param name="Parameters">The parameters of the SQL statement.</param>
-public sealed record Command(string Text, ParameterCollection? Parameters = null);
+public sealed record Command(string Text, ParameterCollection Parameters);

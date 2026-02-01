@@ -10,18 +10,18 @@ Describe "Get-Mapper" {
 	Describe "CreateInstance()" {
 		It "should create instances of the requested type" {
 			$properties = @{
-				Class = "Bard/minstrel"
-				FirstName = "Cédric"
-				Gender = [CharacterGender]::Balrog.ToString()
-				LastName = $null
+				CLASS = "Bard/minstrel"
+				firstName = "Cédric"
+				gender = [CharacterGender]::Balrog.ToString()
+				lastName = $null
 			}
 
 			$instance = (Get-SqlMapper).CreateInstance($properties)
 			$instance.GetType().FullName | Should -BeExactly System.Dynamic.ExpandoObject
-			$instance.Class | Should -BeExactly "Bard/minstrel"
-			$instance.FirstName | Should -BeExactly "Cédric"
-			$instance.Gender | Should -BeExactly ([CharacterGender]::Balrog.ToString())
-			$instance.LastName | Should -Be $null
+			$instance.CLASS | Should -BeExactly "Bard/minstrel"
+			$instance.firstName | Should -BeExactly "Cédric"
+			$instance.gender | Should -BeExactly ([CharacterGender]::Balrog.ToString())
+			$instance.lastName | Should -Be $null
 
 			$character = (Get-SqlMapper).CreateInstance[Character]($properties)
 			$character.GetType().Name | Should -BeExactly Character
@@ -39,13 +39,13 @@ Describe "Get-Mapper" {
 			$table.Type | Should -Be ([Character])
 
 			$table.Columns.Keys | Should -HaveCount 5
-			$table.IdentityColumn | Should -Be $table.Columns["Id"]
-			$table.Columns["Gender"].Type | Should -Be ([CharacterGender])
-			$table.Columns["LastName"].Type | Should -Be ([string])
+			$table.IdentityColumn | Should -Be $table.Columns["ID"]
+			$table.Columns["gender"].Type | Should -Be ([CharacterGender])
+			$table.Columns["lastName"].Type | Should -Be ([string])
 
-			$table.Columns["FirstName"].CanWrite | Should -BeTrue
-			$table.Columns["FullName"].IsComputed | Should -BeTrue
-			$table.Columns["Id"].IsIdentity | Should -BeTrue
+			$table.Columns["firstName"].CanWrite | Should -BeTrue
+			$table.Columns["fullName"].IsComputed | Should -BeTrue
+			$table.Columns["ID"].IsIdentity | Should -BeTrue
 		}
 	}
 }

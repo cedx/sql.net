@@ -74,17 +74,17 @@ public sealed class MapperTests {
 	[TestMethod]
 	public void CreateInstance() {
 		var properties = new Dictionary<string, object?> {
-			["Class"] = "Bard/minstrel",
-			["FirstName"] = "Cédric",
-			["Gender"] = CharacterGender.Balrog.ToString(),
-			["LastName"] = null
+			["CLASS"] = "Bard/minstrel",
+			["firstName"] = "Cédric",
+			["gender"] = CharacterGender.Balrog.ToString(),
+			["lastName"] = null
 		};
 
 		dynamic instance = Mapper.Instance.CreateInstance(properties);
-		AreEqual("Bard/minstrel", instance.Class);
-		AreEqual("Cédric", instance.FirstName);
-		AreEqual(CharacterGender.Balrog.ToString(), instance.Gender);
-		IsNull(instance.LastName);
+		AreEqual("Bard/minstrel", instance.CLASS);
+		AreEqual("Cédric", instance.firstName);
+		AreEqual(CharacterGender.Balrog.ToString(), instance.gender);
+		IsNull(instance.lastName);
 
 		var character = Mapper.Instance.CreateInstance<Character>(properties);
 		AreEqual("Cédric", character.FirstName);
@@ -100,13 +100,13 @@ public sealed class MapperTests {
 		AreEqual(typeof(Character), table.Type);
 
 		HasCount(5, table.Columns.Keys);
-		AreEqual(table.Columns[nameof(Character.Id)], table.IdentityColumn);
-		AreEqual(typeof(CharacterGender), table.Columns[nameof(Character.Gender)].Type);
-		AreEqual(typeof(string), table.Columns[nameof(Character.LastName)].Type);
+		AreEqual(table.Columns["ID"], table.IdentityColumn);
+		AreEqual(typeof(CharacterGender), table.Columns["gender"].Type);
+		AreEqual(typeof(string), table.Columns["lastName"].Type);
 
-		IsTrue(table.Columns[nameof(Character.FirstName)].CanWrite);
-		IsTrue(table.Columns[nameof(Character.FullName)].IsComputed);
-		IsTrue(table.Columns[nameof(Character.Id)].IsIdentity);
+		IsTrue(table.Columns["firstName"].CanWrite);
+		IsTrue(table.Columns["fullName"].IsComputed);
+		IsTrue(table.Columns["ID"].IsIdentity);
 	}
 
 	[TestMethod]
