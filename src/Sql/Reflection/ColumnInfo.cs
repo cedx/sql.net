@@ -11,8 +11,7 @@ public sealed class ColumnInfo {
 	/// <summary>
 	/// The nullability context.
 	/// </summary>
-	[ThreadStatic]
-	private static readonly NullabilityInfoContext nullabilityContext = new();
+	private static readonly ThreadLocal<NullabilityInfoContext> nullabilityContext = new(() => new NullabilityInfoContext());
 
 	/// <summary>
 	/// Value indicating whether the column can be read.
@@ -64,7 +63,7 @@ public sealed class ColumnInfo {
 		var databaseGeneratedOption = property.GetCustomAttribute<DatabaseGeneratedAttribute>()?.DatabaseGeneratedOption ?? DatabaseGeneratedOption.None;
 		IsComputed = databaseGeneratedOption != DatabaseGeneratedOption.None;
 		IsIdentity = databaseGeneratedOption == DatabaseGeneratedOption.Identity;
-		IsNullable = Nullable.GetUnderlyingType(property.PropertyType) is not null || nullabilityContext.Create(property).WriteState != NullabilityState.NotNull;
+		IsNullable = Nullable.GetUnderlyingType(property.PropertyType) is not null || nullabilityContext.Value!.Create(property).WriteState != NullabilityState.NotNull;
 		Name = property.GetCustomAttribute<ColumnAttribute>()?.Name ?? property.Name;
 	}
 
