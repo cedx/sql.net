@@ -47,7 +47,7 @@ public sealed class CommandBuilderTests {
 		AreEqual("@ID", parameter.Name);
 		AreEqual(1000, parameter.Value);
 	}
-	
+
 	[TestMethod]
 	public void GetFindCommand() {
 		var builder = new CommandBuilder(connection);

@@ -37,4 +37,36 @@ public sealed class ConnectionExtensionsEntityTests(TestContext testContext) {
 		IsFalse(await connection.DeleteAsync(record, cancellationToken: testContext.CancellationToken));
 		IsNull(await connection.QuerySingleOrDefaultAsync<Character>(sql, new("Id", 2), cancellationToken: testContext.CancellationToken));
 	}
+
+	[TestMethod]
+	public async Task Exists() {
+		IsTrue(connection.Exists<Character>(1));
+		IsTrue(await connection.ExistsAsync<Character>(1, cancellationToken: testContext.CancellationToken));
+		IsFalse(connection.Exists<Character>(666));
+		IsFalse(await connection.ExistsAsync<Character>(666, cancellationToken: testContext.CancellationToken));
+	}
+
+	[TestMethod]
+	public async Task Find() {
+		var record = connection.Find<Character>(2);
+		IsNotNull(record);
+		AreEqual(2, record.Id);
+		AreEqual("Balin", record.FullName);
+
+		record = connection.Find<Character>(2, ["gender"])!;
+		AreEqual("", record.FullName);
+		AreEqual(CharacterGender.Dwarf, record.Gender);
+
+		record = await connection.FindAsync<Character>(14, cancellationToken: testContext.CancellationToken);
+		IsNotNull(record);
+		AreEqual(14, record.Id);
+		AreEqual("Sam Gamgee", record.FullName);
+
+		record = connection.Find<Character>(14, ["gender"])!;
+		AreEqual("", record.FullName);
+		AreEqual(CharacterGender.Hobbit, record.Gender);
+
+		IsNull(connection.Find<Character>(666));
+		IsNull(await connection.FindAsync<Character>(666, cancellationToken: testContext.CancellationToken));
+	}
 }
