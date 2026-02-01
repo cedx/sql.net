@@ -4,7 +4,7 @@ CREATE TABLE "Characters" (
 	"firstName" text NOT NULL CHECK (LENGTH("firstName") > 0),
 	"lastName" text,
 	"fullName" text AS (trim(concat("firstName", ' ', "lastName"))) STORED,
-	"gender" text NOT NULL CHECK ("gender" IN ('Balrog', 'DarkLord', 'Dwarf', 'Elf', 'Hobbit', 'Human', 'Istari'))
+	"gender" text NOT NULL DEFAULT 'Human' CHECK ("gender" IN ('Balrog', 'DarkLord', 'Dwarf', 'Elf', 'Hobbit', 'Human', 'Istari'))
 );
 
 CREATE INDEX "IX_Characters_FullName" ON "Characters" ("fullName");
