@@ -38,8 +38,9 @@ public class RemoveObjectCommand: Cmdlet {
 	/// </summary>
 	protected override void ProcessRecord() {
 		try {
-			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Delete))!.MakeGenericMethod(InputObject.GetType());
-			var arguments = new object[] { Connection, InputObject, new CommandOptions { Timeout = Timeout, Transaction = Transaction } };
+			var instance = InputObject is PSObject psObject ? psObject.BaseObject : InputObject;
+			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Delete))!.MakeGenericMethod(instance.GetType());
+			var arguments = new object[] { Connection, instance, new CommandOptions { Timeout = Timeout, Transaction = Transaction } };
 			WriteObject(method.Invoke(null, arguments));
 		}
 		catch (TargetInvocationException e) {

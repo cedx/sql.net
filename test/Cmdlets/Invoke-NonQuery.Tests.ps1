@@ -7,7 +7,7 @@ Describe "Invoke-NonQuery" {
 	BeforeEach { . "$PSScriptRoot/BeforeEach.ps1" }
 	AfterEach { . "$PSScriptRoot/AfterEach.ps1" }
 
-	It "should return the records produced by the SQL query" {
+	It "should return the number of rows affected by the SQL query" {
 		$parameters = @{ Gender = "Balrog" }
 		Get-SqlScalar $connection -Command "SELECT COUNT(*) FROM Characters" | Should -Be 16
 		Invoke-SqlNonQuery $connection -Command "DELETE FROM Characters WHERE Gender = @Gender" -Parameters $parameters | Should -Be 2

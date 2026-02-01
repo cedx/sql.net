@@ -5,6 +5,7 @@
 - Added new `Query()` and `QueryAsync()` overloads to the `ConnectionExtensions` class.
 - Added the `cancellationToken` parameter to the `Delete()`, `Exists()`, `Find()`, `Insert()` and `Update()` methods of the `ConnectionExtensions` class.
 - Added the `TableInfo.Type` property.
+- Fixed the `Publish-Object`, `Remove-Object` and `Update-Object` cmdlets.
 
 ## Version [3.1.0](https://github.com/cedx/sql.net/compare/v3.0.1...v3.1.0)
 - Improved the performance of `ColumnInfo` and `TableInfo` classes.

@@ -44,8 +44,9 @@ public class UpdateObjectCommand: Cmdlet {
 	/// </summary>
 	protected override void ProcessRecord() {
 		try {
-			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Update))!.MakeGenericMethod(InputObject.GetType());
-			var arguments = new object[] { Connection, InputObject, Columns, new CommandOptions { Timeout = Timeout, Transaction = Transaction } };
+			var instance = InputObject is PSObject psObject ? psObject.BaseObject : InputObject;
+			var method = typeof(ConnectionExtensions).GetMethod(nameof(ConnectionExtensions.Update))!.MakeGenericMethod(instance.GetType());
+			var arguments = new object[] { Connection, instance, Columns, new CommandOptions { Timeout = Timeout, Transaction = Transaction } };
 			WriteObject(method.Invoke(null, arguments));
 		}
 		catch (TargetInvocationException e) {
