@@ -5,4 +5,11 @@ namespace Belin.Sql;
 /// </summary>
 /// <param name="Text">The text of the SQL statement.</param>
 /// <param name="Parameters">The parameters of the SQL statement.</param>
-public sealed record Command(string Text, ParameterCollection Parameters);
+public sealed record Command(string Text, ParameterCollection Parameters) {
+
+	/// <summary>
+	/// Creates a new command.
+	/// </summary>
+	/// <param name="text">The text of the SQL statement.</param>
+	public Command(string text): this(text, []) {}
+}
