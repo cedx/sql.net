@@ -16,8 +16,8 @@ public class ParameterCollection: List<Parameter> {
 	/// <summary>
 	/// Creates a new parameter list that contains the elements copied from the specified collection.
 	/// </summary>
-	/// <param name="collection">The collection whose elements are copied to the parameter list.</param>
-	public ParameterCollection(params IEnumerable<Parameter> collection): base(collection) {}
+	/// <param name="parameters">The collection whose elements are copied to the parameter list.</param>
+	public ParameterCollection(params IEnumerable<Parameter> parameters): base(parameters) {}
 
 	/// <summary>
 	/// Creates a new parameter list that contains the specified parameter.
