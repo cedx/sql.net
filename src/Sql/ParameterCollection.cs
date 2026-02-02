@@ -17,13 +17,7 @@ public class ParameterCollection: List<Parameter> {
 	/// Creates a new parameter list that contains the elements copied from the specified collection.
 	/// </summary>
 	/// <param name="collection">The collection whose elements are copied to the parameter list.</param>
-	public ParameterCollection(IEnumerable<Parameter> collection): base(collection) {}
-
-	/// <summary>
-	/// Creates a new parameter list that contains the specified parameter.
-	/// </summary>
-	/// <param name="parameter">The parameter to add to the elements in the parameter list.</param>
-	public ParameterCollection(Parameter parameter): this([parameter]) {}
+	public ParameterCollection(params IEnumerable<Parameter> collection): base(collection) {}
 
 	/// <summary>
 	/// Creates a new parameter list that contains the specified parameter.
