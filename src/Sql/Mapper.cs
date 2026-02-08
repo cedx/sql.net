@@ -105,7 +105,7 @@ public sealed class Mapper {
 	/// <param name="properties">A dictionary providing the properties to be set on the created object.</param>
 	/// <returns>The newly created object.</returns>
 	public ExpandoObject CreateInstance(IDictionary<string, object?> properties) => CreateInstance<ExpandoObject>(properties);
-	
+
 	/// <summary>
 	/// Creates a new dynamic object from the specified hash table.
 	/// </summary>
@@ -136,7 +136,7 @@ public sealed class Mapper {
 
 		return instance;
 	}
-	
+
 	/// <summary>
 	/// Creates a new object of a given type from the specified hash table.
 	/// </summary>
@@ -228,7 +228,7 @@ public sealed class Mapper {
 	/// <param name="conversionType">The type of object to return.</param>
 	/// <param name="isNullable">Value indicating whether the specified conversion type is nullable.</param>
 	/// <returns>The value of the given type corresponding to the specified object.</returns>
-	internal static object? ChangeType(object? value, Type conversionType, bool isNullable = true) {
+	internal static object? ChangeType(object? value, Type conversionType, bool isNullable = false) {
 		var nullableType = Nullable.GetUnderlyingType(conversionType);
 		var targetType = nullableType ?? conversionType;
 
