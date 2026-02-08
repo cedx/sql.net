@@ -104,7 +104,7 @@ public class CommandBuilder {
 			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
 			""";
 
-		return new(text, new(parameter));
+		return new(text, [parameter]);
 	}
 
 	/// <summary>
@@ -125,7 +125,7 @@ public class CommandBuilder {
 			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
 			""";
 
-		return new(text, new(parameter));
+		return new(text, [parameter]);
 	}
 
 	/// <summary>
@@ -154,7 +154,7 @@ public class CommandBuilder {
 			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
 			""";
 
-		return new(text, new(parameter));
+		return new(text, [parameter]);
 	}
 
 	/// <summary>
