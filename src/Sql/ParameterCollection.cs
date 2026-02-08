@@ -69,6 +69,13 @@ public class ParameterCollection: List<Parameter> {
 	public static implicit operator ParameterCollection(ArrayList list) => list.ToArray();
 
 	/// <summary>
+	/// Creates a new parameter list from the specified list of positional parameters.
+	/// </summary>
+	/// <param name="list">The list whose elements are copied to the parameter list.</param>
+	/// <returns>The parameter list corresponding to the specified list of positional parameters.</returns>
+	public static implicit operator ParameterCollection(List<object?> list) => list.ToArray();
+
+	/// <summary>
 	/// Creates a new parameter list from the specified dictionary of named parameters.
 	/// </summary>
 	/// <param name="dictionary">The dictionary whose elements are copied to the parameter list.</param>
@@ -84,13 +91,6 @@ public class ParameterCollection: List<Parameter> {
 	/// <returns>The parameter list corresponding to the specified hash table of named parameters.</returns>
 	public static implicit operator ParameterCollection(Hashtable hashtable) =>
 		hashtable.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString() ?? "", entry => entry.Value);
-
-	/// <summary>
-	/// Creates a new parameter list from the specified list of positional parameters.
-	/// </summary>
-	/// <param name="list">The list whose elements are copied to the parameter list.</param>
-	/// <returns>The parameter list corresponding to the specified list of positional parameters.</returns>
-	public static implicit operator ParameterCollection(List<object?> list) => list.ToArray();
 
 	/// <summary>
 	/// Gets a value indicating whether a parameter in this collection has the specified name.
