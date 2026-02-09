@@ -18,8 +18,8 @@ public static partial class ConnectionExtensions {
 	/// <returns>The number of rows affected.</returns>
 	public static int Execute(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
-		using var command = CreateCommand(connection, text, parameters, options);
-		return command.ExecuteNonQuery();
+		using var dbCommand = CreateCommand(connection, text, parameters, options);
+		return dbCommand.ExecuteNonQuery();
 	}
 
 	/// <summary>
@@ -33,8 +33,8 @@ public static partial class ConnectionExtensions {
 	/// <returns>The number of rows affected.</returns>
 	public static async Task<int> ExecuteAsync(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
 		if (connection.State == ConnectionState.Closed) await ((DbConnection) connection).OpenAsync(cancellationToken);
-		using var command = (DbCommand) CreateCommand(connection, text, parameters, options);
-		return await command.ExecuteNonQueryAsync(cancellationToken);
+		using var dbCommand = (DbCommand) CreateCommand(connection, text, parameters, options);
+		return await dbCommand.ExecuteNonQueryAsync(cancellationToken);
 	}
 
 	/// <summary>
@@ -47,8 +47,8 @@ public static partial class ConnectionExtensions {
 	/// <returns>The data reader that can be used to access the results.</returns>
 	public static IDataReader ExecuteReader(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
-		using var command = CreateCommand(connection, text, parameters, options);
-		return command.ExecuteReader();
+		using var dbCommand = CreateCommand(connection, text, parameters, options);
+		return dbCommand.ExecuteReader();
 	}
 
 	/// <summary>
@@ -62,8 +62,8 @@ public static partial class ConnectionExtensions {
 	/// <returns>The data reader that can be used to access the results.</returns>
 	public static async Task<IDataReader> ExecuteReaderAsync(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
 		if (connection.State == ConnectionState.Closed) await ((DbConnection) connection).OpenAsync(cancellationToken);
-		using var command = (DbCommand) CreateCommand(connection, text, parameters, options);
-		return await command.ExecuteReaderAsync(cancellationToken);
+		using var dbCommand = (DbCommand) CreateCommand(connection, text, parameters, options);
+		return await dbCommand.ExecuteReaderAsync(cancellationToken);
 	}
 
 	/// <summary>
@@ -100,8 +100,8 @@ public static partial class ConnectionExtensions {
 	/// <returns>The first column of the first row.</returns>
 	public static T? ExecuteScalar<T>(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
-		using var command = CreateCommand(connection, text, parameters, options);
-		var value = command.ExecuteScalar();
+		using var dbCommand = CreateCommand(connection, text, parameters, options);
+		var value = dbCommand.ExecuteScalar();
 		return value is null || value is DBNull ? default : (T?) Mapper.ChangeType(value, typeof(T));
 	}
 
@@ -117,8 +117,8 @@ public static partial class ConnectionExtensions {
 	/// <returns>The first column of the first row.</returns>
 	public static async Task<T?> ExecuteScalarAsync<T>(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
 		if (connection.State == ConnectionState.Closed) await ((DbConnection) connection).OpenAsync(cancellationToken);
-		using var command = (DbCommand) CreateCommand(connection, text, parameters, options);
-		var value = await command.ExecuteScalarAsync(cancellationToken);
+		using var dbCommand = (DbCommand) CreateCommand(connection, text, parameters, options);
+		var value = await dbCommand.ExecuteScalarAsync(cancellationToken);
 		return value is null || value is DBNull ? default : (T?) Mapper.ChangeType(value, typeof(T));
 	}
 }

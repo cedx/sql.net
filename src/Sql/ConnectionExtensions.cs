@@ -17,24 +17,24 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <returns>The newly created command.</returns>
 	public static IDbCommand CreateCommand(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) {
-		var command = connection.CreateCommand();
-		command.CommandText = text;
-		command.CommandTimeout = options?.Timeout ?? 30;
-		command.CommandType = options?.Type ?? CommandType.Text;
-		command.Transaction = options?.Transaction;
+		var dbCommand = connection.CreateCommand();
+		dbCommand.CommandText = text;
+		dbCommand.CommandTimeout = options?.Timeout ?? 30;
+		dbCommand.CommandType = options?.Type ?? CommandType.Text;
+		dbCommand.Transaction = options?.Transaction;
 
 		if (parameters is not null) foreach (var parameter in parameters) {
-			var commandParameter = command.CreateParameter();
-			commandParameter.ParameterName = parameter.Name;
-			commandParameter.Value = parameter.Value;
-			if (parameter.DbType is not null) commandParameter.DbType = parameter.DbType.Value;
-			if (parameter.Direction is not null) commandParameter.Direction = parameter.Direction.Value;
-			if (parameter.Precision is not null) commandParameter.Precision = parameter.Precision.Value;
-			if (parameter.Scale is not null) commandParameter.Scale = parameter.Scale.Value;
-			if (parameter.Size is not null) commandParameter.Size = parameter.Size.Value;
-			command.Parameters.Add(commandParameter);
+			var dbParameter = dbCommand.CreateParameter();
+			dbParameter.ParameterName = parameter.Name;
+			dbParameter.Value = parameter.Value;
+			if (parameter.DbType is not null) dbParameter.DbType = parameter.DbType.Value;
+			if (parameter.Direction is not null) dbParameter.Direction = parameter.Direction.Value;
+			if (parameter.Precision is not null) dbParameter.Precision = parameter.Precision.Value;
+			if (parameter.Scale is not null) dbParameter.Scale = parameter.Scale.Value;
+			if (parameter.Size is not null) dbParameter.Size = parameter.Size.Value;
+			dbCommand.Parameters.Add(dbParameter);
 		}
 
-		return command;
+		return dbCommand;
 	}
 }
