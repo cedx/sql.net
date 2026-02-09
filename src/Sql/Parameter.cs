@@ -104,4 +104,21 @@ public sealed class Parameter(string name, object? value = null) {
 	/// <param name="value">The parameter value.</param>
 	/// <returns>The normalized parameter value.</returns>
 	internal static object NormalizeValue(object? value) => value ?? DBNull.Value;
+
+	/// <summary>
+	/// Converts this parameter into an <see cref="IDbDataParameter"/> object.
+	/// </summary>
+	/// <param name="command">The command to associate with the created parameter.</param>
+	/// <returns>The <see cref="IDbDataParameter"/> object corresponding to this parameter.</returns>
+	internal IDbDataParameter ToDbParameter(IDbCommand command) {
+		var parameter = command.CreateParameter();
+		parameter.ParameterName = Name;
+		parameter.Value = Value;
+		if (DbType is not null) parameter.DbType = DbType.Value;
+		if (Direction is not null) parameter.Direction = Direction.Value;
+		if (Precision is not null) parameter.Precision = Precision.Value;
+		if (Scale is not null) parameter.Scale = Scale.Value;
+		if (Size is not null) parameter.Size = Size.Value;
+		return parameter;
+	}
 }
