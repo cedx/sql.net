@@ -87,7 +87,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first column of the first row.</returns>
 	public static async Task<object?> ExecuteScalarAsync(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
-		ExecuteScalarAsync<object>(connection, text, parameters, options, cancellationToken);
+		await ExecuteScalarAsync<object>(connection, text, parameters, options, cancellationToken);
 
 	/// <summary>
 	/// Executes a parameterized SQL query that selects a single value.
