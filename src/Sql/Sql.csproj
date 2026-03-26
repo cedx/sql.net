@@ -25,7 +25,7 @@
 		<Nullable>enable</Nullable>
 		<OutDir>../../bin</OutDir>
 		<RootNamespace>Belin.Sql</RootNamespace>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 	</PropertyGroup>
 
 	<ItemGroup>
