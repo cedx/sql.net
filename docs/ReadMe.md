@@ -3,15 +3,21 @@ A simple micro-ORM for [C#](https://learn.microsoft.com/en-us/dotnet/csharp) and
 based on [ADO.NET](https://learn.microsoft.com/en-us/dotnet/framework/data/adonet) and data annotations.  
 If you like [SQL](https://en.wikipedia.org/wiki/SQL) but dislike the boilerplate of ADO.NET: **SQL Mapper for .NET** might be for you!
 
+> [!NOTE]
 > Think of [Dapper](https://www.learndapper.com) and its alternatives, but less advanced/powerful.
 
-## Documentation
-- [User guide](https://github.com/cedx/sql.net/tree/main/docs)
-- [Examples](https://github.com/cedx/sql.net/tree/main/example)
+## Quick start
+Install the latest version of **SQL Mapper for .NET** with your package manager:
 
-## Development
-- [Git repository](https://github.com/cedx/sql.net)
-- [Submit an issue](https://github.com/cedx/sql.net/issues)
+```shell
+# .NET with NuGet
+dotnet add package Belin.Sql
 
-## License
-[SQL Mapper for .NET](https://github.com/cedx/sql.net) is distributed under the MIT License.
+# PowerShell with PSResourceGet
+Install-PSResource Belin.Sql
+```
+
+For detailed instructions, see the [installation guide](Installation.md).
+
+## Usage
+(TODO)
