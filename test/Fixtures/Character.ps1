@@ -12,6 +12,7 @@ class Character {
 		The first name.
 	#>
 	[Column("firstName")]
+	[ValidateNotNull()]
 	[string] $FirstName = ""
 
 	<#
@@ -20,6 +21,7 @@ class Character {
 	#>
 	[Column("fullName")]
 	[DatabaseGenerated([DatabaseGeneratedOption]::Computed)]
+	[ValidateNotNull()]
 	[string] $FullName = ""
 
 	<#
@@ -35,14 +37,14 @@ class Character {
 	#>
 	[Column("ID")]
 	[DatabaseGenerated([DatabaseGeneratedOption]::Identity)]
-	[int] $Id = 0
+	[int] $Id
 
 	<#
 	.SYNOPSIS
 		The last name.
 	#>
 	[Column("lastName")]
-	[string] $LastName = ""
+	[string] $LastName
 }
 
 <#
