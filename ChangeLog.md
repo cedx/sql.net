@@ -1,5 +1,9 @@
 # Changelog
 
+## Version [4.0.0](https://github.com/cedx/sql.net/compare/v3.2.0...v4.0.0)
+- Breaking change: raised the required target framework.
+- Ported the [C#](https://learn.microsoft.com/en-us/dotnet/csharp) cmdlets to [PowerShell](https://learn.microsoft.com/en-us/powershell).
+
 ## Version [3.2.0](https://github.com/cedx/sql.net/compare/v3.1.0...v3.2.0)
 - Added new `CreateInstance()` and `CreateInstances()` overloads to the `Mapper` class.
 - Added new `Query()` and `QueryAsync()` overloads to the `ConnectionExtensions` class.
