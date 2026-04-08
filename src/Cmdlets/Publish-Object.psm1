@@ -4,27 +4,23 @@ using namespace System.Reflection
 
 <#
 .SYNOPSIS
-	Updates the specified entity.
+	Inserts the specified entity.
 .INPUTS
-	The entity to update.
+	The entity to insert.
 .OUTPUTS
-	The number of rows affected.
+	The generated primary key value.
 #>
-function Update-Object {
+function Publish-Object {
 	[CmdletBinding()]
-	[OutputType([int])]
+	[OutputType([long])]
 	param (
 		# The connection to the data source.
 		[Parameter(Mandatory, Position = 0)]
 		[IDbConnection] $Connection,
 
-		# The entity to update.
+		# The entity to insert.
 		[Parameter(Mandatory, Position = 1, ValueFromPipeline)]
 		[object] $InputObject,
-
-		# The list of columns to select. By default, all columns.
-		[ValidateNotNull()]
-		[string[]] $Columns = @(),
 
 		# The wait time, in seconds, before terminating the attempt to execute the command and generating an error.
 		[ValidateRange("Positive")]
@@ -37,8 +33,8 @@ function Update-Object {
 	process {
 		try {
 			$instance = $InputObject -is [psobject] ? $InputObject.BaseObject : $InputObject
-			$method = [ConnectionExtensions]::GetMethod("Update").MakeGenericMethod($instance.GetType())
-			$arguments = $Connection, $instance, $Columns, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction }
+			$method = [ConnectionExtensions]::GetMethod("Insert").MakeGenericMethod($instance.GetType())
+			$arguments = $Connection, $instance, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction }
 			$method.Invoke($null, $arguments)
 		}
 		catch [TargetInvocationException] {

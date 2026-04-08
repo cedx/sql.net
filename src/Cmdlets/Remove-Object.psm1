@@ -1,3 +1,4 @@
+using namespace Belin.Sql
 using namespace System.Data
 using namespace System.Reflection
 
@@ -37,7 +38,7 @@ function Remove-Object {
 			$method.Invoke($null, $arguments)
 		}
 		catch [TargetInvocationException] {
-			throw [InvalidOperationException]::new($_.Exception.Message, $_.Exception)
+			throw [InvalidOperationException]::new($_.Exception.InnerException.Message, $_.Exception)
 		}
 	}
 }

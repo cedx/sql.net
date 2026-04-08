@@ -38,6 +38,6 @@ function Test-Object {
 		$method.Invoke($null, $arguments)
 	}
 	catch [TargetInvocationException] {
-		throw [InvalidOperationException]::new($_.Exception.Message, $_.Exception)
+		throw [InvalidOperationException]::new($_.Exception.InnerException.Message, $_.Exception)
 	}
 }
