@@ -32,14 +32,12 @@ function Test-Object {
 		[IDbTransaction] $Transaction
 	)
 
-	process {
-		try {
-			$method = [ConnectionExtensions]::GetMethod("Exists").MakeGenericMethod($Class)
-			$arguments = $Connection, $Id, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction }
-			$method.Invoke($null, $arguments)
-		}
-		catch [TargetInvocationException] {
-			throw [InvalidOperationException]::new($_.Exception.Message, $_.Exception)
-		}
+	try {
+		$method = [ConnectionExtensions]::GetMethod("Exists").MakeGenericMethod($Class)
+		$arguments = $Connection, $Id, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction }
+		$method.Invoke($null, $arguments)
+	}
+	catch [TargetInvocationException] {
+		throw [InvalidOperationException]::new($_.Exception.Message, $_.Exception)
 	}
 }
