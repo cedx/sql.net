@@ -38,7 +38,7 @@ function Remove-Object {
 			$method.Invoke($null, $arguments)
 		}
 		catch [TargetInvocationException] {
-			throw [InvalidOperationException]::new($_.Exception.InnerException.Message, $_.Exception)
+			throw [DataException]::new($_.Exception.InnerException.Message, $_.Exception)
 		}
 	}
 }
