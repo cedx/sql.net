@@ -7,11 +7,11 @@ using namespace System.Reflection
 .SYNOPSIS
 	An array of types representing the number, order, and type of the parameters of the underlying method to invoke.
 #>
-$ParameterTypes = [Type[][]] @(
-	@([IDbConnection], [string], [ParameterCollection], [QueryOptions])
-	@([IDbConnection], [string], [ParameterCollection], [string], [QueryOptions])
-	@([IDbConnection], [string], [ParameterCollection], [Nullbale[ValueTuple[[string], [string]]]], [QueryOptions])
-	@([IDbConnection], [string], [ParameterCollection], [Nullbale[ValueTuple[[string], [string], [string]]]], [QueryOptions])
+[Type[][]] $ParameterTypes = @(
+	([IDbConnection], [string], [ParameterCollection], [QueryOptions])
+	([IDbConnection], [string], [ParameterCollection], [string], [QueryOptions])
+	([IDbConnection], [string], [ParameterCollection], [Nullable[ValueTuple[[string], [string]]]], [QueryOptions])
+	([IDbConnection], [string], [ParameterCollection], [Nullable[ValueTuple[[string], [string], [string]]]], [QueryOptions])
 )
 
 <#
@@ -71,7 +71,7 @@ function Invoke-Query {
 	}
 
 	try {
-		$method = [ConnectionExtensions]::GetMethod("Query", $As.Count, $Script:ParameterTypes[$As.Count - 1]).MakeGenericMethod($As)
+		$method = [ConnectionExtensions].GetMethod("Query", $As.Count, $Script:ParameterTypes[$As.Count - 1]).MakeGenericMethod($As)
 		Write-Output $method.Invoke($null, $arguments) -NoEnumerate:$NoEnumerate
 	}
 	catch [TargetInvocationException] {

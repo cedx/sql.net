@@ -33,7 +33,7 @@ function Test-Object {
 	)
 
 	try {
-		$method = [ConnectionExtensions]::GetMethod("Exists").MakeGenericMethod($Class)
+		$method = [ConnectionExtensions].GetMethod("Exists").MakeGenericMethod($Class)
 		$arguments = $Connection, $Id, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction }
 		$method.Invoke($null, $arguments)
 	}

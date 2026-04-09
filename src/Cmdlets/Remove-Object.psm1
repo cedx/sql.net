@@ -33,7 +33,7 @@ function Remove-Object {
 	process {
 		try {
 			$instance = $InputObject -is [psobject] ? $InputObject.BaseObject : $InputObject
-			$method = [ConnectionExtensions]::GetMethod("Delete").MakeGenericMethod($instance.GetType())
+			$method = [ConnectionExtensions].GetMethod("Delete").MakeGenericMethod($instance.GetType())
 			$arguments = $Connection, $instance, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction }
 			$method.Invoke($null, $arguments)
 		}

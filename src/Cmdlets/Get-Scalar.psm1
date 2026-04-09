@@ -6,7 +6,7 @@ using namespace System.Reflection
 .SYNOPSIS
 	An array of types representing the number, order, and type of the parameters of the underlying method to invoke.
 #>
-$ParameterTypes = [Type[]] [IDbConnection], [string], [ParameterCollection], [CommandOptions]
+[Type[]] $ParameterTypes = [IDbConnection], [string], [ParameterCollection], [CommandOptions]
 
 <#
 .SYNOPSIS
@@ -42,7 +42,7 @@ function Get-Scalar {
 	)
 
 	try {
-		$method = [ConnectionExtensions]::GetMethod("ExecuteScalar", 1, $Script:ParameterTypes).MakeGenericMethod([object])
+		$method = [ConnectionExtensions].GetMethod("ExecuteScalar", 1, $Script:ParameterTypes).MakeGenericMethod([object])
 		$arguments = $Connection, $Command, $Parameters, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction; Type = $CommandType }
 		$method.Invoke($null, $arguments)
 	}

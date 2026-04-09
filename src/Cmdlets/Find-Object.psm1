@@ -36,7 +36,7 @@ function Find-Object {
 	)
 
 	try {
-		$method = [ConnectionExtensions]::GetMethod("Find").MakeGenericMethod($Class);
+		$method = [ConnectionExtensions].GetMethod("Find").MakeGenericMethod($Class)
 		$arguments = $Connection, $Id, $Columns, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction }
 		$method.Invoke($null, $arguments)
 	}
