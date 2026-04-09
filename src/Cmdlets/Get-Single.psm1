@@ -50,7 +50,7 @@ function Get-Single {
 		$arguments = $Connection, $Command, $Parameters, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction; Type = $CommandType }
 		$method.Invoke($null, $arguments)
 	}
-	catch [TargetInvocationException] {
-		Write-Error $_.Exception.InnerException
+	catch [InvalidOperationException] {
+		Write-Error $_.Exception
 	}
 }

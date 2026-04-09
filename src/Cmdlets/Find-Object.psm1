@@ -35,12 +35,7 @@ function Find-Object {
 		[IDbTransaction] $Transaction
 	)
 
-	try {
-		$method = [ConnectionExtensions].GetMethod("Find").MakeGenericMethod($Class)
-		$arguments = $Connection, $Id, $Columns, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction }
-		$method.Invoke($null, $arguments)
-	}
-	catch [TargetInvocationException] {
-		Write-Error $_.Exception.InnerException
-	}
+	$method = [ConnectionExtensions].GetMethod("Find").MakeGenericMethod($Class)
+	$arguments = $Connection, $Id, $Columns, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction }
+	$method.Invoke($null, $arguments)
 }

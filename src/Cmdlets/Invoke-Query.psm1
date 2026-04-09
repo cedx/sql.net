@@ -8,9 +8,9 @@ using namespace System.Reflection
 	An array of types representing the number, order, and type of the parameters of the underlying method to invoke.
 #>
 [Type[][]] $ParameterTypes = @(
-	([IDbConnection], [string], [ParameterCollection], [QueryOptions])
-	([IDbConnection], [string], [ParameterCollection], [string], [QueryOptions])
-	([IDbConnection], [string], [ParameterCollection], [Nullable[ValueTuple[[string], [string]]]], [QueryOptions])
+	([IDbConnection], [string], [ParameterCollection], [QueryOptions]),
+	([IDbConnection], [string], [ParameterCollection], [string], [QueryOptions]),
+	([IDbConnection], [string], [ParameterCollection], [Nullable[ValueTuple[[string], [string]]]], [QueryOptions]),
 	([IDbConnection], [string], [ParameterCollection], [Nullable[ValueTuple[[string], [string], [string]]]], [QueryOptions])
 )
 
@@ -70,11 +70,6 @@ function Invoke-Query {
 		default { @($Connection, $Command, $Parameters, [ValueTuple]::Create($SplitOn[0], $SplitOn.Count -le 1 ? "Id" : $SplitOn[1], $SplitOn.Count -le 2 ? "Id" : $SplitOn[2]), $queryOptions) }
 	}
 
-	try {
-		$method = [ConnectionExtensions].GetMethod("Query", $As.Count, $Script:ParameterTypes[$As.Count - 1]).MakeGenericMethod($As)
-		Write-Output $method.Invoke($null, $arguments) -NoEnumerate:$NoEnumerate
-	}
-	catch [TargetInvocationException] {
-		Write-Error $_.Exception.InnerException
-	}
+	$method = [ConnectionExtensions].GetMethod("Query", $As.Count, $Script:ParameterTypes[$As.Count - 1]).MakeGenericMethod($As)
+	Write-Output $method.Invoke($null, $arguments) -NoEnumerate:$NoEnumerate
 }

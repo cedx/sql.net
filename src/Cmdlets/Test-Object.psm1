@@ -32,12 +32,7 @@ function Test-Object {
 		[IDbTransaction] $Transaction
 	)
 
-	try {
-		$method = [ConnectionExtensions].GetMethod("Exists").MakeGenericMethod($Class)
-		$arguments = $Connection, $Id, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction }
-		$method.Invoke($null, $arguments)
-	}
-	catch [TargetInvocationException] {
-		Write-Error $_.Exception.InnerException
-	}
+	$method = [ConnectionExtensions].GetMethod("Exists").MakeGenericMethod($Class)
+	$arguments = $Connection, $Id, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction }
+	$method.Invoke($null, $arguments)
 }

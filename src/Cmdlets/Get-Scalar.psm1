@@ -41,12 +41,7 @@ function Get-Scalar {
 		[IDbTransaction] $Transaction
 	)
 
-	try {
-		$method = [ConnectionExtensions].GetMethod("ExecuteScalar", 1, $Script:ParameterTypes).MakeGenericMethod([object])
-		$arguments = $Connection, $Command, $Parameters, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction; Type = $CommandType }
-		$method.Invoke($null, $arguments)
-	}
-	catch [TargetInvocationException] {
-		Write-Error $_.Exception.InnerException
-	}
+	$method = [ConnectionExtensions].GetMethod("ExecuteScalar", 1, $Script:ParameterTypes).MakeGenericMethod([object])
+	$arguments = $Connection, $Command, $Parameters, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction; Type = $CommandType }
+	$method.Invoke($null, $arguments)
 }
