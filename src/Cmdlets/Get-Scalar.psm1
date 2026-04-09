@@ -47,6 +47,6 @@ function Get-Scalar {
 		$method.Invoke($null, $arguments)
 	}
 	catch [TargetInvocationException] {
-		throw [DataException]::new($_.Exception.InnerException.Message, $_.Exception)
+		Write-Error $_.Exception.InnerException
 	}
 }

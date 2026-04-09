@@ -75,6 +75,6 @@ function Invoke-Query {
 		Write-Output $method.Invoke($null, $arguments) -NoEnumerate:$NoEnumerate
 	}
 	catch [TargetInvocationException] {
-		throw [DataException]::new($_.Exception.InnerException.Message, $_.Exception)
+		Write-Error $_.Exception.InnerException
 	}
 }
