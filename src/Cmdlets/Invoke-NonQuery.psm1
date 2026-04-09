@@ -34,5 +34,6 @@ function Invoke-NonQuery {
 		[IDbTransaction] $Transaction
 	)
 
-	$Connection.Execute($Command, $Parameters, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction; Type = $CommandType })
+	$commandOptions = [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction; Type = $CommandType }
+	[ConnectionExtensions]::Execute($Connection, $Command, $Parameters, $commandOptions)
 }

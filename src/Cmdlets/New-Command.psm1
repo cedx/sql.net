@@ -34,5 +34,6 @@ function New-Command {
 		[IDbTransaction] $Transaction
 	)
 
-	$Connection.CreateCommand($Command, $Parameters, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction; Type = $CommandType })
+	$commandOptions = [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction; Type = $CommandType }
+	[ConnectionExtensions]::CreateCommand($Connection, $Command, $Parameters, $commandOptions)
 }

@@ -34,6 +34,7 @@ function Invoke-Reader {
 		[IDbTransaction] $Transaction
 	)
 
-	$reader = $Connection.ExecuteReader($Command, $Parameters, [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction; Type = $CommandType })
+	$commandOptions = [CommandOptions]@{ Timeout = $Timeout; Transaction = $Transaction; Type = $CommandType }
+	$reader = [ConnectionExtensions]::ExecuteReader($Connection, $Command, $Parameters, $commandOptions)
 	Write-Output $reader -NoEnumerate
 }

@@ -38,10 +38,10 @@ function New-Parameter {
 	)
 
 	$parameter = [Belin.Sql.Parameter]::new($Name, $Value)
-	$parameter.DbType = DbType
-	$parameter.Direction = Direction
-	$parameter.Precision = Precision
-	$parameter.Scale = Scale
-	$parameter.Size = Size
+	$parameter.DbType = $DbType
+	$parameter.Direction = $Direction
+	$parameter.Precision = $Precision
+	$parameter.Scale = $Scale
+	$parameter.Size = $Size
 	$parameter
 }
