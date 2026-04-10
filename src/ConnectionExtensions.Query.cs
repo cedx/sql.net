@@ -44,7 +44,7 @@ public static partial class ConnectionExtensions {
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
 	public static IEnumerable<T> Query<T>(this IDbConnection connection, string text, ParameterCollection? parameters = null, QueryOptions? options = null) where T: new() {
 		var records = Mapper.Instance.CreateInstances<T>(ExecuteReader(connection, text, parameters, options));
-		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+		return (options?.Stream ?? false) ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -59,7 +59,7 @@ public static partial class ConnectionExtensions {
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<T>> QueryAsync<T>(this IDbConnection connection, string text, ParameterCollection? parameters = null, QueryOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		var records = Mapper.Instance.CreateInstances<T>(await ExecuteReaderAsync(connection, text, parameters, options, cancellationToken));
-		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+		return (options?.Stream ?? false) ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -75,7 +75,7 @@ public static partial class ConnectionExtensions {
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
 	public static IEnumerable<(TItem1, TItem2)> Query<TItem1, TItem2>(this IDbConnection connection, string text, ParameterCollection? parameters = null, string splitOn = "Id", QueryOptions? options = null) where TItem1: new() where TItem2: new() {
 		var records = Mapper.Instance.CreateInstances<TItem1, TItem2>(ExecuteReader(connection, text, parameters, options), splitOn);
-		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+		return (options?.Stream ?? false) ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -92,7 +92,7 @@ public static partial class ConnectionExtensions {
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<(TItem1, TItem2)>> QueryAsync<TItem1, TItem2>(this IDbConnection connection, string text, ParameterCollection? parameters = null, string splitOn = "Id", QueryOptions? options = null, CancellationToken cancellationToken = default) where TItem1: new() where TItem2: new() {
 		var records = Mapper.Instance.CreateInstances<TItem1, TItem2>(await ExecuteReaderAsync(connection, text, parameters, options, cancellationToken), splitOn);
-		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+		return (options?.Stream ?? false) ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -109,7 +109,7 @@ public static partial class ConnectionExtensions {
 	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
 	public static IEnumerable<(TItem1, TItem2, TItem3)> Query<TItem1, TItem2, TItem3>(this IDbConnection connection, string text, ParameterCollection? parameters = null, (string, string)? splitOn = null, QueryOptions? options = null) where TItem1: new() where TItem2: new() where TItem3: new() {
 		var records = Mapper.Instance.CreateInstances<TItem1, TItem2, TItem3>(ExecuteReader(connection, text, parameters, options), splitOn);
-		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+		return (options?.Stream ?? false) ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -127,7 +127,7 @@ public static partial class ConnectionExtensions {
 	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<(TItem1, TItem2, TItem3)>> QueryAsync<TItem1, TItem2, TItem3>(this IDbConnection connection, string text, ParameterCollection? parameters = null, (string, string)? splitOn = null, QueryOptions? options = null, CancellationToken cancellationToken = default) where TItem1: new() where TItem2: new() where TItem3: new() {
 		var records = Mapper.Instance.CreateInstances<TItem1, TItem2, TItem3>(await ExecuteReaderAsync(connection, text, parameters, options, cancellationToken), splitOn);
-		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+		return (options?.Stream ?? false) ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -145,7 +145,7 @@ public static partial class ConnectionExtensions {
 	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
 	public static IEnumerable<(TItem1, TItem2, TItem3, TItem4)> Query<TItem1, TItem2, TItem3, TItem4>(this IDbConnection connection, string text, ParameterCollection? parameters = null, (string, string, string)? splitOn = null, QueryOptions? options = null) where TItem1: new() where TItem2: new() where TItem3: new() where TItem4: new() {
 		var records = Mapper.Instance.CreateInstances<TItem1, TItem2, TItem3, TItem4>(ExecuteReader(connection, text, parameters, options), splitOn);
-		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+		return (options?.Stream ?? false) ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -164,7 +164,7 @@ public static partial class ConnectionExtensions {
 	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<(TItem1, TItem2, TItem3, TItem4)>> QueryAsync<TItem1, TItem2, TItem3, TItem4>(this IDbConnection connection, string text, ParameterCollection? parameters = null, (string, string, string)? splitOn = null, QueryOptions? options = null, CancellationToken cancellationToken = default) where TItem1: new() where TItem2: new() where TItem3: new() where TItem4: new() {
 		var records = Mapper.Instance.CreateInstances<TItem1, TItem2, TItem3, TItem4>(await ExecuteReaderAsync(connection, text, parameters, options, cancellationToken), splitOn);
-		return (options?.Buffered ?? true) ? Enumerable.ToList(records) : records;
+		return (options?.Stream ?? false) ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>

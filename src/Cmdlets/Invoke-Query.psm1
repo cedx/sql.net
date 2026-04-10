@@ -61,7 +61,7 @@ function Invoke-Query {
 		[switch] $Stream
 	)
 
-	$queryOptions = [QueryOptions]@{ Buffered = -not $Stream; Timeout = $Timeout; Transaction = $Transaction; Type = $CommandType }
+	$queryOptions = [QueryOptions]@{ Stream = $Stream; Timeout = $Timeout; Transaction = $Transaction; Type = $CommandType }
 	$arguments = switch ($As.Count) {
 		1 { @($Connection, $Command, $Parameters, $queryOptions); break }
 		2 { @($Connection, $Command, $Parameters, $SplitOn[0], $queryOptions); break }

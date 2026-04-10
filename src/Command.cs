@@ -10,14 +10,14 @@ using System.Data;
 public sealed class Command(string text, ParameterCollection? parameters = null) {
 
 	/// <summary>
-	/// Value indicating whether to buffer the rows in memory.
-	/// </summary>
-	public bool Buffered { get; set; } = true;
-
-	/// <summary>
 	/// The text of the SQL statement.
 	/// </summary>
 	public ParameterCollection Parameters { get; set; } = parameters ?? [];
+
+	/// <summary>
+	/// Value indicating whether to prevent from buffering the rows in memory.
+	/// </summary>
+	public bool Stream { get; set; } = false;
 
 	/// <summary>
 	/// The parameters of the SQL statement.
