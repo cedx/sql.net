@@ -35,7 +35,7 @@ class Character {
 	#>
 	[Column("ID")]
 	[DatabaseGenerated([DatabaseGeneratedOption]::Identity)]
-	[int] $Id = 0
+	[int] $Id
 
 	<#
 	.SYNOPSIS

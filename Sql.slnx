@@ -1,6 +1,5 @@
 <Solution>
-	<Project Path="src/Sql/Sql.csproj" />
-	<Project Path="src/Sql.Cmdlets/Sql.Cmdlets.csproj" />
+	<Project Path="src/Sql.csproj" />
 	<Project Path="test/Sql.Tests.csproj">
 		<Build Solution="Release|*" Project="false" />
 	</Project>
