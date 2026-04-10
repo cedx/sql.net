@@ -1,4 +1,5 @@
 using namespace System.Data
+using namespace System.Diagnostics.CodeAnalysis
 
 <#
 .SYNOPSIS
@@ -11,6 +12,7 @@ using namespace System.Data
 function New-Connection {
 	[CmdletBinding()]
 	[OutputType([System.Data.IDbConnection])]
+	[SuppressMessage("PSUseShouldProcessForStateChangingFunctions", "")]
 	param (
 		# The type of connection class to instantiate.
 		[Parameter(Mandatory, Position = 0)]

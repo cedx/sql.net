@@ -1,5 +1,6 @@
 using namespace Belin.Sql
 using namespace System.Data
+using namespace System.Diagnostics.CodeAnalysis
 
 <#
 .SYNOPSIS
@@ -10,6 +11,7 @@ using namespace System.Data
 function New-Command {
 	[CmdletBinding()]
 	[OutputType([System.Data.IDbCommand])]
+	[SuppressMessage("PSUseShouldProcessForStateChangingFunctions", "")]
 	param (
 		# The connection to the data source.
 		[Parameter(Mandatory, Position = 0)]

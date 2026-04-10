@@ -1,4 +1,5 @@
 using namespace System.Data
+using namespace System.Diagnostics.CodeAnalysis
 
 <#
 .SYNOPSIS
@@ -9,6 +10,7 @@ using namespace System.Data
 function New-Transaction {
 	[CmdletBinding()]
 	[OutputType([System.Data.IDbTransaction])]
+	[SuppressMessage("PSUseShouldProcessForStateChangingFunctions", "")]
 	param (
 		# The connection to the data source.
 		[Parameter(Mandatory, Position = 0)]

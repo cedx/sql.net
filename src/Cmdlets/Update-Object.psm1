@@ -1,5 +1,6 @@
 using namespace Belin.Sql
 using namespace System.Data
+using namespace System.Diagnostics.CodeAnalysis
 
 <#
 .SYNOPSIS
@@ -12,6 +13,7 @@ using namespace System.Data
 function Update-Object {
 	[CmdletBinding()]
 	[OutputType([int])]
+	[SuppressMessage("PSUseShouldProcessForStateChangingFunctions", "")]
 	param (
 		# The connection to the data source.
 		[Parameter(Mandatory, Position = 0)]

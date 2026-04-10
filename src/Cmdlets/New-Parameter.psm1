@@ -1,5 +1,6 @@
 using namespace Belin.Sql
 using namespace System.Data
+using namespace System.Diagnostics.CodeAnalysis
 
 <#
 .SYNOPSIS
@@ -10,6 +11,7 @@ using namespace System.Data
 function New-Parameter {
 	[CmdletBinding()]
 	[OutputType([Belin.Sql.Parameter])]
+	[SuppressMessage("PSUseShouldProcessForStateChangingFunctions", "")]
 	param (
 		# The parameter name.
 		[Parameter(Mandatory, Position = 0)]
