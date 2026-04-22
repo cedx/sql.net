@@ -1,3 +1,5 @@
+using namespace System.Diagnostics.CodeAnalysis
+
 <#
 .SYNOPSIS
 	Builds the .NET solution and all of its dependencies.
@@ -61,6 +63,7 @@ function Invoke-PowerShellTest {
 	Creates a new Git tag.
 #>
 function New-GitTag {
+	[SuppressMessage("PSUseShouldProcessForStateChangingFunctions", "")]
 	param (
 		# The tag name.
 		[Parameter(Mandatory, Position = 0)]
@@ -159,20 +162,4 @@ function Test-PSResourceUpdate {
 		$module = [pscustomobject]@{ ModuleName = $InputObject.Name; CurrentVersion = $InputObject.Version; LatestVersion = $latestVersion }
 		if ($module.LatestVersion -gt $module.CurrentVersion) { $module }
 	}
-}
-
-<#
-.SYNOPSIS
-	Updates the specified NuGet package, if any. Otherwise, updates all packages.
-#>
-function Update-NuGetPackage {
-	param (
-		# The package to update.
-		[Parameter(Position = 0)]
-		[string] $Package
-	)
-
-	$argumentList = , "update"
-	if ($Package) { $argumentList += $Package }
-	composer @argumentList
 }
