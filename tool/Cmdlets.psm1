@@ -1,5 +1,139 @@
 <#
 .SYNOPSIS
+	Builds the .NET solution and all of its dependencies.
+#>
+function Build-DotNetSolution {
+	param (
+		# The configuration to use for generating the project.
+		[Parameter(Position = 0)]
+		[string] $Configuration
+	)
+
+	$argumentList = $Configuration ? "--configuration", $Configuration : @()
+	dotnet build @argumentList
+}
+
+<#
+.SYNOPSIS
+	Applies style preferences and static analysis recommendations to the .NET solution.
+#>
+function Format-DotNetSolution {
+	dotnet format
+}
+
+<#
+.SYNOPSIS
+	Invokes the .NET test runner.
+#>
+function Invoke-DotNetTest {
+	param (
+		# The path to the settings file to use for running the tests.
+		[ValidateScript({ Test-Path $_ -PathType Leaf }, ErrorMessage = "The specified settings file does not exist.")]
+		[string] $Settings
+	)
+
+	$argumentList = $Settings ? "--settings", $Settings : @()
+	dotnet test @argumentList
+}
+
+<#
+.SYNOPSIS
+	Invokes the PowerShell test runner.
+#>
+function Invoke-PowerShellTest {
+	param (
+		# The path to the file or directory to be tested.
+		[Parameter(Mandatory, Position = 0)]
+		[string[]] $Path,
+
+		# Value indicating whether, on completion of the tests, to exit the PowerShell session
+		# and return an exit code equal to the number of failed tests.
+		[switch] $EnableExit
+	)
+
+	Import-Module Pester
+	Invoke-Pester $Path
+	if ($EnableExit) { exit $LASTEXITCODE }
+}
+
+<#
+.SYNOPSIS
+	Creates a new Git tag.
+#>
+function New-GitTag {
+	param (
+		# The tag name.
+		[Parameter(Mandatory, Position = 0)]
+		[string] $Name
+	)
+
+	git tag $Name
+	git push origin $Name
+}
+
+<#
+.SYNOPSIS
+	Publishes the project package to the NuGet registry.
+#>
+function Publish-NuGetPackage {
+	param (
+		# Value indicating whether to not build the solution before compression.
+		[switch] $NoBuild
+	)
+
+	$output = "$PSScriptRoot/../var/NuGet"
+	$argumentList = "--output", $output
+	if ($NoBuild) { $argumentList += "--no-build" }
+	dotnet pack @argumentList
+	foreach ($package in Get-Item $output/*.nupkg) { dotnet nuget push $package --api-key $Env:NUGET_API_KEY --source NuGet }
+}
+
+<#
+.SYNOPSIS
+	Publishes the project package to the PowerShell Gallery registry.
+#>
+function Publish-PSGalleryModule {
+	$root = Join-Path $PSScriptRoot ..
+	$assemblies = (Import-PowerShellDataFile $root/Sql.psd1).RequiredAssemblies
+
+	$output = "$root/var/PSModule"
+	New-Item $output/bin, $output/src -ItemType Directory | Out-Null
+	Copy-Item $root/Sql.psd1 $output/Belin.Sql.psd1
+	Copy-Item $root/*.md $output
+	Copy-Item $root/src/Cmdlets $output/src -Recurse
+	$assemblies.ForEach{ "$root/$_" } | Copy-Item -Destination $output/bin
+
+	$output = "$root/var/PSGallery"
+	New-Item $output -ItemType Directory | Out-Null
+	Compress-PSResource $root/var/PSModule $output
+	foreach ($package in Get-Item $output/*.nupkg) { Publish-PSResource -ApiKey $Env:PSGALLERY_API_KEY -NupkgPath $package -Repository PSGallery }
+}
+
+<#
+.SYNOPSIS
+	Installs the specified NuGet package, if any. Otherwise, installs all packages.
+#>
+function Restore-NuGetPackage {
+	param (
+		# The package to install.
+		[Parameter(Position = 0)]
+		[string] $Package
+	)
+
+	if ($Package) { dotnet package add $Package }
+	else { dotnet restore }
+}
+
+<#
+.SYNOPSIS
+	Checks whether an update is available for the NuGet packages.
+#>
+function Test-NuGetPackageUpdate {
+	dotnet package list --outdated
+}
+
+<#
+.SYNOPSIS
 	Checks whether an update is available for the specified PowerShell module.
 .INPUTS
 	The PowerShell module to be checked.
@@ -25,4 +159,20 @@ function Test-PSResourceUpdate {
 		$module = [pscustomobject]@{ ModuleName = $InputObject.Name; CurrentVersion = $InputObject.Version; LatestVersion = $latestVersion }
 		if ($module.LatestVersion -gt $module.CurrentVersion) { $module }
 	}
+}
+
+<#
+.SYNOPSIS
+	Updates the specified NuGet package, if any. Otherwise, updates all packages.
+#>
+function Update-NuGetPackage {
+	param (
+		# The package to update.
+		[Parameter(Position = 0)]
+		[string] $Package
+	)
+
+	$argumentList = , "update"
+	if ($Package) { $argumentList += $Package }
+	composer @argumentList
 }
