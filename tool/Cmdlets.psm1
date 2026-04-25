@@ -40,26 +40,6 @@ function Invoke-DotNetTest {
 
 <#
 .SYNOPSIS
-	Invokes the PowerShell test runner.
-#>
-function Invoke-PowerShellTest {
-	param (
-		# The path to the file or directory to be tested.
-		[Parameter(Mandatory, Position = 0)]
-		[string[]] $Path,
-
-		# Value indicating whether, on completion of the tests, to exit the PowerShell session
-		# and return an exit code equal to the number of failed tests.
-		[switch] $EnableExit
-	)
-
-	Import-Module Pester
-	Invoke-Pester $Path
-	if ($EnableExit) { exit $LASTEXITCODE }
-}
-
-<#
-.SYNOPSIS
 	Creates a new Git tag.
 #>
 function New-GitTag {
@@ -89,27 +69,6 @@ function Publish-NuGetPackage {
 	if ($NoBuild) { $argumentList += "--no-build" }
 	dotnet pack @argumentList
 	foreach ($package in Get-Item $output/*.nupkg) { dotnet nuget push $package --api-key $Env:NUGET_API_KEY --source NuGet }
-}
-
-<#
-.SYNOPSIS
-	Publishes the project package to the PowerShell Gallery registry.
-#>
-function Publish-PSGalleryModule {
-	$root = Join-Path $PSScriptRoot ..
-	$assemblies = (Import-PowerShellDataFile $root/Sql.psd1).RequiredAssemblies
-
-	$output = "$root/var/PSModule"
-	New-Item $output/bin, $output/src -ItemType Directory | Out-Null
-	Copy-Item $root/Sql.psd1 $output/Belin.Sql.psd1
-	Copy-Item $root/*.md $output
-	Copy-Item $root/src/Cmdlets $output/src -Recurse
-	$assemblies.ForEach{ "$root/$_" } | Copy-Item -Destination $output/bin
-
-	$output = "$root/var/PSGallery"
-	New-Item $output -ItemType Directory | Out-Null
-	Compress-PSResource $root/var/PSModule $output
-	foreach ($package in Get-Item $output/*.nupkg) { Publish-PSResource -ApiKey $Env:PSGALLERY_API_KEY -NupkgPath $package -Repository PSGallery }
 }
 
 <#

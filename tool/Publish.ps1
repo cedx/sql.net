@@ -10,4 +10,3 @@ else {
 $version = (Import-PowerShellDataFile Sql.psd1).ModuleVersion
 New-GitTag "v$version"
 Publish-NuGetPackage -NoBuild
-Publish-PSGalleryModule
