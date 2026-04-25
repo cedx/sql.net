@@ -1,5 +1,4 @@
 @{
-	DefaultCommandPrefix = "Sql"
 	ModuleVersion = "4.0.0"
 	PowerShellVersion = "7.6"
 
@@ -7,57 +6,12 @@
 	CompanyName = "Cedric-Belin.fr"
 	Copyright = "© Cédric Belin"
 	Description = "A simple micro-ORM, based on ADO.NET and data annotations."
-	GUID = "d2b1c123-e1bc-4cca-84c5-af102244e3c5"
+	GUID = "d4c1876f-de9b-45d7-a9c1-d9276dd6b65e"
 
 	AliasesToExport = @()
 	CmdletsToExport = @()
+	FunctionsToExport = @()
 	VariablesToExport = @()
-
-	FunctionsToExport = @(
-		"Approve-Transaction"
-		"Close-Connection"
-		"Deny-Transaction"
-		"Find-Object"
-		"Get-First"
-		"Get-Mapper"
-		"Get-Scalar"
-		"Get-Single"
-		"Invoke-NonQuery"
-		"Invoke-Query"
-		"New-Command"
-		"New-Connection"
-		"New-Parameter"
-		"New-Transaction"
-		"Publish-Object"
-		"Remove-Object"
-		"Test-Object"
-		"Update-Object"
-	)
-
-	NestedModules = @(
-		"src/Cmdlets/Approve-Transaction.psm1"
-		"src/Cmdlets/Close-Connection.psm1"
-		"src/Cmdlets/Deny-Transaction.psm1"
-		"src/Cmdlets/Find-Object.psm1"
-		"src/Cmdlets/Get-First.psm1"
-		"src/Cmdlets/Get-Mapper.psm1"
-		"src/Cmdlets/Get-Scalar.psm1"
-		"src/Cmdlets/Get-Single.psm1"
-		"src/Cmdlets/Invoke-NonQuery.psm1"
-		"src/Cmdlets/Invoke-Query.psm1"
-		"src/Cmdlets/New-Command.psm1"
-		"src/Cmdlets/New-Connection.psm1"
-		"src/Cmdlets/New-Parameter.psm1"
-		"src/Cmdlets/New-Transaction.psm1"
-		"src/Cmdlets/Publish-Object.psm1"
-		"src/Cmdlets/Remove-Object.psm1"
-		"src/Cmdlets/Test-Object.psm1"
-		"src/Cmdlets/Update-Object.psm1"
-	)
-
-	RequiredAssemblies = @(
-		"bin/Belin.Sql.dll"
-	)
 
 	PrivateData = @{
 		PSData = @{
