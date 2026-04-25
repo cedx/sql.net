@@ -20,7 +20,7 @@ pwsh --version
 From a command prompt, run:
 
 ```shell
-dotnet add package Belin.Sql
+dotnet package add Belin.Sql
 ```
 
 ### 2. Import it

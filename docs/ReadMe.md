@@ -11,7 +11,7 @@ Install the latest version of **SQL Mapper for .NET** with your package manager:
 
 ```shell
 # .NET with NuGet
-dotnet add package Belin.Sql
+dotnet package add Belin.Sql
 
 # PowerShell with PSResourceGet
 Install-PSResource Belin.Sql
