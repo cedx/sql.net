@@ -96,7 +96,7 @@ public sealed class Parameter(string name, object? value = null) {
 	/// </summary>
 	/// <param name="name">The parameter name.</param>
 	/// <returns>The normalized parameter name.</returns>
-	internal static string NormalizeName(string name) => name.Length == 0 ? "?" : prefixes.Contains(name[0]) ? name : $"@{name}";
+	internal static string NormalizeName(string name) => name.Length == 0 ? "?" : (prefixes.Contains(name[0]) ? name : $"@{name}");
 
 	/// <summary>
 	/// Normalizes the specified parameter value.
