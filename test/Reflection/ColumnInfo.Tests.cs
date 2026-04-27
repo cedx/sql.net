@@ -63,4 +63,20 @@ public sealed class ColumnInfoTests {
 	[DataRow("Id", typeof(int))]
 	public void Type(string name, Type expected) =>
 		AreEqual(expected, new ColumnInfo(typeof(Character).GetProperty(name)!).Type);
+
+	[TestMethod]
+	public void GetValue() {
+		var character = new Character { FirstName = "Cédric", LastName = "Belin" };
+		AreEqual("Cédric", new ColumnInfo(typeof(Character).GetProperty("FirstName")!).GetValue(character));
+		AreEqual("Belin", new ColumnInfo(typeof(Character).GetProperty("LastName")!).GetValue(character));
+	}
+
+	[TestMethod]
+	public void SetValue() {
+		var character = new Character { FirstName = "Cédric", LastName = "Belin" };
+		new ColumnInfo(typeof(Character).GetProperty("FirstName")!).SetValue(character, "Anders");
+		new ColumnInfo(typeof(Character).GetProperty("LastName")!).SetValue(character, "Hejlsberg");
+		AreEqual("Anders", character.FirstName);
+		AreEqual("Hejlsberg", character.LastName);
+	}
 }
