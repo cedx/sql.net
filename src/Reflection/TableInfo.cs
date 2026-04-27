@@ -25,7 +25,7 @@ public sealed class TableInfo {
 	public string Name { get; }
 
 	/// <summary>
-	/// The table schema.
+	/// The table schema, if applicable.
 	/// </summary>
 	public string? Schema { get; }
 
