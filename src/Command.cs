@@ -7,12 +7,12 @@ using System.Data;
 /// </summary>
 /// <param name="text">The text of the SQL statement.</param>
 /// <param name="parameters">The parameters of the SQL statement.</param>
-public sealed class Command(string text, SqlParameterCollection? parameters = null) {
+public sealed class Command(string text, ParameterCollection? parameters = null) {
 
 	/// <summary>
 	/// The text of the SQL statement.
 	/// </summary>
-	public SqlParameterCollection Parameters { get; set; } = parameters ?? [];
+	public ParameterCollection Parameters { get; set; } = parameters ?? [];
 
 	/// <summary>
 	/// Value indicating whether to prevent from buffering the rows in memory.
@@ -44,7 +44,7 @@ public sealed class Command(string text, SqlParameterCollection? parameters = nu
 	/// </summary>
 	/// <param name="text">When this method returns, contains the <see cref="Text"/> value of this instance.</param>
 	/// <param name="parameters">When this method returns, contains the <see cref="Parameters"/> value of this instance.</param>
-	public void Deconstruct(out string text, out SqlParameterCollection parameters) {
+	public void Deconstruct(out string text, out ParameterCollection parameters) {
 		text = Text;
 		parameters = Parameters;
 	}
