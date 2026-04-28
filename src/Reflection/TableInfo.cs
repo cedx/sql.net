@@ -7,17 +7,17 @@ using System.Reflection;
 /// <summary>
 /// Provides information about a database table.
 /// </summary>
-public sealed class DbTableInfo {
+public sealed class TableInfo {
 
 	/// <summary>
 	/// The table columns.
 	/// </summary>
-	public IReadOnlyDictionary<string, DbColumnInfo> Columns { get; }
+	public IReadOnlyDictionary<string, ColumnInfo> Columns { get; }
 
 	/// <summary>
 	/// The single identity column, if applicable.
 	/// </summary>
-	public DbColumnInfo? IdentityColumn { get; }
+	public ColumnInfo? IdentityColumn { get; }
 
 	/// <summary>
 	/// The table name.
@@ -38,12 +38,12 @@ public sealed class DbTableInfo {
 	/// Creates new table information.
 	/// </summary>
 	/// <param name="type">The type information providing the table metadata.</param>
-	public DbTableInfo(Type type) {
+	public TableInfo(Type type) {
 		var table = type.GetCustomAttribute<TableAttribute>();
 		var columns =
 			from property in type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
 			where !property.IsDefined(typeof(NotMappedAttribute)) && ((property.CanRead && property.CanWrite) || property.IsDefined(typeof(ColumnAttribute)))
-			select new DbColumnInfo(property);
+			select new ColumnInfo(property);
 
 		Columns = columns.ToFrozenDictionary(column => column.Name);
 		IdentityColumn = Columns.Values.SingleOrDefault(column => column.IsIdentity) ?? (Columns.TryGetValue("Id", out var column) ? column : null);

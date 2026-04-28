@@ -37,21 +37,21 @@ public class ParameterCollection: List<Parameter> {
 	}
 
 	/// <summary>
-	/// Creates a new parameter collection from the specified dictionary of named parameters.
-	/// </summary>
-	/// <param name="parameters">The dictionary whose elements are copied to the parameter collection.</param>
-	/// <returns>The parameter collection corresponding to the specified dictionary of named parameters.</returns>
-	public static implicit operator ParameterCollection(Dictionary<string, object?> parameters) => [.. parameters.Select(entry =>
-		entry.Value is Parameter parameter ? parameter : new Parameter(entry.Key, entry.Value)
-	)];
-
-	/// <summary>
 	/// Creates a new parameter collection from the specified list of positional parameters.
 	/// </summary>
 	/// <param name="parameters">The list whose elements are copied to the parameter collection.</param>
 	/// <returns>The parameter collection corresponding to the specified list of positional parameters.</returns>
 	public static implicit operator ParameterCollection(List<object?> parameters) => [.. parameters.Select((value, index) =>
 		value is Parameter parameter ? parameter : new Parameter($"?{index + 1}", value)
+	)];
+
+	/// <summary>
+	/// Creates a new parameter collection from the specified dictionary of named parameters.
+	/// </summary>
+	/// <param name="parameters">The dictionary whose elements are copied to the parameter collection.</param>
+	/// <returns>The parameter collection corresponding to the specified dictionary of named parameters.</returns>
+	public static implicit operator ParameterCollection(Dictionary<string, object?> parameters) => [.. parameters.Select(entry =>
+		entry.Value is Parameter parameter ? parameter : new Parameter(entry.Key, entry.Value)
 	)];
 
 	/// <summary>

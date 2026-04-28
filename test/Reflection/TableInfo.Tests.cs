@@ -3,25 +3,25 @@ namespace Belin.Sql.Reflection;
 using Belin.Sql.Fixtures;
 
 /// <summary>
-/// Tests the features of the <see cref="DbTableInfo"/> class.
+/// Tests the features of the <see cref="TableInfo"/> class.
 /// </summary>
 [TestClass]
-public sealed class DbTableInfoTests {
+public sealed class TableInfoTests {
 
 	[TestMethod]
 	public void Columns() {
-		HasCount(0, new DbTableInfo(typeof(DbTableInfo)).Columns);
+		HasCount(0, new TableInfo(typeof(TableInfo)).Columns);
 
-		var columns = new DbTableInfo(typeof(Character)).Columns;
+		var columns = new TableInfo(typeof(Character)).Columns;
 		HasCount(5, columns);
 		CollectionAssert.AreEquivalent(new[] { "firstName", "fullName", "gender", "ID", "lastName" }, columns.Keys.ToArray());
 	}
 
 	[TestMethod]
 	public void IdentityColumn() {
-		IsNull(new DbTableInfo(typeof(DbTableInfo)).IdentityColumn);
+		IsNull(new TableInfo(typeof(TableInfo)).IdentityColumn);
 
-		var identityColumn = new DbTableInfo(typeof(Character)).IdentityColumn;
+		var identityColumn = new TableInfo(typeof(Character)).IdentityColumn;
 		IsNotNull(identityColumn);
 		AreEqual("ID", identityColumn.Name);
 	}
@@ -29,18 +29,18 @@ public sealed class DbTableInfoTests {
 	[TestMethod]
 	public void Name() {
 		// It should return the class name when there is no [Table] attribute.
-		AreEqual("DbTableInfo", new DbTableInfo(typeof(DbTableInfo)).Name);
+		AreEqual("TableInfo", new TableInfo(typeof(TableInfo)).Name);
 
 		// It should return the value of the [Table] attribute when it is present.
-		AreEqual("Characters", new DbTableInfo(typeof(Character)).Name);
+		AreEqual("Characters", new TableInfo(typeof(Character)).Name);
 	}
 
 	[TestMethod]
 	public void Schema() {
 		// It should return `null` when there is no [Table] attribute.
-		IsNull(new DbTableInfo(typeof(DbTableInfo)).Schema);
+		IsNull(new TableInfo(typeof(TableInfo)).Schema);
 
 		// It should return the value of the [Table] attribute when it is present.
-		AreEqual("main", new DbTableInfo(typeof(Character)).Schema);
+		AreEqual("main", new TableInfo(typeof(Character)).Schema);
 	}
 }

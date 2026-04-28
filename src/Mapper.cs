@@ -21,7 +21,7 @@ public sealed class Mapper {
 	/// <summary>
 	/// The mapping between the entity types and their associated database tables.
 	/// </summary>
-	private static readonly ConcurrentDictionary<Type, DbTableInfo> mapping = [];
+	private static readonly ConcurrentDictionary<Type, TableInfo> mapping = [];
 
 	/// <summary>
 	/// Creates a new data mapper.
@@ -211,7 +211,7 @@ public sealed class Mapper {
 	/// </summary>
 	/// <typeparam name="T">The type to inspect.</typeparam>
 	/// <returns>The table information associated with the specified type.</returns>
-	public DbTableInfo GetTable<T>() where T: new() => mapping.GetOrAdd(typeof(T), type => new DbTableInfo(type));
+	public TableInfo GetTable<T>() where T: new() => mapping.GetOrAdd(typeof(T), type => new TableInfo(type));
 
 	/// <summary>
 	/// Converts the specified object into an equivalent value of the specified type.
@@ -219,7 +219,7 @@ public sealed class Mapper {
 	/// <param name="value">The object to convert.</param>
 	/// <param name="column">The column providing the type of object to return.</param>
 	/// <returns>The value of the given type corresponding to the specified object.</returns>
-	internal static object? ChangeType(object? value, DbColumnInfo column) => ChangeType(value, column.Type, column.IsNullable);
+	internal static object? ChangeType(object? value, ColumnInfo column) => ChangeType(value, column.Type, column.IsNullable);
 
 	/// <summary>
 	/// Converts the specified object into an equivalent value of the specified type.
