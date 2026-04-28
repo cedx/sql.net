@@ -26,18 +26,7 @@ public class ParameterCollection: List<Parameter> {
 	/// <param name="value">The parameter value.</param>
 	/// <param name="dbType">The parameter database type.</param>
 	/// <param name="size">The parameter maximum size, in bytes.</param>
-	public ParameterCollection(string name, object? value = null, DbType? dbType = null, int? size = null):
-		this(new Parameter(name, value) { DbType = dbType, Size = size }) {}
-
-	/// <summary>
-	/// Creates a new parameter list that contains the specified parameter.
-	/// </summary>
-	/// <param name="name">The parameter name.</param>
-	/// <param name="direction">The parameter direction.</param>
-	/// <param name="dbType">The parameter database type.</param>
-	/// <param name="size">The parameter maximum size, in bytes.</param>
-	public ParameterCollection(string name, ParameterDirection direction, DbType dbType, int? size = null):
-		this(new Parameter(name) { DbType = dbType, Direction = direction, Size = size }) {}
+	public ParameterCollection(string name, object? value = null): base([new Parameter(name, value)]) {}
 
 	/// <summary>
 	/// Gets the parameter with the specified name.
