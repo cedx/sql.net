@@ -102,7 +102,7 @@ public static partial class ConnectionExtensions {
 	public static long Insert<T>(this IDbConnection connection, T instance, CommandOptions? options = null) where T: new() {
 		var (text, parameters) = new CommandBuilder(connection).GetInsertCommand(instance);
 		var id = ExecuteScalar<long>(connection, text, parameters, options);
-		if (Mapper.Instance.GetTable<T>().IdentityColumn is ColumnInfo column) column.SetValue(instance, Mapper.ChangeType(id, column));
+		if (Mapper.Instance.GetTable<T>().IdentityColumn is DbColumnInfo column) column.SetValue(instance, Mapper.ChangeType(id, column));
 		return id;
 	}
 
@@ -118,7 +118,7 @@ public static partial class ConnectionExtensions {
 	public static async Task<long> InsertAsync<T>(this IDbConnection connection, T instance, CommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		var (text, parameters) = new CommandBuilder(connection).GetInsertCommand(instance);
 		var id = await ExecuteScalarAsync<long>(connection, text, parameters, options, cancellationToken);
-		if (Mapper.Instance.GetTable<T>().IdentityColumn is ColumnInfo column) column.SetValue(instance, Mapper.ChangeType(id, column));
+		if (Mapper.Instance.GetTable<T>().IdentityColumn is DbColumnInfo column) column.SetValue(instance, Mapper.ChangeType(id, column));
 		return id;
 	}
 

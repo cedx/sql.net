@@ -238,6 +238,6 @@ public class CommandBuilder {
 	/// </summary>
 	/// <param name="table">The table.</param>
 	/// <returns>The fully qualified name corresponding to the specified table.</returns>
-	private string GetTableName(TableInfo table) =>
+	private string GetTableName(DbTableInfo table) =>
 		string.IsNullOrEmpty(table.Schema) ? $"{QuoteIdentifier(table.Name)}" : $"{QuoteIdentifier(table.Schema)}{SchemaSeparator}{QuoteIdentifier(table.Name)}";
 }
