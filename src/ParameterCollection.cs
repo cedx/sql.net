@@ -1,26 +1,23 @@
 namespace Belin.Sql;
 
-using System.Collections;
-using System.Data;
-
 /// <summary>
 /// Collects all parameters relevant to a parameterized SQL statement.
 /// </summary>
 public class ParameterCollection: List<Parameter> {
 
 	/// <summary>
-	/// Creates a new parameter list.
+	/// Creates a new parameter collection.
 	/// </summary>
 	public ParameterCollection(): base() {}
 
 	/// <summary>
-	/// Creates a new parameter list that contains the elements copied from the specified collection.
+	/// Creates a new parameter collection that contains the elements copied from the specified collection.
 	/// </summary>
-	/// <param name="parameters">The collection whose elements are copied to the parameter list.</param>
+	/// <param name="parameters">The collection whose elements are copied to the parameter collection.</param>
 	public ParameterCollection(params IEnumerable<Parameter> parameters): base(parameters) {}
 
 	/// <summary>
-	/// Creates a new parameter list that contains the specified parameter.
+	/// Creates a new parameter collection that contains the specified parameter.
 	/// </summary>
 	/// <param name="name">The parameter name.</param>
 	/// <param name="value">The parameter value.</param>
@@ -42,44 +39,22 @@ public class ParameterCollection: List<Parameter> {
 	}
 
 	/// <summary>
-	/// Creates a new parameter list from the specified array of positional parameters.
+	/// Creates a new parameter collection from the specified list of positional parameters.
 	/// </summary>
-	/// <param name="array">The array whose elements are copied to the parameter list.</param>
-	/// <returns>The parameter list corresponding to the specified array of positional parameters.</returns>
-	public static implicit operator ParameterCollection(object?[] array) => [.. array.Select((value, index) =>
+	/// <param name="list">The list whose elements are copied to the parameter collection.</param>
+	/// <returns>The parameter collection corresponding to the specified list of positional parameters.</returns>
+	public static implicit operator ParameterCollection(List<object?> list) => [.. list.Select((value, index) =>
 		value is Parameter parameter ? parameter : new Parameter($"?{index + 1}", value)
 	)];
 
 	/// <summary>
-	/// Creates a new parameter list from the specified list of positional parameters.
+	/// Creates a new parameter collection from the specified dictionary of named parameters.
 	/// </summary>
-	/// <param name="list">The list whose elements are copied to the parameter list.</param>
-	/// <returns>The parameter list corresponding to the specified list of positional parameters.</returns>
-	public static implicit operator ParameterCollection(ArrayList list) => list.ToArray();
-
-	/// <summary>
-	/// Creates a new parameter list from the specified list of positional parameters.
-	/// </summary>
-	/// <param name="list">The list whose elements are copied to the parameter list.</param>
-	/// <returns>The parameter list corresponding to the specified list of positional parameters.</returns>
-	public static implicit operator ParameterCollection(List<object?> list) => list.ToArray();
-
-	/// <summary>
-	/// Creates a new parameter list from the specified dictionary of named parameters.
-	/// </summary>
-	/// <param name="dictionary">The dictionary whose elements are copied to the parameter list.</param>
-	/// <returns>The parameter list corresponding to the specified dictionary of named parameters.</returns>
+	/// <param name="dictionary">The dictionary whose elements are copied to the parameter collection.</param>
+	/// <returns>The parameter collection corresponding to the specified dictionary of named parameters.</returns>
 	public static implicit operator ParameterCollection(Dictionary<string, object?> dictionary) => [.. dictionary.Select(entry =>
 		entry.Value is Parameter parameter ? parameter : new Parameter(entry.Key, entry.Value)
 	)];
-
-	/// <summary>
-	/// Creates a new parameter list from the specified hash table of named parameters.
-	/// </summary>
-	/// <param name="hashtable">The hash table whose elements are copied to the parameter list.</param>
-	/// <returns>The parameter list corresponding to the specified hash table of named parameters.</returns>
-	public static implicit operator ParameterCollection(Hashtable hashtable) =>
-		hashtable.Cast<DictionaryEntry>().ToDictionary(entry => entry.Key.ToString() ?? "", entry => entry.Value);
 
 	/// <summary>
 	/// Gets a value indicating whether a parameter in this collection has the specified name.

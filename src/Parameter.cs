@@ -1,7 +1,6 @@
 namespace Belin.Sql;
 
 using System.Data;
-using System.Diagnostics.CodeAnalysis;
 
 /// <summary>
 /// Represents a parameter of a parameterized SQL statement.
@@ -46,7 +45,7 @@ public sealed class Parameter {
 	/// <summary>
 	/// The parameter value.
 	/// </summary>
-	// [NotNull]
+	// TODO [NotNull]
 	public object? Value { get; set => field = NormalizeValue(value); }
 
 	/// <summary>

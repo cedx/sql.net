@@ -13,15 +13,15 @@ public sealed class ParameterCollectionTests {
 		var collection = new ParameterCollection();
 		IsEmpty(collection);
 
-		collection = new("?1", 123, DbType.Int32);
+		collection = new(new Parameter("?1", 123) { DbType = DbType.Int64 });
 		HasCount(1, collection);
 
 		var parameter = collection.First();
 		AreEqual("?1", parameter.Name);
 		AreEqual(123, parameter.Value);
-		AreEqual(DbType.Int32, parameter.DbType);
+		AreEqual(DbType.Int64, parameter.DbType);
 
-		collection = new(("?1", 123, DbType.Int32), ("@Key", "Unique", DbType.AnsiString));
+		collection = new(new("?1", 123), new Parameter("@Key", "Unique") { DbType = DbType.AnsiString });
 		HasCount(2, collection);
 
 		parameter = collection.Last();
