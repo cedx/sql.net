@@ -21,8 +21,6 @@ public class ParameterCollection: List<Parameter> {
 	/// </summary>
 	/// <param name="name">The parameter name.</param>
 	/// <param name="value">The parameter value.</param>
-	/// <param name="dbType">The parameter database type.</param>
-	/// <param name="size">The parameter maximum size, in bytes.</param>
 	public ParameterCollection(string name, object? value): base([new Parameter(name, value)]) {}
 
 	/// <summary>
@@ -41,18 +39,18 @@ public class ParameterCollection: List<Parameter> {
 	/// <summary>
 	/// Creates a new parameter collection from the specified list of positional parameters.
 	/// </summary>
-	/// <param name="list">The list whose elements are copied to the parameter collection.</param>
+	/// <param name="parameters">The list whose elements are copied to the parameter collection.</param>
 	/// <returns>The parameter collection corresponding to the specified list of positional parameters.</returns>
-	public static implicit operator ParameterCollection(List<object?> list) => [.. list.Select((value, index) =>
+	public static implicit operator ParameterCollection(List<object?> parameters) => [.. parameters.Select((value, index) =>
 		value is Parameter parameter ? parameter : new Parameter($"?{index + 1}", value)
 	)];
 
 	/// <summary>
 	/// Creates a new parameter collection from the specified dictionary of named parameters.
 	/// </summary>
-	/// <param name="dictionary">The dictionary whose elements are copied to the parameter collection.</param>
+	/// <param name="parameters">The dictionary whose elements are copied to the parameter collection.</param>
 	/// <returns>The parameter collection corresponding to the specified dictionary of named parameters.</returns>
-	public static implicit operator ParameterCollection(Dictionary<string, object?> dictionary) => [.. dictionary.Select(entry =>
+	public static implicit operator ParameterCollection(Dictionary<string, object?> parameters) => [.. parameters.Select(entry =>
 		entry.Value is Parameter parameter ? parameter : new Parameter(entry.Key, entry.Value)
 	)];
 
