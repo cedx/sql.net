@@ -57,9 +57,16 @@ public sealed class Parameter(string name, object? value) {
 	/// <summary>
 	/// Creates a new parameter from the specified tuple.
 	/// </summary>
-	/// <param name="parameter">The tuple providing the parameter properties.</param>
+	/// <param name="parameter">The tuple providing the parameter name and value.</param>
 	/// <returns>The parameter corresponding to the specified tuple.</returns>
 	public static implicit operator Parameter((string Name, object? Value) parameter) => new(parameter.Name, parameter.Value);
+
+	/// <summary>
+	/// Creates a new parameter from the specified key/value pair.
+	/// </summary>
+	/// <param name="parameter">The key/value pair providing the parameter name and value.</param>
+	/// <returns>The parameter corresponding to the specified key/value pair.</returns>
+	public static implicit operator Parameter(KeyValuePair<string, object?> parameter) => new(parameter.Key, parameter.Value);
 
 	/// <summary>
 	/// Normalizes the specified parameter name.
