@@ -7,6 +7,21 @@ namespace Belin.Sql;
 public sealed class ParameterTests {
 
 	[TestMethod]
+	public void ImplicitConversion() {
+		Parameter parameter = ("", null);
+		AreEqual("?", parameter.Name);
+		AreEqual(DBNull.Value, parameter.Value);
+
+		parameter = (":foo", "bar");
+		AreEqual(":foo", parameter.Name);
+		AreEqual("bar", parameter.Value);
+
+		parameter = ("baz", 123);
+		AreEqual("@baz", parameter.Name);
+		AreEqual(123, parameter.Value);
+	}
+
+	[TestMethod]
 	[DataRow("", "?")]
 	[DataRow("?", "?")]
 	[DataRow("?1", "?1")]
@@ -14,16 +29,17 @@ public sealed class ParameterTests {
 	[DataRow("@bar", "@bar")]
 	[DataRow(":baz", ":baz")]
 	[DataRow("$qux", "$qux")]
-	public void Name(string name, string expected) => AreEqual(expected, new Parameter(name).Name);
+	public void Name(string name, string expected) =>
+		AreEqual(expected, new Parameter(name).Name);
 
 	[TestMethod]
 	public void Value() {
-		AreEqual(DBNull.Value, new Parameter("name", null).Value);
-		AreEqual(DBNull.Value, new Parameter("name", DBNull.Value).Value);
-		AreEqual(123, new Parameter("name", 123).Value);
-		AreEqual(-123.456, new Parameter("name", -123.456).Value);
-		AreEqual("", new Parameter("name", "").Value);
-		AreEqual("foo", new Parameter("name", "foo").Value);
-		AreEqual(DateTime.UnixEpoch, new Parameter("name", DateTime.UnixEpoch).Value);
+		AreEqual(DBNull.Value, new Parameter("Name", null).Value);
+		AreEqual(DBNull.Value, new Parameter("Name", DBNull.Value).Value);
+		AreEqual(123, new Parameter("Name", 123).Value);
+		AreEqual(-123.456, new Parameter("Name", -123.456).Value);
+		AreEqual("", new Parameter("Name", "").Value);
+		AreEqual("Foo", new Parameter("Name", "Foo").Value);
+		AreEqual(DateTime.UnixEpoch, new Parameter("Name", DateTime.UnixEpoch).Value);
 	}
 }
