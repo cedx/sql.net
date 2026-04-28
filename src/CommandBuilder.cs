@@ -97,7 +97,7 @@ public class CommandBuilder {
 	public Command GetDeleteCommand<T>(T instance) where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var parameter = new Parameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), identityColumn.GetValue(instance));
+		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), identityColumn.GetValue(instance));
 
 		var text = $"""
 			DELETE FROM {GetTableName(table)}
@@ -117,7 +117,7 @@ public class CommandBuilder {
 	public Command GetExistsCommand<T>(object id) where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var parameter = new Parameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id);
+		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id);
 
 		var text = $"""
 			SELECT 1
@@ -139,7 +139,7 @@ public class CommandBuilder {
 	public Command GetFindCommand<T>(object id, params string[] columns) where T: new() {
 		var table = Mapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var parameter = new Parameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id);
+		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id);
 
 		var fields = (columns.Length == 0 ? table.Columns.Values : table.Columns.Values.Where(column => columns.Contains(column.Name)))
 			.Where(column => column.CanWrite)
