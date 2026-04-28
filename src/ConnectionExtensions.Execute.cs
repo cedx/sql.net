@@ -16,7 +16,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The number of rows affected.</returns>
-	public static int Execute(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) {
+	public static int Execute(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, CommandOptions? options = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
 		using var dbCommand = CreateCommand(connection, text, parameters, options);
 		return dbCommand.ExecuteNonQuery();
@@ -31,7 +31,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The number of rows affected.</returns>
-	public static async Task<int> ExecuteAsync(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
+	public static async Task<int> ExecuteAsync(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
 		if (connection.State == ConnectionState.Closed) await ((DbConnection) connection).OpenAsync(cancellationToken);
 		using var dbCommand = (DbCommand) CreateCommand(connection, text, parameters, options);
 		return await dbCommand.ExecuteNonQueryAsync(cancellationToken);
@@ -45,7 +45,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The data reader that can be used to access the results.</returns>
-	public static IDataReader ExecuteReader(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) {
+	public static IDataReader ExecuteReader(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, CommandOptions? options = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
 		using var dbCommand = CreateCommand(connection, text, parameters, options);
 		return dbCommand.ExecuteReader();
@@ -60,7 +60,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The data reader that can be used to access the results.</returns>
-	public static async Task<IDataReader> ExecuteReaderAsync(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
+	public static async Task<IDataReader> ExecuteReaderAsync(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
 		if (connection.State == ConnectionState.Closed) await ((DbConnection) connection).OpenAsync(cancellationToken);
 		using var dbCommand = (DbCommand) CreateCommand(connection, text, parameters, options);
 		return await dbCommand.ExecuteReaderAsync(cancellationToken);
@@ -74,7 +74,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The first column of the first row.</returns>
-	public static object? ExecuteScalar(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) =>
+	public static object? ExecuteScalar(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, CommandOptions? options = null) =>
 		ExecuteScalar<object>(connection, text, parameters, options);
 
 	/// <summary>
@@ -86,7 +86,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first column of the first row.</returns>
-	public static async Task<object?> ExecuteScalarAsync(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
+	public static async Task<object?> ExecuteScalarAsync(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) =>
 		await ExecuteScalarAsync<object>(connection, text, parameters, options, cancellationToken);
 
 	/// <summary>
@@ -98,7 +98,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL query.</param>
 	/// <param name="options">The command options.</param>
 	/// <returns>The first column of the first row.</returns>
-	public static T? ExecuteScalar<T>(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null) {
+	public static T? ExecuteScalar<T>(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, CommandOptions? options = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
 		using var dbCommand = CreateCommand(connection, text, parameters, options);
 		var value = dbCommand.ExecuteScalar();
@@ -115,7 +115,7 @@ public static partial class ConnectionExtensions {
 	/// <param name="options">The command options.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first column of the first row.</returns>
-	public static async Task<T?> ExecuteScalarAsync<T>(this IDbConnection connection, string text, ParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
+	public static async Task<T?> ExecuteScalarAsync<T>(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, CommandOptions? options = null, CancellationToken cancellationToken = default) {
 		if (connection.State == ConnectionState.Closed) await ((DbConnection) connection).OpenAsync(cancellationToken);
 		using var dbCommand = (DbCommand) CreateCommand(connection, text, parameters, options);
 		var value = await dbCommand.ExecuteScalarAsync(cancellationToken);

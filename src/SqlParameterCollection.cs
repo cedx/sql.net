@@ -3,25 +3,25 @@ namespace Belin.Sql;
 /// <summary>
 /// Collects all parameters relevant to a parameterized SQL statement.
 /// </summary>
-public class ParameterCollection: List<SqlParameter> {
+public class SqlParameterCollection: List<SqlParameter> {
 
 	/// <summary>
 	/// Creates a new parameter collection.
 	/// </summary>
-	public ParameterCollection(): base() {}
+	public SqlParameterCollection(): base() {}
 
 	/// <summary>
 	/// Creates a new parameter collection that contains the elements copied from the specified collection.
 	/// </summary>
 	/// <param name="parameters">The collection whose elements are copied to the parameter collection.</param>
-	public ParameterCollection(params IEnumerable<SqlParameter> parameters): base(parameters) {}
+	public SqlParameterCollection(params IEnumerable<SqlParameter> parameters): base(parameters) {}
 
 	/// <summary>
 	/// Creates a new parameter collection that contains the specified parameter.
 	/// </summary>
 	/// <param name="name">The parameter name.</param>
 	/// <param name="value">The parameter value.</param>
-	public ParameterCollection(string name, object? value): base([new SqlParameter(name, value)]) {}
+	public SqlParameterCollection(string name, object? value): base([new SqlParameter(name, value)]) {}
 
 	/// <summary>
 	/// Gets the parameter with the specified name.
@@ -41,7 +41,7 @@ public class ParameterCollection: List<SqlParameter> {
 	/// </summary>
 	/// <param name="parameters">The dictionary whose elements are copied to the parameter collection.</param>
 	/// <returns>The parameter collection corresponding to the specified dictionary of named parameters.</returns>
-	public static implicit operator ParameterCollection(Dictionary<string, object?> parameters) => [.. parameters.Select(entry =>
+	public static implicit operator SqlParameterCollection(Dictionary<string, object?> parameters) => [.. parameters.Select(entry =>
 		entry.Value is SqlParameter parameter ? parameter : new SqlParameter(entry.Key, entry.Value)
 	)];
 
@@ -50,7 +50,7 @@ public class ParameterCollection: List<SqlParameter> {
 	/// </summary>
 	/// <param name="parameters">The list whose elements are copied to the parameter collection.</param>
 	/// <returns>The parameter collection corresponding to the specified list of positional parameters.</returns>
-	public static implicit operator ParameterCollection(List<object?> parameters) => [.. parameters.Select((value, index) =>
+	public static implicit operator SqlParameterCollection(List<object?> parameters) => [.. parameters.Select((value, index) =>
 		value is SqlParameter parameter ? parameter : new SqlParameter($"?{index + 1}", value)
 	)];
 
