@@ -21,7 +21,7 @@ public class ParameterCollection: List<Parameter> {
 	/// </summary>
 	/// <param name="name">The parameter name.</param>
 	/// <param name="value">The parameter value.</param>
-	public ParameterCollection(string name, object? value): base([new Parameter(name, value)]) {}
+	public ParameterCollection(string name, object? value): base([new(name, value)]) {}
 
 	/// <summary>
 	/// Gets the parameter with the specified name.

@@ -21,7 +21,7 @@ public sealed class ParameterCollectionTests {
 		AreEqual(123, parameter.Value);
 		AreEqual(DbType.Int64, parameter.DbType);
 
-		collection = new(new("?1", 123), new Parameter("@Key", "Unique") { DbType = DbType.AnsiString });
+		collection = new(new("?1", 123), new("@Key", "Unique") { DbType = DbType.AnsiString });
 		HasCount(2, collection);
 
 		parameter = collection.Last();
