@@ -13,7 +13,7 @@ public sealed class ParameterCollectionTests {
 		var collection = new ParameterCollection();
 		IsEmpty(collection);
 
-		collection = new(new SqlParameter("?1", 123) { DbType = DbType.Int64 });
+		collection = new(new Parameter("?1", 123) { DbType = DbType.Int64 });
 		HasCount(1, collection);
 
 		var parameter = collection.First();
@@ -21,7 +21,7 @@ public sealed class ParameterCollectionTests {
 		AreEqual(123, parameter.Value);
 		AreEqual(DbType.Int64, parameter.DbType);
 
-		collection = new(new("?1", 123), new SqlParameter("@Key", "Unique") { DbType = DbType.AnsiString });
+		collection = new(new("?1", 123), new Parameter("@Key", "Unique") { DbType = DbType.AnsiString });
 		HasCount(2, collection);
 
 		parameter = collection.Last();
