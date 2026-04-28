@@ -24,7 +24,7 @@ public sealed class ConnectionExtensionsQueryTests(TestContext testContext) {
 	[TestMethod]
 	public async Task Query() {
 		var sql = "SELECT * FROM Characters WHERE Gender = @Gender ORDER BY FullName";
-		var parameters = new ParameterCollection("Gender", CharacterGender.Elf.ToString());
+		var parameters = new ParameterCollection(("Gender", CharacterGender.Elf.ToString()));
 
 		var records = connection.Query<Character>(sql, parameters).AsList();
 		HasCount(3, records);
@@ -44,7 +44,7 @@ public sealed class ConnectionExtensionsQueryTests(TestContext testContext) {
 	[TestMethod]
 	public async Task QueryFirst() {
 		var sql = "SELECT * FROM Characters WHERE FullName = @FullName";
-		var parameters = new ParameterCollection("FullName", "Sauron");
+		var parameters = new ParameterCollection(("FullName", "Sauron"));
 
 		var record = connection.QueryFirst<Character>(sql, parameters);
 		AreEqual("Sauron", record.FirstName);
@@ -58,7 +58,7 @@ public sealed class ConnectionExtensionsQueryTests(TestContext testContext) {
 	[TestMethod]
 	public async Task QuerySingle() {
 		var sql = "SELECT * FROM Characters WHERE FullName = @FullName";
-		var parameters = new ParameterCollection("FullName", "Saruman");
+		var parameters = new ParameterCollection(("FullName", "Saruman"));
 
 		var record = connection.QuerySingle<Character>(sql, parameters);
 		AreEqual("Saruman", record.FirstName);

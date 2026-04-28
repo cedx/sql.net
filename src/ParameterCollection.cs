@@ -11,17 +11,16 @@ public class ParameterCollection: List<Parameter> {
 	public ParameterCollection(): base() {}
 
 	/// <summary>
+	/// Creates a new parameter collection that has the specified initial capacity.
+	/// </summary>
+	/// <param name="capacity">The number of parameters that the collection can initially store.</param>
+	public ParameterCollection(int capacity): base(capacity) {}
+
+	/// <summary>
 	/// Creates a new parameter collection that contains the elements copied from the specified collection.
 	/// </summary>
 	/// <param name="parameters">The collection whose elements are copied to the parameter collection.</param>
 	public ParameterCollection(params IEnumerable<Parameter> parameters): base(parameters) {}
-
-	/// <summary>
-	/// Creates a new parameter collection that contains the specified parameter.
-	/// </summary>
-	/// <param name="name">The parameter name.</param>
-	/// <param name="value">The parameter value.</param>
-	public ParameterCollection(string name, object? value): base([new(name, value)]) {}
 
 	/// <summary>
 	/// Gets the parameter with the specified name.
