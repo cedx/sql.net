@@ -3,10 +3,10 @@ namespace Belin.Sql.Reflection;
 using Belin.Sql.Fixtures;
 
 /// <summary>
-/// Tests the features of the <see cref="ColumnInfo"/> class.
+/// Tests the features of the <see cref="DbColumnInfo"/> class.
 /// </summary>
 [TestClass]
-public sealed class ColumnInfoTests {
+public sealed class DbColumnInfoTests {
 
 	[TestMethod]
 	[DataRow("FirstName")]
@@ -14,7 +14,7 @@ public sealed class ColumnInfoTests {
 	[DataRow("Gender")]
 	[DataRow("Id")]
 	public void CanRead(string name) =>
-		IsTrue(new ColumnInfo(typeof(Character).GetProperty(name)!).CanRead);
+		IsTrue(new DbColumnInfo(typeof(Character).GetProperty(name)!).CanRead);
 
 	[TestMethod]
 	[DataRow("FirstName")]
@@ -22,7 +22,7 @@ public sealed class ColumnInfoTests {
 	[DataRow("Gender")]
 	[DataRow("Id")]
 	public void CanWrite(string name) =>
-		IsTrue(new ColumnInfo(typeof(Character).GetProperty(name)!).CanWrite);
+		IsTrue(new DbColumnInfo(typeof(Character).GetProperty(name)!).CanWrite);
 
 	[TestMethod]
 	[DataRow("FirstName", false)]
@@ -30,7 +30,7 @@ public sealed class ColumnInfoTests {
 	[DataRow("Gender", false)]
 	[DataRow("Id", true)]
 	public void IsComputed(string name, bool expected) =>
-		AreEqual(expected, new ColumnInfo(typeof(Character).GetProperty(name)!).IsComputed);
+		AreEqual(expected, new DbColumnInfo(typeof(Character).GetProperty(name)!).IsComputed);
 
 	[TestMethod]
 	[DataRow("FirstName", false)]
@@ -38,7 +38,7 @@ public sealed class ColumnInfoTests {
 	[DataRow("Gender", false)]
 	[DataRow("Id", true)]
 	public void IsIdentity(string name, bool expected) =>
-		AreEqual(expected, new ColumnInfo(typeof(Character).GetProperty(name)!).IsIdentity);
+		AreEqual(expected, new DbColumnInfo(typeof(Character).GetProperty(name)!).IsIdentity);
 
 	[TestMethod]
 	[DataRow("FirstName")]
@@ -46,7 +46,7 @@ public sealed class ColumnInfoTests {
 	[DataRow("Gender")]
 	[DataRow("Id")]
 	public void IsNullable(string name) =>
-		IsFalse(new ColumnInfo(typeof(Character).GetProperty(name)!).IsNullable);
+		IsFalse(new DbColumnInfo(typeof(Character).GetProperty(name)!).IsNullable);
 
 	[TestMethod]
 	[DataRow("FirstName", "firstName")]
@@ -54,7 +54,7 @@ public sealed class ColumnInfoTests {
 	[DataRow("Gender", "gender")]
 	[DataRow("Id", "ID")]
 	public void Name(string name, string expected) =>
-		AreEqual(expected, new ColumnInfo(typeof(Character).GetProperty(name)!).Name);
+		AreEqual(expected, new DbColumnInfo(typeof(Character).GetProperty(name)!).Name);
 
 	[TestMethod]
 	[DataRow("FirstName", typeof(string))]
@@ -62,20 +62,20 @@ public sealed class ColumnInfoTests {
 	[DataRow("Gender", typeof(CharacterGender))]
 	[DataRow("Id", typeof(int))]
 	public void Type(string name, Type expected) =>
-		AreEqual(expected, new ColumnInfo(typeof(Character).GetProperty(name)!).Type);
+		AreEqual(expected, new DbColumnInfo(typeof(Character).GetProperty(name)!).Type);
 
 	[TestMethod]
 	public void GetValue() {
 		var character = new Character { FirstName = "Cédric", LastName = "Belin" };
-		AreEqual("Cédric", new ColumnInfo(typeof(Character).GetProperty("FirstName")!).GetValue(character));
-		AreEqual("Belin", new ColumnInfo(typeof(Character).GetProperty("LastName")!).GetValue(character));
+		AreEqual("Cédric", new DbColumnInfo(typeof(Character).GetProperty("FirstName")!).GetValue(character));
+		AreEqual("Belin", new DbColumnInfo(typeof(Character).GetProperty("LastName")!).GetValue(character));
 	}
 
 	[TestMethod]
 	public void SetValue() {
 		var character = new Character { FirstName = "Cédric", LastName = "Belin" };
-		new ColumnInfo(typeof(Character).GetProperty("FirstName")!).SetValue(character, "Anders");
-		new ColumnInfo(typeof(Character).GetProperty("LastName")!).SetValue(character, "Hejlsberg");
+		new DbColumnInfo(typeof(Character).GetProperty("FirstName")!).SetValue(character, "Anders");
+		new DbColumnInfo(typeof(Character).GetProperty("LastName")!).SetValue(character, "Hejlsberg");
 		AreEqual("Anders", character.FirstName);
 		AreEqual("Hejlsberg", character.LastName);
 	}

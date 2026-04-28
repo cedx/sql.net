@@ -6,7 +6,7 @@ using System.Reflection;
 /// <summary>
 /// Provides information about a database column.
 /// </summary>
-public sealed class ColumnInfo {
+public sealed class DbColumnInfo {
 
 	/// <summary>
 	/// The nullability context.
@@ -57,7 +57,7 @@ public sealed class ColumnInfo {
 	/// Creates new column information.
 	/// </summary>
 	/// <param name="property">The property information providing the column metadata.</param>
-	public ColumnInfo(PropertyInfo property) {
+	public DbColumnInfo(PropertyInfo property) {
 		this.property = property;
 
 		var databaseGeneratedOption = property.GetCustomAttribute<DatabaseGeneratedAttribute>()?.DatabaseGeneratedOption ?? DatabaseGeneratedOption.None;
