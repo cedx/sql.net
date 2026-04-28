@@ -23,7 +23,7 @@ public class ParameterCollection: List<Parameter> {
 	/// <param name="value">The parameter value.</param>
 	/// <param name="dbType">The parameter database type.</param>
 	/// <param name="size">The parameter maximum size, in bytes.</param>
-	public ParameterCollection(string name, object? value = null): base([new Parameter(name, value)]) {}
+	public ParameterCollection(string name, object? value): base([new Parameter(name, value)]) {}
 
 	/// <summary>
 	/// Gets the parameter with the specified name.

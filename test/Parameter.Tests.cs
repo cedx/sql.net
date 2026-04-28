@@ -30,7 +30,7 @@ public sealed class ParameterTests {
 	[DataRow(":baz", ":baz")]
 	[DataRow("$qux", "$qux")]
 	public void Name(string name, string expected) =>
-		AreEqual(expected, new Parameter(name).Name);
+		AreEqual(expected, new Parameter(name, null).Name);
 
 	[TestMethod]
 	public void Value() {

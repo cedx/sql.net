@@ -32,7 +32,7 @@ public sealed class ParameterCollectionTests {
 
 	[TestMethod]
 	public void Contains() {
-		var collection = new ParameterCollection("@Key");
+		var collection = new ParameterCollection("@Key", null);
 		IsTrue(collection.Contains("Key"));
 		IsTrue(collection.Contains("@Key"));
 		IsFalse(collection.Contains("Foo"));

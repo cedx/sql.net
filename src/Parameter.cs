@@ -1,11 +1,12 @@
 namespace Belin.Sql;
 
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 
 /// <summary>
 /// Represents a parameter of a parameterized SQL statement.
 /// </summary>
-public sealed class Parameter {
+public sealed class Parameter(string name, object? value) {
 
 	/// <summary>
 	/// The prefixes used for parameter placeholders.
@@ -25,7 +26,7 @@ public sealed class Parameter {
 	/// <summary>
 	/// The parameter name.
 	/// </summary>
-	public string Name { get; set => field = NormalizeName(value); }
+	public string Name { get; set => field = NormalizeName(value); } = NormalizeName(name);
 
 	/// <summary>
 	/// Indicates the precision of numeric parameters.
@@ -45,26 +46,13 @@ public sealed class Parameter {
 	/// <summary>
 	/// The parameter value.
 	/// </summary>
-	// TODO [NotNull]
-	public object? Value { get; set => field = NormalizeValue(value); }
+	[NotNull]
+	public object? Value { get; set => field = NormalizeValue(value); } = NormalizeValue(value);
 
 	/// <summary>
 	/// Creates a new parameter.
 	/// </summary>
-	public Parameter() {
-		Name = "?";
-		Value = DBNull.Value;
-	}
-
-	/// <summary>
-	/// Creates a new parameter.
-	/// </summary>
-	/// <param name="name">The parameter name.</param>
-	/// <param name="value">The parameter value.</param>
-	public Parameter(string name, object? value = null) {
-		Name = name;
-		Value = value;
-	}
+	public Parameter(): this("?", DBNull.Value) {}
 
 	/// <summary>
 	/// Creates a new parameter from the specified tuple.
