@@ -3,7 +3,7 @@ namespace Belin.Sql;
 using Belin.Sql.Fixtures;
 
 /// <summary>
-/// Tests the features of the <see cref="Mapper"/> class.
+/// Tests the features of the <see cref="SqlMapper"/> class.
 /// </summary>
 [TestClass]
 public sealed class MapperTests {
@@ -69,7 +69,7 @@ public sealed class MapperTests {
 
 	[TestMethod, DynamicData(nameof(ChangeTypeData))]
 	public void ChangeType(object? value, Type conversionType, bool isNullable, object? expected) =>
-		AreEqual(expected, Mapper.ChangeType(value, conversionType, isNullable));
+		AreEqual(expected, SqlMapper.ChangeType(value, conversionType, isNullable));
 
 	[TestMethod]
 	public void CreateInstance() {
@@ -80,13 +80,13 @@ public sealed class MapperTests {
 			["lastName"] = null
 		};
 
-		dynamic instance = Mapper.Instance.CreateInstance(properties);
+		dynamic instance = SqlMapper.Instance.CreateInstance(properties);
 		AreEqual("Bard/minstrel", instance.CLASS);
 		AreEqual("Cédric", instance.firstName);
 		AreEqual(CharacterGender.Balrog.ToString(), instance.gender);
 		IsNull(instance.lastName);
 
-		var character = Mapper.Instance.CreateInstance<Character>(properties);
+		var character = SqlMapper.Instance.CreateInstance<Character>(properties);
 		AreEqual("Cédric", character.FirstName);
 		AreEqual(CharacterGender.Balrog, character.Gender);
 		AreEqual("", character.LastName);
@@ -94,7 +94,7 @@ public sealed class MapperTests {
 
 	[TestMethod]
 	public void GetTable() {
-		var table = Mapper.Instance.GetTable<Character>();
+		var table = SqlMapper.Instance.GetTable<Character>();
 		AreEqual("main", table.Schema);
 		AreEqual("Characters", table.Name);
 		AreEqual(typeof(Character), table.Type);
@@ -130,20 +130,20 @@ public sealed class MapperTests {
 			["RowID"] = 789
 		};
 
-		var records = Mapper.SplitOn(record);
+		var records = SqlMapper.SplitOn(record);
 		HasCount(1, records);
 		CollectionAssert.AreEqual(properties, records[0]);
 
-		records = Mapper.SplitOn(record, "_NonExistent_");
+		records = SqlMapper.SplitOn(record, "_NonExistent_");
 		HasCount(1, records);
 		CollectionAssert.AreEqual(properties, records[0]);
 
-		records = Mapper.SplitOn(record, "Id");
+		records = SqlMapper.SplitOn(record, "Id");
 		HasCount(2, records);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 123, ["LongLabel"] = "Hello World!", ["ShortLabel"] = null }, records[0]);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 456, ["FirstName"] = "Cédric", ["LastName"] = "Belin", ["RowID"] = 789 }, records[1]);
 
-		records = Mapper.SplitOn(record, "Id", "RowID", "_Unused_");
+		records = SqlMapper.SplitOn(record, "Id", "RowID", "_Unused_");
 		HasCount(3, records);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 123, ["LongLabel"] = "Hello World!", ["ShortLabel"] = null }, records[0]);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 456, ["FirstName"] = "Cédric", ["LastName"] = "Belin" }, records[1]);

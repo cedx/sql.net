@@ -11,12 +11,12 @@ using System.Runtime.CompilerServices;
 /// <summary>
 /// Maps data records to entity objects.
 /// </summary>
-public sealed class Mapper {
+public sealed class SqlMapper {
 
 	/// <summary>
 	/// The singleton instance of the data mapper.
 	/// </summary>
-	public static Mapper Instance { get; } = new();
+	public static SqlMapper Instance { get; } = new();
 
 	/// <summary>
 	/// The mapping between the entity types and their associated database tables.
@@ -26,7 +26,7 @@ public sealed class Mapper {
 	/// <summary>
 	/// Creates a new data mapper.
 	/// </summary>
-	private Mapper() {}
+	private SqlMapper() {}
 
 	/// <summary>
 	/// Creates a new dyamic object from the specified data record.

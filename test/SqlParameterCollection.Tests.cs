@@ -3,17 +3,17 @@ namespace Belin.Sql;
 using System.Data;
 
 /// <summary>
-/// Tests the features of the <see cref="ParameterCollection"/> class.
+/// Tests the features of the <see cref="SqlParameterCollection"/> class.
 /// </summary>
 [TestClass]
-public sealed class ParameterCollectionTests {
+public sealed class SqlParameterCollectionTests {
 
 	[TestMethod]
 	public void Constructor() {
-		var collection = new ParameterCollection();
+		var collection = new SqlParameterCollection();
 		IsEmpty(collection);
 
-		collection = new(new Parameter("?1", 123) { DbType = DbType.Int64 });
+		collection = new(new SqlParameter("?1", 123) { DbType = DbType.Int64 });
 		HasCount(1, collection);
 
 		var parameter = collection.First();
@@ -32,7 +32,7 @@ public sealed class ParameterCollectionTests {
 
 	[TestMethod]
 	public void Contains() {
-		var collection = new ParameterCollection(("@Key", null));
+		var collection = new SqlParameterCollection(("@Key", null));
 		IsTrue(collection.Contains("Key"));
 		IsTrue(collection.Contains("@Key"));
 		IsFalse(collection.Contains("Foo"));
@@ -41,7 +41,7 @@ public sealed class ParameterCollectionTests {
 
 	[TestMethod]
 	public void IndexOf() {
-		var collection = new ParameterCollection(("?1", 123), ("@Key", "Unique"));
+		var collection = new SqlParameterCollection(("?1", 123), ("@Key", "Unique"));
 		AreEqual(1, collection.IndexOf("Key"));
 		AreEqual(1, collection.IndexOf("@Key"));
 		AreEqual(-1, collection.IndexOf("Foo"));
@@ -50,7 +50,7 @@ public sealed class ParameterCollectionTests {
 
 	[TestMethod]
 	public void RemoveAt() {
-		var collection = new ParameterCollection(("?1", 123), ("@Key", "Unique"));
+		var collection = new SqlParameterCollection(("?1", 123), ("@Key", "Unique"));
 		HasCount(2, collection);
 
 		collection.RemoveAt("Key");

@@ -4,7 +4,7 @@ using Belin.Sql.Fixtures;
 using System.Data.SQLite;
 
 /// <summary>
-/// Tests the features of the <see cref="CommandBuilder"/> class.
+/// Tests the features of the <see cref="SqlCommandBuilder"/> class.
 /// </summary>
 [TestClass]
 public sealed class CommandBuilderTests {
@@ -27,7 +27,7 @@ public sealed class CommandBuilderTests {
 
 	[TestMethod]
 	public void GetDeleteCommand() {
-		var command = new CommandBuilder(connection).GetDeleteCommand(record);
+		var command = new SqlCommandBuilder(connection).GetDeleteCommand(record);
 		StartsWith(@"DELETE FROM ""main"".""Characters""", command.Text);
 		EndsWith(@"WHERE ""ID"" = @ID", command.Text);
 
@@ -38,7 +38,7 @@ public sealed class CommandBuilderTests {
 
 	[TestMethod]
 	public void GetExistsCommand() {
-		var command = new CommandBuilder(connection).GetExistsCommand<Character>(record.Id);
+		var command = new SqlCommandBuilder(connection).GetExistsCommand<Character>(record.Id);
 		StartsWith("SELECT 1", command.Text);
 		Contains(@"FROM ""main"".""Characters""", command.Text);
 		EndsWith(@"WHERE ""ID"" = @ID", command.Text);
@@ -50,7 +50,7 @@ public sealed class CommandBuilderTests {
 
 	[TestMethod]
 	public void GetFindCommand() {
-		var builder = new CommandBuilder(connection);
+		var builder = new SqlCommandBuilder(connection);
 
 		var command = builder.GetFindCommand<Character>(record.Id);
 		StartsWith(@"SELECT """, command.Text);
@@ -70,7 +70,7 @@ public sealed class CommandBuilderTests {
 
 	[TestMethod]
 	public void GetInsertCommand() {
-		var command = new CommandBuilder(connection).GetInsertCommand(record);
+		var command = new SqlCommandBuilder(connection).GetInsertCommand(record);
 		StartsWith(@"INSERT INTO ""main"".""Characters"" (", command.Text);
 		Contains("VALUES (", command.Text);
 
@@ -83,7 +83,7 @@ public sealed class CommandBuilderTests {
 
 	[TestMethod]
 	public void GetUpdateCommand() {
-		var builder = new CommandBuilder(connection);
+		var builder = new SqlCommandBuilder(connection);
 
 		var command = builder.GetUpdateCommand(record);
 		StartsWith(@"UPDATE ""main"".""Characters""", command.Text);

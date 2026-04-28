@@ -1,14 +1,14 @@
 namespace Belin.Sql;
 
 /// <summary>
-/// Tests the features of the <see cref="Parameter"/> class.
+/// Tests the features of the <see cref="SqlParameter"/> class.
 /// </summary>
 [TestClass]
-public sealed class ParameterTests {
+public sealed class SqlParameterTests {
 
 	[TestMethod]
 	public void ImplicitConversion() {
-		Parameter parameter = ("", null);
+		SqlParameter parameter = ("", null);
 		AreEqual("?", parameter.Name);
 		AreEqual(DBNull.Value, parameter.Value);
 
@@ -30,16 +30,16 @@ public sealed class ParameterTests {
 	[DataRow(":baz", ":baz")]
 	[DataRow("$qux", "$qux")]
 	public void Name(string name, string expected) =>
-		AreEqual(expected, new Parameter(name, null).Name);
+		AreEqual(expected, new SqlParameter(name, null).Name);
 
 	[TestMethod]
 	public void Value() {
-		AreEqual(DBNull.Value, new Parameter("Name", null).Value);
-		AreEqual(DBNull.Value, new Parameter("Name", DBNull.Value).Value);
-		AreEqual(123, new Parameter("Name", 123).Value);
-		AreEqual(-123.456, new Parameter("Name", -123.456).Value);
-		AreEqual("", new Parameter("Name", "").Value);
-		AreEqual("Foo", new Parameter("Name", "Foo").Value);
-		AreEqual(DateTime.UnixEpoch, new Parameter("Name", DateTime.UnixEpoch).Value);
+		AreEqual(DBNull.Value, new SqlParameter("Name", null).Value);
+		AreEqual(DBNull.Value, new SqlParameter("Name", DBNull.Value).Value);
+		AreEqual(123, new SqlParameter("Name", 123).Value);
+		AreEqual(-123.456, new SqlParameter("Name", -123.456).Value);
+		AreEqual("", new SqlParameter("Name", "").Value);
+		AreEqual("Foo", new SqlParameter("Name", "Foo").Value);
+		AreEqual(DateTime.UnixEpoch, new SqlParameter("Name", DateTime.UnixEpoch).Value);
 	}
 }

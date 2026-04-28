@@ -5,7 +5,7 @@ using System.Data;
 /// <summary>
 /// Defines the options of a SQL command.
 /// </summary>
-public record CommandOptions {
+public record SqlCommandOptions {
 
 	/// <summary>
 	/// The wait time, in seconds, before terminating the attempt to execute the command and generating an error.
