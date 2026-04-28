@@ -6,11 +6,6 @@ namespace Belin.Sql;
 public class ParameterCollection: List<Parameter> {
 
 	/// <summary>
-	/// Creates a new parameter collection.
-	/// </summary>
-	public ParameterCollection(): base() {}
-
-	/// <summary>
 	/// Creates a new parameter collection that has the specified initial capacity.
 	/// </summary>
 	/// <param name="capacity">The number of parameters that the collection can initially store.</param>
