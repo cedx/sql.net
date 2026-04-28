@@ -7,7 +7,7 @@ using System.Data.SQLite;
 /// Tests the features of the <see cref="SqlCommandBuilder"/> class.
 /// </summary>
 [TestClass]
-public sealed class CommandBuilderTests {
+public sealed class SqlCommandBuilderTests {
 
 	/// <summary>
 	/// The connection to the data source.

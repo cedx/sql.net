@@ -5,7 +5,7 @@ using System.Data;
 /// <summary>
 /// Provides extension members for database connections.
 /// </summary>
-public static partial class ConnectionExtensions {
+public static partial class DbConnectionExtensions {
 	extension(IDbConnection connection) {
 
 		/// <summary>
@@ -15,7 +15,7 @@ public static partial class ConnectionExtensions {
 		/// <param name="parameters">The parameters of the SQL query.</param>
 		/// <param name="options">The command options.</param>
 		/// <returns>The newly created command.</returns>
-		public IDbCommand CreateCommand(string text, ParameterCollection? parameters = null, CommandOptions? options = null) {
+		public IDbCommand CreateCommand(string text, SqlParameterCollection? parameters = null, SqlCommandOptions? options = null) {
 			var dbCommand = connection.CreateCommand();
 			dbCommand.CommandText = text;
 			dbCommand.CommandTimeout = options?.Timeout ?? 30;

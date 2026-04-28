@@ -1,25 +1,11 @@
 namespace Belin.Sql;
 
 using Belin.Sql.Fixtures;
-using System.Data.SQLite;
 
 /// <summary>
-/// Tests the features of the <see cref="ConnectionExtensions"/> class.
+/// Tests the features of the <see cref="DbConnectionExtensions"/> class.
 /// </summary>
-/// <param name="testContext">The test context.</param>
-[TestClass]
-public sealed class ConnectionExtensionsEntityTests(TestContext testContext) {
-
-	/// <summary>
-	/// The connection to the data source.
-	/// </summary>
-	private SQLiteConnection connection = default!;
-
-	[TestInitialize]
-	public void TestInitialize() => connection = That.CreateInMemoryDatabase();
-
-	[TestCleanup]
-	public void TestCleanup() => connection.Close();
+public sealed partial class DbConnectionExtensionsTests {
 
 	[TestMethod]
 	public async Task Delete() {

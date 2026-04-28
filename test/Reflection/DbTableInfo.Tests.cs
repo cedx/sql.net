@@ -29,7 +29,7 @@ public sealed class DbTableInfoTests {
 	[TestMethod]
 	public void Name() {
 		// It should return the class name when there is no [Table] attribute.
-		AreEqual("DbTableInfo", new DbTableInfo(typeof(DbTableInfo)).Name);
+		AreEqual(nameof(DbTableInfo), new DbTableInfo(typeof(DbTableInfo)).Name);
 
 		// It should return the value of the [Table] attribute when it is present.
 		AreEqual("Characters", new DbTableInfo(typeof(Character)).Name);

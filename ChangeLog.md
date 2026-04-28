@@ -4,6 +4,7 @@
 - Breaking change: raised the required target framework.
 - Breaking change: added the `Sql` prefix to the names of the `Belin.Sql` classes.
 - Breaking change: added the `Db` prefix to the names of the `Belin.Sql.Reflection` classes.
+- Breaking change: renamed the `ConnectionExtensions` class to `DbConnectionExtensions`.
 - Breaking change: renamed the `QueryOptions.Buffered` property to `Stream`.
 
 ## Version [3.2.0](https://github.com/cedx/sql.net/compare/v3.1.0...v3.2.0)

@@ -6,7 +6,7 @@ using Belin.Sql.Fixtures;
 /// Tests the features of the <see cref="SqlMapper"/> class.
 /// </summary>
 [TestClass]
-public sealed class MapperTests {
+public sealed class SqlMapperTests {
 
 	/// <summary>
 	/// The test data used by the <see cref="ChangeType"/> method.
