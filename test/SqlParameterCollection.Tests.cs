@@ -47,9 +47,10 @@ public sealed class SqlParameterCollectionTests {
 		var parameter = collection["Key"];
 		AreEqual("@Key", parameter.Name);
 		AreEqual("Unique", parameter.Value);
+		AreEqual(parameter, collection[1]);
 
 		// It should throw an error if the specified name does not exist.
-		Throws<ArgumentOutOfRangeException>(() => collection["Foo"]);
+		Throws<ArgumentOutOfRangeException>(() => collection["@Foo"]);
 	}
 
 	[TestMethod]
