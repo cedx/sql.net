@@ -52,7 +52,6 @@ public sealed class SqlParameterCollectionTests {
 	public void RemoveAt() {
 		var collection = new SqlParameterCollection(("?1", 123), ("@Key", "Unique"));
 		HasCount(2, collection);
-
 		collection.RemoveAt("Key");
 		HasCount(1, collection);
 		Throws<ArgumentOutOfRangeException>(() => collection.RemoveAt("Foo"));
