@@ -40,6 +40,19 @@ public sealed class SqlParameterCollectionTests {
 	}
 
 	[TestMethod]
+	public void Indexer() {
+		var collection = new SqlParameterCollection(("?1", 123), ("@Key", "Unique"));
+
+		// It should return the parameter with the specified name.
+		var parameter = collection["Key"];
+		AreEqual("@Key", parameter.Name);
+		AreEqual("Unique", parameter.Value);
+
+		// It should throw an error if the specified name does not exist.
+		Throws<ArgumentOutOfRangeException>(() => collection["Foo"]);
+	}
+
+	[TestMethod]
 	public void IndexOf() {
 		var collection = new SqlParameterCollection(("?1", 123), ("@Key", "Unique"));
 		AreEqual(1, collection.IndexOf("Key"));
