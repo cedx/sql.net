@@ -95,8 +95,8 @@ public sealed class SqlMapperTests {
 	[TestMethod]
 	public void GetTable() {
 		var table = SqlMapper.Instance.GetTable<Character>();
-		AreEqual("main", table.Schema);
 		AreEqual("Characters", table.Name);
+		AreEqual("main", table.Schema);
 		AreEqual(typeof(Character), table.Type);
 
 		HasCount(5, table.Columns.Keys);
@@ -130,14 +130,17 @@ public sealed class SqlMapperTests {
 			["RowID"] = 789
 		};
 
+		// It should return a dictionary equivalent to the specified data row.
 		var records = SqlMapper.SplitOn(record);
 		HasCount(1, records);
 		CollectionAssert.AreEqual(properties, records[0]);
 
+		// It should not split the data row if the specified field does not exist.
 		records = SqlMapper.SplitOn(record, "_NonExistent_");
 		HasCount(1, records);
 		CollectionAssert.AreEqual(properties, records[0]);
 
+		// It should split the data row according to the specified fields.
 		records = SqlMapper.SplitOn(record, "Id");
 		HasCount(2, records);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 123, ["LongLabel"] = "Hello World!", ["ShortLabel"] = null }, records[0]);
