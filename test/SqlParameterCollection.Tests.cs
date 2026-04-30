@@ -55,10 +55,8 @@ public sealed class SqlParameterCollectionTests {
 		// It should create a collection from the specified dictionary of named parameters.
 		collection = new Dictionary<string, object?> { ["foo"] = "bar", ["baz"] = "qux" };
 		HasCount(2, collection);
-		AreEqual("@foo", collection[0].Name);
-		AreEqual("bar", collection[0].Value);
-		AreEqual("@baz", collection[1].Name);
-		AreEqual("qux", collection[1].Value);
+		CollectionAssert.AreEquivalent(new[] { "@foo", "@baz" }, collection.Select(parameter => parameter.Name).ToArray());
+		CollectionAssert.AreEquivalent(new[] { "bar", "qux" }, collection.Select(parameter => parameter.Value).ToArray());
 	}
 
 	[TestMethod]

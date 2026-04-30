@@ -40,7 +40,7 @@ public sealed partial class DbConnectionExtensionsTests {
 		AreEqual("Balin", record.FullName);
 
 		record = connection.Find<Character>(2, ["gender"])!;
-		AreEqual("", record.FullName);
+		IsNull(record.FullName);
 		AreEqual(CharacterGender.Dwarf, record.Gender);
 
 		record = await connection.FindAsync<Character>(14, cancellationToken: testContext.CancellationToken);
@@ -49,7 +49,7 @@ public sealed partial class DbConnectionExtensionsTests {
 		AreEqual("Sam Gamgee", record.FullName);
 
 		record = connection.Find<Character>(14, ["gender"])!;
-		AreEqual("", record.FullName);
+		IsNull(record.FullName);
 		AreEqual(CharacterGender.Hobbit, record.Gender);
 
 		IsNull(connection.Find<Character>(666));

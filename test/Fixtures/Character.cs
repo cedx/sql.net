@@ -18,7 +18,7 @@ public sealed class Character {
 	/// The full name.
 	/// </summary>
 	[Column("fullName"), DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-	public string FullName { get; set; } = "";
+	public string? FullName { get; set; }
 
 	/// <summary>
 	/// The character's gender.

@@ -41,12 +41,12 @@ public sealed class DbColumnInfoTests {
 		AreEqual(expected, new DbColumnInfo(typeof(Character).GetProperty(name)!).IsIdentity);
 
 	[TestMethod]
-	[DataRow("FirstName")]
-	[DataRow("FullName")]
-	[DataRow("Gender")]
-	[DataRow("Id")]
-	public void IsNullable(string name) =>
-		IsFalse(new DbColumnInfo(typeof(Character).GetProperty(name)!).IsNullable);
+	[DataRow("FirstName", false)]
+	[DataRow("FullName", true)]
+	[DataRow("Gender", false)]
+	[DataRow("Id", false)]
+	public void IsNullable(string name, bool expected) =>
+		AreEqual(expected, new DbColumnInfo(typeof(Character).GetProperty(name)!).IsNullable);
 
 	[TestMethod]
 	[DataRow("FirstName", "firstName")]
