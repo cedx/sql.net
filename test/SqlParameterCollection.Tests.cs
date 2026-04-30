@@ -10,9 +10,11 @@ public sealed class SqlParameterCollectionTests {
 
 	[TestMethod]
 	public void Constructor() {
+		// It should create an empty collection by default.
 		var collection = new SqlParameterCollection();
 		IsEmpty(collection);
 
+		// It should create a collection from a single parameter.
 		collection = new(new SqlParameter("?1", 123) { DbType = DbType.Int64 });
 		HasCount(1, collection);
 
@@ -21,6 +23,7 @@ public sealed class SqlParameterCollectionTests {
 		AreEqual(123, parameter.Value);
 		AreEqual(DbType.Int64, parameter.DbType);
 
+		// It should create a collection from a list of parameters.
 		collection = new(new("?1", 123), new("@Key", "Unique") { DbType = DbType.AnsiString });
 		HasCount(2, collection);
 
@@ -37,6 +40,25 @@ public sealed class SqlParameterCollectionTests {
 		IsTrue(collection.Contains("@Key"));
 		IsFalse(collection.Contains("Foo"));
 		IsFalse(collection.Contains("@Foo"));
+	}
+
+	[TestMethod]
+	public void ImplicitConversion() {
+		// It should create a collection from the specified list of positional parameters.
+		SqlParameterCollection collection = new List<object?> { "foo", "bar" };
+		HasCount(2, collection);
+		AreEqual("?1", collection[0].Name);
+		AreEqual("foo", collection[0].Value);
+		AreEqual("?2", collection[1].Name);
+		AreEqual("bar", collection[1].Value);
+
+		// It should create a collection from the specified dictionary of named parameters.
+		collection = new Dictionary<string, object?> { ["foo"] = "bar", ["baz"] = "qux" };
+		HasCount(2, collection);
+		AreEqual("@foo", collection[0].Name);
+		AreEqual("bar", collection[0].Value);
+		AreEqual("@baz", collection[1].Name);
+		AreEqual("qux", collection[1].Value);
 	}
 
 	[TestMethod]

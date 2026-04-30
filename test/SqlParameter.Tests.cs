@@ -8,6 +8,7 @@ public sealed class SqlParameterTests {
 
 	[TestMethod]
 	public void ImplicitConversion() {
+		// It should create a parameter from the specified tuple.
 		SqlParameter parameter = ("", null);
 		AreEqual("?", parameter.Name);
 		AreEqual(DBNull.Value, parameter.Value);
@@ -19,6 +20,15 @@ public sealed class SqlParameterTests {
 		parameter = ("baz", 123);
 		AreEqual("@baz", parameter.Name);
 		AreEqual(123, parameter.Value);
+
+		// It should create a parameter from the specified key/value pair.
+		parameter = new KeyValuePair<string, object?>("foo", null);
+		AreEqual("@foo", parameter.Name);
+		AreEqual(DBNull.Value, parameter.Value);
+
+		parameter = (":bar", "Baz");
+		AreEqual(":bar", parameter.Name);
+		AreEqual("Baz", parameter.Value);
 	}
 
 	[TestMethod]
