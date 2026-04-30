@@ -40,13 +40,20 @@ public sealed class SqlCommand(string text, SqlParameterCollection? parameters =
 	public CommandType Type { get; set; } = CommandType.Text;
 
 	/// <summary>
+	/// Creates a new command from the specified text.
+	/// </summary>
+	/// <param name="text">The text providing the SQL statement.</param>
+	/// <returns>The command corresponding to the specified text.</returns>
+	public static implicit operator SqlCommand(string text) => new(text);
+
+	/// <summary>
 	/// Deconstructs this instance by <see cref="Text"/> and <see cref="Parameters"/>.
 	/// </summary>
 	/// <param name="text">When this method returns, contains the <see cref="Text"/> value of this instance.</param>
 	/// <param name="parameters">When this method returns, contains the <see cref="Parameters"/> value of this instance.</param>
 	public void Deconstruct(out string text, out SqlParameterCollection parameters) {
-		text = Text;
 		parameters = Parameters;
+		text = Text;
 	}
 
 	/// <summary>
