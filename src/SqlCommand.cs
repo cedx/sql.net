@@ -10,17 +10,17 @@ using System.Data;
 public sealed class SqlCommand(string text, SqlParameterCollection? parameters = null) {
 
 	/// <summary>
-	/// The text of the SQL statement.
+	/// The parameters of the SQL statement.
 	/// </summary>
 	public SqlParameterCollection Parameters { get; set; } = parameters ?? [];
 
 	/// <summary>
 	/// Value indicating whether to prevent from buffering the rows in memory.
 	/// </summary>
-	public bool Stream { get; set; } = false;
+	public bool Stream { get; set; }
 
 	/// <summary>
-	/// The parameters of the SQL statement.
+	/// The text of the SQL statement.
 	/// </summary>
 	public string Text { get; set; } = text;
 
@@ -54,7 +54,7 @@ public sealed class SqlCommand(string text, SqlParameterCollection? parameters =
 	/// </summary>
 	/// <param name="connection">The onnectio to associate with the created command.</param>
 	/// <returns>The <see cref="IDbCommand"/> object corresponding to this command.</returns>
-	internal IDbCommand ToDbParameter(IDbConnection connection) {
+	public IDbCommand ToDbParameter(IDbConnection connection) {
 		var command = connection.CreateCommand();
 		command.CommandText = Text;
 		command.CommandTimeout = Timeout;
