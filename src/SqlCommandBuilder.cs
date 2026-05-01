@@ -7,7 +7,6 @@ using System.Data.Common;
 /// <summary>
 /// Automatically generates single-table commands.
 /// </summary>
-/// <param name="connection">The connection to the data source.</param>
 public class SqlCommandBuilder {
 
 	/// <summary>
