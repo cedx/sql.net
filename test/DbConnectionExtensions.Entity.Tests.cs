@@ -5,8 +5,7 @@ using Belin.Sql.Fixtures;
 /// <summary>
 /// Tests the features of the <see cref="DbConnectionExtensions"/> class.
 /// </summary>
-[TestClass]
-public sealed class DbConnectionExtensionsEntityTests(TestContext testContext): DataSourceTests {
+public sealed partial class DbConnectionExtensionsTests {
 
 	[TestMethod]
 	public void Delete() {
