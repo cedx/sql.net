@@ -96,8 +96,8 @@ public class SqlCommandBuilder {
 	public (string Text, SqlParameterCollection Parameters) GetDeleteCommand<T>(T entity) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), identityColumn.GetValue(entity));
 
+		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), identityColumn.GetValue(entity));
 		var text = $"""
 			DELETE FROM {GetTableName(table)}
 			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
@@ -116,8 +116,8 @@ public class SqlCommandBuilder {
 	public (string Text, SqlParameterCollection Parameters) GetExistsCommand<T>(object id) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id);
 
+		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id);
 		var text = $"""
 			SELECT 1
 			FROM {GetTableName(table)}
@@ -138,7 +138,6 @@ public class SqlCommandBuilder {
 	public (string Text, SqlParameterCollection Parameters) GetFindCommand<T>(object id, params string[] columns) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id);
 
 		var fields = (columns.Length == 0 ? table.Columns.Values : table.Columns.Values.Where(column => columns.Contains(column.Name)))
 			.Where(column => column.CanWrite)
@@ -147,6 +146,7 @@ public class SqlCommandBuilder {
 
 		if (!fields.Contains(identityColumn.Name)) fields.Add(identityColumn.Name);
 
+		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id);
 		var text = $"""
 			SELECT {string.Join(", ", fields.Select(QuoteIdentifier))}
 			FROM {GetTableName(table)}
@@ -166,8 +166,8 @@ public class SqlCommandBuilder {
 	public (string Text, SqlParameterCollection Parameters) GetInsertCommand<T>(T entity) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var fields = table.Columns.Values.Where(column => column.CanRead && !column.IsComputed).ToArray();
 
+		var fields = table.Columns.Values.Where(column => column.CanRead && !column.IsComputed).ToArray();
 		var text = $"""
 			INSERT INTO {GetTableName(table)} ({string.Join(", ", fields.Select(field => QuoteIdentifier(field.Name)))})
 			VALUES ({string.Join(", ", fields.Select(field => UsePositionalParameters ? "?" : GetParameterName(field.Name)))})
@@ -188,6 +188,7 @@ public class SqlCommandBuilder {
 	public (string Text, SqlParameterCollection Parameters) GetUpdateCommand<T>(T entity, params string[] columns) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
+
 		var fields = (columns.Length == 0 ? table.Columns.Values : table.Columns.Values.Where(column => columns.Contains(column.Name)))
 			.Where(column => column.CanRead && !column.IsComputed)
 			.ToArray();
