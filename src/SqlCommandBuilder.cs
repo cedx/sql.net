@@ -93,14 +93,14 @@ public class SqlCommandBuilder {
 	/// <param name="entity">The entity to delete.</param>
 	/// <returns>The generated command to delete an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public (string Text, SqlParameterCollection Parameters) GetDeleteCommand<T>(T entity) where T: new() {
+	public (SqlCommand Command, SqlParameterCollection Parameters) GetDeleteCommand<T>(T entity) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
-		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
+		var idColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 
-		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), identityColumn.GetValue(entity));
+		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(idColumn.Name), idColumn.GetValue(entity));
 		var text = $"""
 			DELETE FROM {GetTableName(table)}
-			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
+			WHERE {QuoteIdentifier(idColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
 			""";
 
 		return (text, [parameter]);
@@ -113,15 +113,15 @@ public class SqlCommandBuilder {
 	/// <param name="id">The value of the entity's primary key.</param>
 	/// <returns>The generated command to check the existence of an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public (string Text, SqlParameterCollection Parameters) GetExistsCommand<T>(object id) where T: new() {
+	public (SqlCommand Command, SqlParameterCollection Parameters) GetExistsCommand<T>(object id) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
-		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
+		var idColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 
-		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id);
+		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(idColumn.Name), id);
 		var text = $"""
 			SELECT 1
 			FROM {GetTableName(table)}
-			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
+			WHERE {QuoteIdentifier(idColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
 			""";
 
 		return (text, [parameter]);
@@ -135,22 +135,22 @@ public class SqlCommandBuilder {
 	/// <param name="columns">The list of columns to select. By default, all columns.</param>
 	/// <returns>The generated command to find an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public (string Text, SqlParameterCollection Parameters) GetFindCommand<T>(object id, params string[] columns) where T: new() {
+	public (SqlCommand Command, SqlParameterCollection Parameters) GetFindCommand<T>(object id, params string[] columns) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
-		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
+		var idColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 
 		var fields = (columns.Length == 0 ? table.Columns.Values : table.Columns.Values.Where(column => columns.Contains(column.Name)))
 			.Where(column => column.CanWrite)
 			.Select(column => column.Name)
 			.ToList();
 
-		if (!fields.Contains(identityColumn.Name)) fields.Add(identityColumn.Name);
+		if (!fields.Contains(idColumn.Name)) fields.Add(idColumn.Name);
 
-		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), id);
+		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(idColumn.Name), id);
 		var text = $"""
 			SELECT {string.Join(", ", fields.Select(QuoteIdentifier))}
 			FROM {GetTableName(table)}
-			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
+			WHERE {QuoteIdentifier(idColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
 			""";
 
 		return (text, [parameter]);
@@ -163,15 +163,15 @@ public class SqlCommandBuilder {
 	/// <param name="entity">The entity to insert.</param>
 	/// <returns>The generated command to insert an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public (string Text, SqlParameterCollection Parameters) GetInsertCommand<T>(T entity) where T: new() {
+	public (SqlCommand Command, SqlParameterCollection Parameters) GetInsertCommand<T>(T entity) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
-		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
+		var idColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 
 		var fields = table.Columns.Values.Where(column => column.CanRead && !column.IsComputed).ToArray();
 		var text = $"""
 			INSERT INTO {GetTableName(table)} ({string.Join(", ", fields.Select(field => QuoteIdentifier(field.Name)))})
 			VALUES ({string.Join(", ", fields.Select(field => UsePositionalParameters ? "?" : GetParameterName(field.Name)))})
-			{(SupportsReturningClause ? $"RETURNING {QuoteIdentifier(identityColumn.Name)}" : $"; SELECT {LastInsertIdFunction};")}
+			{(SupportsReturningClause ? $"RETURNING {QuoteIdentifier(idColumn.Name)}" : $"; SELECT {LastInsertIdFunction};")}
 			""";
 
 		return (text, [.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(entity)))]);
@@ -185,9 +185,9 @@ public class SqlCommandBuilder {
 	/// <param name="columns">The list of columns to update. By default, all columns.</param>
 	/// <returns>The generated command to update an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public (string Text, SqlParameterCollection Parameters) GetUpdateCommand<T>(T entity, params string[] columns) where T: new() {
+	public (SqlCommand Command, SqlParameterCollection Parameters) GetUpdateCommand<T>(T entity, params string[] columns) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
-		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
+		var idColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 
 		var fields = (columns.Length == 0 ? table.Columns.Values : table.Columns.Values.Where(column => columns.Contains(column.Name)))
 			.Where(column => column.CanRead && !column.IsComputed)
@@ -196,12 +196,12 @@ public class SqlCommandBuilder {
 		var text = $"""
 			UPDATE {GetTableName(table)}
 			SET {string.Join(", ", fields.Select(field => $"{QuoteIdentifier(field.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(field.Name))}"))}
-			WHERE {QuoteIdentifier(identityColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(identityColumn.Name))}
+			WHERE {QuoteIdentifier(idColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(idColumn.Name))}
 			""";
 
 		return (text, [
 			.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(entity))),
-			(GetParameterName(identityColumn.Name), identityColumn.GetValue(entity))
+			(GetParameterName(idColumn.Name), idColumn.GetValue(entity))
 		]);
 	}
 

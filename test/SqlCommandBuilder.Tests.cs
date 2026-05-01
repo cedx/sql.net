@@ -15,23 +15,23 @@ public sealed class SqlCommandBuilderTests: DataSourceTests {
 
 	[TestMethod]
 	public void GetDeleteCommand() {
-		var command = new SqlCommandBuilder(connection).GetDeleteCommand(record);
+		var (command, parameters) = new SqlCommandBuilder(connection).GetDeleteCommand(record);
 		StartsWith(@"DELETE FROM ""main"".""Characters""", command.Text);
 		EndsWith(@"WHERE ""ID"" = @ID", command.Text);
 
-		var parameter = command.Parameters.Single();
+		var parameter = parameters.Single();
 		AreEqual("@ID", parameter.Name);
 		AreEqual(1000, parameter.Value);
 	}
 
 	[TestMethod]
 	public void GetExistsCommand() {
-		var command = new SqlCommandBuilder(connection).GetExistsCommand<Character>(record.Id);
+		var (command, parameters) = new SqlCommandBuilder(connection).GetExistsCommand<Character>(record.Id);
 		StartsWith("SELECT 1", command.Text);
 		Contains(@"FROM ""main"".""Characters""", command.Text);
 		EndsWith(@"WHERE ""ID"" = @ID", command.Text);
 
-		var parameter = command.Parameters.Single();
+		var parameter = parameters.Single();
 		AreEqual("@ID", parameter.Name);
 		AreEqual(1000, parameter.Value);
 	}
@@ -40,17 +40,17 @@ public sealed class SqlCommandBuilderTests: DataSourceTests {
 	public void GetFindCommand() {
 		var builder = new SqlCommandBuilder(connection);
 
-		var command = builder.GetFindCommand<Character>(record.Id);
+		var (command, parameters) = builder.GetFindCommand<Character>(record.Id);
 		StartsWith(@"SELECT """, command.Text);
 		DoesNotContain("*", command.Text);
 		Contains(@"FROM ""main"".""Characters""", command.Text);
 		EndsWith(@"WHERE ""ID"" = @ID", command.Text);
 
-		var parameter = command.Parameters.Single();
+		var parameter = parameters.Single();
 		AreEqual("@ID", parameter.Name);
 		AreEqual(1000, parameter.Value);
 
-		command = builder.GetFindCommand<Character>(record.Id, ["firstName"]);
+		(command, _) = builder.GetFindCommand<Character>(record.Id, ["firstName"]);
 		StartsWith(@"SELECT ""firstName""", command.Text);
 		DoesNotContain("gender", command.Text);
 		DoesNotContain("lastName", command.Text);
@@ -58,11 +58,10 @@ public sealed class SqlCommandBuilderTests: DataSourceTests {
 
 	[TestMethod]
 	public void GetInsertCommand() {
-		var command = new SqlCommandBuilder(connection).GetInsertCommand(record);
+		var (command, parameters) = new SqlCommandBuilder(connection).GetInsertCommand(record);
 		StartsWith(@"INSERT INTO ""main"".""Characters"" (", command.Text);
 		Contains("VALUES (", command.Text);
 
-		var parameters = command.Parameters;
 		HasCount(3, parameters);
 		AreEqual("Cédric", parameters["firstName"].Value);
 		AreEqual(CharacterGender.DarkLord, parameters["gender"].Value);
@@ -73,12 +72,11 @@ public sealed class SqlCommandBuilderTests: DataSourceTests {
 	public void GetUpdateCommand() {
 		var builder = new SqlCommandBuilder(connection);
 
-		var command = builder.GetUpdateCommand(record);
+		var (command, parameters) = builder.GetUpdateCommand(record);
 		StartsWith(@"UPDATE ""main"".""Characters""", command.Text);
 		Contains(@"SET """, command.Text);
 		EndsWith(@"WHERE ""ID"" = @ID", command.Text);
 
-		var parameters = command.Parameters;
 		HasCount(4, parameters);
 		AreEqual("Cédric", parameters["firstName"].Value);
 		AreEqual(CharacterGender.DarkLord, parameters["gender"].Value);
