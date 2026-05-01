@@ -236,5 +236,5 @@ public class SqlCommandBuilder {
 	/// <param name="table">The table.</param>
 	/// <returns>The fully qualified name corresponding to the specified table.</returns>
 	private string GetTableName(DbTableInfo table) =>
-		string.IsNullOrEmpty(table.Schema) ? $"{QuoteIdentifier(table.Name)}" : $"{QuoteIdentifier(table.Schema)}{SchemaSeparator}{QuoteIdentifier(table.Name)}";
+		string.IsNullOrEmpty(table.Schema) ? QuoteIdentifier(table.Name) : $"{QuoteIdentifier(table.Schema)}{SchemaSeparator}{QuoteIdentifier(table.Name)}";
 }
