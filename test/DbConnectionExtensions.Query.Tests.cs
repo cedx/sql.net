@@ -49,7 +49,7 @@ public sealed class DbConnectionExtensionsQueryTests(TestContext testContext): D
 		AreEqual(CharacterGender.DarkLord, record.Gender);
 
 		// It should throw an error if the query produces no results.
-		Throws<InvalidOperationException>(() => connection.QueryFirst<Character>(sql, [("FullName", "Cédric")]));
+		Throws<InvalidOperationException>(() => connection.QueryFirst(sql, [("FullName", "Cédric")]));
 	}
 
 	[TestMethod]
@@ -61,7 +61,7 @@ public sealed class DbConnectionExtensionsQueryTests(TestContext testContext): D
 		AreEqual(CharacterGender.DarkLord, record.Gender);
 
 		// It should throw an error if the query produces no results.
-		await ThrowsAsync<InvalidOperationException>(() => connection.QueryFirstAsync<Character>(sql, [("FullName", "Cédric")], testContext.CancellationToken));
+		await ThrowsAsync<InvalidOperationException>(() => connection.QueryFirstAsync(sql, [("FullName", "Cédric")], testContext.CancellationToken));
 	}
 
 	[TestMethod]
@@ -77,7 +77,7 @@ public sealed class DbConnectionExtensionsQueryTests(TestContext testContext): D
 
 		// It should throw an error if the query produces more than one result.
 		sql = "SELECT * FROM Characters WHERE gender = @Gender";
-		Throws<InvalidOperationException>(() => connection.QuerySingle<Character>(sql, [("Gender", CharacterGender.Human.ToString())]));
+		Throws<InvalidOperationException>(() => connection.QuerySingle(sql, [("Gender", CharacterGender.Human.ToString())]));
 	}
 
 	[TestMethod]
@@ -89,10 +89,10 @@ public sealed class DbConnectionExtensionsQueryTests(TestContext testContext): D
 		AreEqual(CharacterGender.Istari, record.Gender);
 
 		// It should throw an error if the query produces no results.
-		await ThrowsAsync<InvalidOperationException>(() => connection.QuerySingleAsync<Character>(sql, [("FullName", "Cédric")], testContext.CancellationToken));
+		await ThrowsAsync<InvalidOperationException>(() => connection.QuerySingleAsync(sql, [("FullName", "Cédric")], testContext.CancellationToken));
 
 		// It should throw an error if the query produces more than one result.
 		sql = "SELECT * FROM Characters WHERE gender = @Gender";
-		await ThrowsAsync<InvalidOperationException>(() => connection.QuerySingleAsync<Character>(sql, [("Gender", CharacterGender.Human.ToString())], testContext.CancellationToken));
+		await ThrowsAsync<InvalidOperationException>(() => connection.QuerySingleAsync(sql, [("Gender", CharacterGender.Human.ToString())], testContext.CancellationToken));
 	}
 }
