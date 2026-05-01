@@ -83,7 +83,7 @@ public sealed class SqlMapperTests {
 
 		// It should create an `ExpandoObject` by default.
 		dynamic instance = SqlMapper.Instance.CreateInstance(properties);
-		AreEqual(typeof(ExpandoObject), instance.GetType());
+		IsInstanceOfType<ExpandoObject>(instance);
 		AreEqual("Bard/minstrel", instance.CLASS);
 		AreEqual("Cédric", instance.firstName);
 		AreEqual(CharacterGender.Balrog.ToString(), instance.gender);
@@ -91,7 +91,7 @@ public sealed class SqlMapperTests {
 
 		// It should create an object of the specified type.
 		var character = SqlMapper.Instance.CreateInstance<Character>(properties);
-		AreEqual(typeof(Character), character.GetType());
+		IsInstanceOfType<Character>(character);
 		AreEqual("Cédric", character.FirstName);
 		AreEqual(CharacterGender.Balrog, character.Gender);
 		AreEqual("", character.LastName);
