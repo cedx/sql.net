@@ -22,7 +22,7 @@ public sealed class DbConnectionExtensionsEntityTests(TestContext testContext): 
 	[TestMethod]
 	public async Task DeleteAsync() {
 		var sql = "SELECT * FROM Characters WHERE Id = @Id";
-		var record = await connection.QuerySingleOrDefaultAsync<Character>(sql, [("Id", 2)], cancellationToken: testContext.CancellationToken);
+		var record = await connection.QuerySingleOrDefaultAsync<Character>(sql, [("Id", 2)], testContext.CancellationToken);
 
 		IsNotNull(record);
 		IsTrue(await connection.DeleteAsync(record, cancellationToken: testContext.CancellationToken));
@@ -106,10 +106,10 @@ public sealed class DbConnectionExtensionsEntityTests(TestContext testContext): 
 
 	// 	record = new Character { FirstName = "Cédric", LastName = "Belin", Gender = CharacterGender.Istari };
 	// 	AreEqual(0, record.Id);
-	// 	IsFalse(await connection.ExecuteScalarAsync<bool>(sql, new("FullName", record.FullName), cancellationToken: testContext.CancellationToken));
+	// 	IsFalse(await connection.ExecuteScalarAsync<bool>(sql, new("FullName", record.FullName), testContext.CancellationToken));
 
-	// 	id = await connection.InsertAsync(record, cancellationToken: testContext.CancellationToken);
+	// 	id = await connection.InsertAsync(record, testContext.CancellationToken);
 	// 	AreEqual(id, record.Id);
-	// 	IsTrue(await connection.ExecuteScalarAsync<bool>(sql, new("FullName", record.FullName), cancellationToken: testContext.CancellationToken));
+	// 	IsTrue(await connection.ExecuteScalarAsync<bool>(sql, new("FullName", record.FullName), testContext.CancellationToken));
 	// }
 }
