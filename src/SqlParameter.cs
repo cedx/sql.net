@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 /// <summary>
 /// Represents a parameter of a parameterized SQL statement.
 /// </summary>
-public sealed class SqlParameter(string name, object? value) {
+public sealed class SqlParameter(string name = "?", object? value = null) {
 
 	/// <summary>
 	/// The prefixes used for parameter placeholders.
@@ -48,11 +48,6 @@ public sealed class SqlParameter(string name, object? value) {
 	/// </summary>
 	[NotNull]
 	public object? Value { get; set => field = NormalizeValue(value); } = NormalizeValue(value);
-
-	/// <summary>
-	/// Creates a new parameter.
-	/// </summary>
-	public SqlParameter(): this("?", DBNull.Value) {}
 
 	/// <summary>
 	/// Creates a new parameter from the specified tuple.
