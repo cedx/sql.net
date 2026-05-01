@@ -146,12 +146,12 @@ public sealed class SqlMapperTests {
 		CollectionAssert.AreEqual(properties, records[0]);
 
 		// It should split the data row according to the specified fields.
-		records = SqlMapper.SplitOn(record, "Id");
+		records = SqlMapper.SplitOn(record, "id");
 		HasCount(2, records);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 123, ["LongLabel"] = "Hello World!", ["ShortLabel"] = null }, records[0]);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 456, ["FirstName"] = "Cédric", ["LastName"] = "Belin", ["RowID"] = 789 }, records[1]);
 
-		records = SqlMapper.SplitOn(record, "Id", "RowID", "_Unused_");
+		records = SqlMapper.SplitOn(record, "id", "rowID", "_Unused_");
 		HasCount(3, records);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 123, ["LongLabel"] = "Hello World!", ["ShortLabel"] = null }, records[0]);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 456, ["FirstName"] = "Cédric", ["LastName"] = "Belin" }, records[1]);
