@@ -42,12 +42,12 @@ public class SqlCommandBuilder {
 	/// <summary>
 	/// Value indicating whether the ADO.NET provider supports the <c>RETURNING</c> clause.
 	/// </summary>
-	public bool SupportsReturningClause { get; set; } = false;
+	public bool SupportsReturningClause { get; set; }
 
 	/// <summary>
 	/// Value indicating whether the ADO.NET provider uses positional parameters.
 	/// </summary>
-	public bool UsePositionalParameters { get; set; } = false;
+	public bool UsePositionalParameters { get; set; }
 
 	/// <summary>
 	/// The SQL function to use when the <c>RETURNING</c> clause is not supported.
