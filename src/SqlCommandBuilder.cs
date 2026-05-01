@@ -174,7 +174,7 @@ public class SqlCommandBuilder {
 			{(SupportsReturningClause ? $"RETURNING {QuoteIdentifier(idColumn.Name)}" : $"; SELECT {LastInsertIdFunction};")}
 			""";
 
-		return (text, [.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(entity)))]);
+		return (text, [.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index + 1}" : GetParameterName(field.Name), field.GetValue(entity)))]);
 	}
 
 	/// <summary>
@@ -200,7 +200,7 @@ public class SqlCommandBuilder {
 			""";
 
 		return (text, [
-			.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(entity))),
+			.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index + 1}" : GetParameterName(field.Name), field.GetValue(entity))),
 			(GetParameterName(idColumn.Name), idColumn.GetValue(entity))
 		]);
 	}
