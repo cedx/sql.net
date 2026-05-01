@@ -1,11 +1,16 @@
 # Changelog
 
 ## Version [4.0.0](https://github.com/cedx/sql.net/compare/v3.2.0...v4.0.0)
-- Breaking change: raised the required target framework.
-- Breaking change: added the `Sql` prefix to the names of the `Belin.Sql` classes.
+- Breaking change: added the `Sql` prefix most names of the `Belin.Sql` classes.
 - Breaking change: added the `Db` prefix to the names of the `Belin.Sql.Reflection` classes.
+- Breaking change: changed the return type of the methods of the `SqlCommandBuilder` class.
+- Breaking change: dropped support for [PowerShell](https://learn.microsoft.com/en-us/powershell). See the [SQL Mapper for PowerShell](https://github.com/cedx/sql.ps1) project for an alternative.
+- Breaking change: raised the required target framework.
 - Breaking change: renamed the `ConnectionExtensions` class to `DbConnectionExtensions`.
-- Breaking change: renamed the `QueryOptions.Buffered` property to `Stream`.
+- Breaking change: replaced the `string text` parameter of the query methods by a `SqlCommand command` parameter.
+- Breaking change: replaced the `QueryOptions.Buffered` property by the `SqlCommand.NoEnumerate` property.
+- Added the `SqlCommand.ToDbCommand()` method.
+- Added the `SqlParameter.ToDbParameter()` method.
 
 ## Version [3.2.0](https://github.com/cedx/sql.net/compare/v3.1.0...v3.2.0)
 - Added new `CreateInstance()` and `CreateInstances()` overloads to the `Mapper` class.
