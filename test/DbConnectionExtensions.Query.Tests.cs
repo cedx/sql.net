@@ -10,7 +10,7 @@ public sealed class DbConnectionExtensionsQueryTests(TestContext testContext): D
 
 	[TestMethod]
 	public void Query() {
-		var sql = "SELECT * FROM Characters WHERE Gender = @Gender ORDER BY FullName";
+		var sql = "SELECT * FROM Characters WHERE gender = @Gender ORDER BY fullName";
 		var parameters = new SqlParameterCollection(("Gender", CharacterGender.Elf.ToString()));
 		var records = connection.Query<Character>(sql, parameters).AsList();
 		HasCount(3, records);
@@ -26,7 +26,7 @@ public sealed class DbConnectionExtensionsQueryTests(TestContext testContext): D
 
 	[TestMethod]
 	public async Task QueryAsync() {
-		var sql = "SELECT * FROM Characters WHERE Gender = @Gender ORDER BY FullName";
+		var sql = "SELECT * FROM Characters WHERE gender = @Gender ORDER BY fullName";
 		var parameters = new SqlParameterCollection(("Gender", CharacterGender.Elf.ToString()));
 		var records = (await connection.QueryAsync<Character>(sql, parameters, testContext.CancellationToken)).AsList();
 		HasCount(3, records);
@@ -42,35 +42,57 @@ public sealed class DbConnectionExtensionsQueryTests(TestContext testContext): D
 
 	[TestMethod]
 	public void QueryFirst() {
-		var sql = "SELECT * FROM Characters WHERE FullName = @FullName";
+		// It should return the first record produced by the SQL query.
+		var sql = "SELECT * FROM Characters WHERE fullName = @FullName";
 		var record = connection.QueryFirst<Character>(sql, [("FullName", "Sauron")]);
 		AreEqual("Sauron", record.FirstName);
 		AreEqual(CharacterGender.DarkLord, record.Gender);
+
+		// It should throw an error if the query produces no results.
+		Throws<InvalidOperationException>(() => connection.QueryFirst<Character>(sql, [("FullName", "Cédric")]));
 	}
 
 	[TestMethod]
 	public async Task QueryFirstAsync() {
-		var sql = "SELECT * FROM Characters WHERE FullName = @FullName";
+		// It should return the first record produced by the SQL query.
+		var sql = "SELECT * FROM Characters WHERE fullName = @FullName";
 		var record = await connection.QueryFirstAsync<Character>(sql, [("FullName", "Sauron")], testContext.CancellationToken);
 		AreEqual("Sauron", record.FirstName);
 		AreEqual(CharacterGender.DarkLord, record.Gender);
+
+		// It should throw an error if the query produces no results.
+		await ThrowsAsync<InvalidOperationException>(() => connection.QueryFirstAsync<Character>(sql, [("FullName", "Cédric")], testContext.CancellationToken));
 	}
 
 	[TestMethod]
 	public void QuerySingle() {
-		var sql = "SELECT * FROM Characters WHERE FullName = @FullName";
-		var parameters = new SqlParameterCollection(("FullName", "Saruman"));
-		var record = connection.QuerySingle<Character>(sql, parameters);
+		// It should return the single record produced by the SQL query.
+		var sql = "SELECT * FROM Characters WHERE fullName = @FullName";
+		var record = connection.QuerySingle<Character>(sql, [("FullName", "Saruman")]);
 		AreEqual("Saruman", record.FirstName);
 		AreEqual(CharacterGender.Istari, record.Gender);
+
+		// It should throw an error if the query produces no results.
+		Throws<InvalidOperationException>(() => connection.QuerySingle<Character>(sql, [("FullName", "Cédric")]));
+
+		// It should throw an error if the query produces more than one result.
+		sql = "SELECT * FROM Characters WHERE gender = @Gender";
+		Throws<InvalidOperationException>(() => connection.QuerySingle<Character>(sql, [("Gender", CharacterGender.Human.ToString())]));
 	}
 
 	[TestMethod]
 	public async Task QuerySingleAsync() {
-		var sql = "SELECT * FROM Characters WHERE FullName = @FullName";
-		var parameters = new SqlParameterCollection(("FullName", "Saruman"));
-		var record = await connection.QuerySingleAsync<Character>(sql, parameters, testContext.CancellationToken);
+		// It should return the single record produced by the SQL query.
+		var sql = "SELECT * FROM Characters WHERE fullName = @FullName";
+		var record = await connection.QuerySingleAsync<Character>(sql, [("FullName", "Saruman")], testContext.CancellationToken);
 		AreEqual("Saruman", record.FirstName);
 		AreEqual(CharacterGender.Istari, record.Gender);
+
+		// It should throw an error if the query produces no results.
+		await ThrowsAsync<InvalidOperationException>(() => connection.QuerySingleAsync<Character>(sql, [("FullName", "Cédric")], testContext.CancellationToken));
+
+		// It should throw an error if the query produces more than one result.
+		sql = "SELECT * FROM Characters WHERE gender = @Gender";
+		await ThrowsAsync<InvalidOperationException>(() => connection.QuerySingleAsync<Character>(sql, [("Gender", CharacterGender.Human.ToString())], testContext.CancellationToken));
 	}
 }

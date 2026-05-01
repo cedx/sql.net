@@ -10,7 +10,7 @@ public sealed class DbConnectionExtensionsEntityTests(TestContext testContext): 
 
 	[TestMethod]
 	public void Delete() {
-		var sql = "SELECT * FROM Characters WHERE Id = @Id";
+		var sql = "SELECT * FROM Characters WHERE ID = @Id";
 		var record = connection.QuerySingleOrDefault<Character>(sql, [("Id", 1)]);
 
 		IsNotNull(record);
@@ -21,7 +21,7 @@ public sealed class DbConnectionExtensionsEntityTests(TestContext testContext): 
 
 	[TestMethod]
 	public async Task DeleteAsync() {
-		var sql = "SELECT * FROM Characters WHERE Id = @Id";
+		var sql = "SELECT * FROM Characters WHERE ID = @Id";
 		var record = await connection.QuerySingleOrDefaultAsync<Character>(sql, [("Id", 2)], testContext.CancellationToken);
 
 		IsNotNull(record);
@@ -94,7 +94,7 @@ public sealed class DbConnectionExtensionsEntityTests(TestContext testContext): 
 
 	// [TestMethod]
 	// TODO public async Task Insert() {
-	// 	var sql = "SELECT 1 FROM Characters WHERE FullName = @FullName";
+	// 	var sql = "SELECT 1 FROM Characters WHERE fullName = @FullName";
 
 	// 	var record = new Character { FirstName = "Cédric", Gender = CharacterGender.DarkLord };
 	// 	AreEqual(0, record.Id);
