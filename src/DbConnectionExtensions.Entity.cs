@@ -18,7 +18,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns><see langword="true"/> if the specified entity has been deleted, otherwise <see langword="false"/>.</returns>
 	public static bool Delete<T>(this IDbConnection connection, T instance, SqlCommandOptions? options = null) where T: new() {
 		var (text, parameters) = new SqlCommandBuilder(connection).GetDeleteCommand(instance);
-		return Execute(connection, text, parameters, options) > 0;
+		return Execute(connection, new SqlCommand(text, options), parameters) > 0;
 	}
 
 	/// <summary>
@@ -32,7 +32,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns><see langword="true"/> if the specified entity has been deleted, otherwise <see langword="false"/>.</returns>
 	public static async Task<bool> DeleteAsync<T>(this IDbConnection connection, T instance, SqlCommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		var (text, parameters) = new SqlCommandBuilder(connection).GetDeleteCommand(instance);
-		return await ExecuteAsync(connection, text, parameters, options, cancellationToken) > 0;
+		return await ExecuteAsync(connection, new SqlCommand(text, options), parameters, cancellationToken) > 0;
 	}
 
 	/// <summary>
@@ -45,7 +45,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns><see langword="true"/> if an entity with the specified primary key exists, otherwise <see langword="false"/>.</returns>
 	public static bool Exists<T>(this IDbConnection connection, object id, SqlCommandOptions? options = null) where T: new() {
 		var (text, parameters) = new SqlCommandBuilder(connection).GetExistsCommand<T>(id);
-		return ExecuteScalar<bool>(connection, text, parameters, options);
+		return ExecuteScalar<bool>(connection, new SqlCommand(text, options), parameters);
 	}
 
 	/// <summary>
@@ -59,7 +59,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns><see langword="true"/> if an entity with the specified primary key exists, otherwise <see langword="false"/>.</returns>
 	public static async Task<bool> ExistsAsync<T>(this IDbConnection connection, object id, SqlCommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		var (text, parameters) = new SqlCommandBuilder(connection).GetExistsCommand<T>(id);
-		return await ExecuteScalarAsync<bool>(connection, text, parameters, options, cancellationToken);
+		return await ExecuteScalarAsync<bool>(connection, new SqlCommand(text, options), parameters, cancellationToken);
 	}
 
 	/// <summary>
@@ -73,7 +73,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The entity with the specified primary key, or <see langword="null"/> if not found.</returns>
 	public static T? Find<T>(this IDbConnection connection, object id, string[]? columns = null, SqlCommandOptions? options = null) where T: new() {
 		var (text, parameters) = new SqlCommandBuilder(connection).GetFindCommand<T>(id, columns ?? []);
-		return QuerySingleOrDefault<T>(connection, text, parameters, options);
+		return QuerySingleOrDefault<T>(connection, new SqlCommand(text, options), parameters);
 	}
 
 	/// <summary>
@@ -88,7 +88,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The entity with the specified primary key, or <see langword="null"/> if not found.</returns>
 	public static async Task<T?> FindAsync<T>(this IDbConnection connection, object id, string[]? columns = null, SqlCommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		var (text, parameters) = new SqlCommandBuilder(connection).GetFindCommand<T>(id, columns ?? []);
-		return await QuerySingleOrDefaultAsync<T>(connection, text, parameters, options, cancellationToken);
+		return await QuerySingleOrDefaultAsync<T>(connection, new SqlCommand(text, options), parameters, cancellationToken);
 	}
 
 	/// <summary>
@@ -101,7 +101,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The generated primary key value.</returns>
 	public static long Insert<T>(this IDbConnection connection, T instance, SqlCommandOptions? options = null) where T: new() {
 		var (text, parameters) = new SqlCommandBuilder(connection).GetInsertCommand(instance);
-		var id = ExecuteScalar<long>(connection, text, parameters, options);
+		var id = ExecuteScalar<long>(connection, new SqlCommand(text, options), parameters);
 		if (SqlMapper.Instance.GetTable<T>().IdentityColumn is DbColumnInfo column) column.SetValue(instance, SqlMapper.ChangeType(id, column));
 		return id;
 	}
@@ -117,7 +117,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The generated primary key value.</returns>
 	public static async Task<long> InsertAsync<T>(this IDbConnection connection, T instance, SqlCommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		var (text, parameters) = new SqlCommandBuilder(connection).GetInsertCommand(instance);
-		var id = await ExecuteScalarAsync<long>(connection, text, parameters, options, cancellationToken);
+		var id = await ExecuteScalarAsync<long>(connection, new SqlCommand(text, options), parameters, cancellationToken);
 		if (SqlMapper.Instance.GetTable<T>().IdentityColumn is DbColumnInfo column) column.SetValue(instance, SqlMapper.ChangeType(id, column));
 		return id;
 	}
@@ -133,7 +133,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The number of rows affected.</returns>
 	public static int Update<T>(this IDbConnection connection, T instance, string[]? columns = null, SqlCommandOptions? options = null) where T: new() {
 		var (text, parameters) = new SqlCommandBuilder(connection).GetUpdateCommand(instance, columns ?? []);
-		return Execute(connection, text, parameters, options);
+		return Execute(connection, new SqlCommand(text, options), parameters);
 	}
 
 	/// <summary>
@@ -148,6 +148,6 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The number of rows affected.</returns>
 	public static async Task<int> UpdateAsync<T>(this IDbConnection connection, T instance, string[]? columns = null, SqlCommandOptions? options = null, CancellationToken cancellationToken = default) where T: new() {
 		var (text, parameters) = new SqlCommandBuilder(connection).GetUpdateCommand(instance, columns ?? []);
-		return await ExecuteAsync(connection, text, parameters, options, cancellationToken);
+		return await ExecuteAsync(connection, new SqlCommand(text, options), parameters, cancellationToken);
 	}
 }

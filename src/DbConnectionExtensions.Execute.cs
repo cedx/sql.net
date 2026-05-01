@@ -12,13 +12,12 @@ public static partial class DbConnectionExtensions {
 	/// Executes a parameterized SQL statement.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="text">The SQL query to be executed.</param>
-	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="command">The command to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL statement.</param>
 	/// <returns>The number of rows affected.</returns>
-	public static int Execute(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, SqlCommandOptions? options = null) {
+	public static int Execute(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
-		using var dbCommand = CreateCommand(connection, text, parameters, options);
+		using var dbCommand = command.ToDbCommand(connection, parameters);
 		return dbCommand.ExecuteNonQuery();
 	}
 
@@ -26,14 +25,13 @@ public static partial class DbConnectionExtensions {
 	/// Executes a parameterized SQL statement.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="text">The SQL query to be executed.</param>
-	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="command">The command to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL statement.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The number of rows affected.</returns>
-	public static async Task<int> ExecuteAsync(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, SqlCommandOptions? options = null, CancellationToken cancellationToken = default) {
+	public static async Task<int> ExecuteAsync(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, CancellationToken cancellationToken = default) {
 		if (connection.State == ConnectionState.Closed) await ((DbConnection) connection).OpenAsync(cancellationToken);
-		using var dbCommand = (DbCommand) CreateCommand(connection, text, parameters, options);
+		using var dbCommand = (DbCommand) command.ToDbCommand(connection, parameters);
 		return await dbCommand.ExecuteNonQueryAsync(cancellationToken);
 	}
 
@@ -41,13 +39,12 @@ public static partial class DbConnectionExtensions {
 	/// Executes a parameterized SQL query and returns a data reader.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="text">The SQL query to be executed.</param>
-	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="command">The command to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL statement.</param>
 	/// <returns>The data reader that can be used to access the results.</returns>
-	public static IDataReader ExecuteReader(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, SqlCommandOptions? options = null) {
+	public static IDataReader ExecuteReader(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
-		using var dbCommand = CreateCommand(connection, text, parameters, options);
+		using var dbCommand = command.ToDbCommand(connection, parameters);
 		return dbCommand.ExecuteReader();
 	}
 
@@ -55,14 +52,13 @@ public static partial class DbConnectionExtensions {
 	/// Executes a parameterized SQL query and returns a data reader.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="text">The SQL query to be executed.</param>
-	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="command">The command to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL statement.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The data reader that can be used to access the results.</returns>
-	public static async Task<IDataReader> ExecuteReaderAsync(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, SqlCommandOptions? options = null, CancellationToken cancellationToken = default) {
+	public static async Task<IDataReader> ExecuteReaderAsync(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, CancellationToken cancellationToken = default) {
 		if (connection.State == ConnectionState.Closed) await ((DbConnection) connection).OpenAsync(cancellationToken);
-		using var dbCommand = (DbCommand) CreateCommand(connection, text, parameters, options);
+		using var dbCommand = (DbCommand) command.ToDbCommand(connection, parameters);
 		return await dbCommand.ExecuteReaderAsync(cancellationToken);
 	}
 
@@ -70,37 +66,34 @@ public static partial class DbConnectionExtensions {
 	/// Executes a parameterized SQL query that selects a single value.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="text">The SQL query to be executed.</param>
-	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="command">The command to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL statement.</param>
 	/// <returns>The first column of the first row.</returns>
-	public static object? ExecuteScalar(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, SqlCommandOptions? options = null) =>
-		ExecuteScalar<object>(connection, text, parameters, options);
+	public static object? ExecuteScalar(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null) =>
+		ExecuteScalar<object>(connection, command, parameters);
 
 	/// <summary>
 	/// Executes a parameterized SQL query that selects a single value.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="text">The SQL query to be executed.</param>
-	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="command">The command to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL statement.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first column of the first row.</returns>
-	public static async Task<object?> ExecuteScalarAsync(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, SqlCommandOptions? options = null, CancellationToken cancellationToken = default) =>
-		await ExecuteScalarAsync<object>(connection, text, parameters, options, cancellationToken);
+	public static async Task<object?> ExecuteScalarAsync(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, CancellationToken cancellationToken = default) =>
+		await ExecuteScalarAsync<object>(connection, command, parameters, cancellationToken);
 
 	/// <summary>
 	/// Executes a parameterized SQL query that selects a single value.
 	/// </summary>
 	/// <typeparam name="T">The type of object to return.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="text">The SQL query to be executed.</param>
-	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="command">The command to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL statement.</param>
 	/// <returns>The first column of the first row.</returns>
-	public static T? ExecuteScalar<T>(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, SqlCommandOptions? options = null) {
+	public static T? ExecuteScalar<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null) {
 		if (connection.State == ConnectionState.Closed) connection.Open();
-		using var dbCommand = CreateCommand(connection, text, parameters, options);
+		using var dbCommand = command.ToDbCommand(connection, parameters);
 		var value = dbCommand.ExecuteScalar();
 		return value is null || value is DBNull ? default : (T?) SqlMapper.ChangeType(value, typeof(T));
 	}
@@ -110,14 +103,13 @@ public static partial class DbConnectionExtensions {
 	/// </summary>
 	/// <typeparam name="T">The type of object to return.</typeparam>
 	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="text">The SQL query to be executed.</param>
-	/// <param name="parameters">The parameters of the SQL query.</param>
-	/// <param name="options">The command options.</param>
+	/// <param name="command">The command to be executed.</param>
+	/// <param name="parameters">The parameters of the SQL statement.</param>
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first column of the first row.</returns>
-	public static async Task<T?> ExecuteScalarAsync<T>(this IDbConnection connection, string text, SqlParameterCollection? parameters = null, SqlCommandOptions? options = null, CancellationToken cancellationToken = default) {
+	public static async Task<T?> ExecuteScalarAsync<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, CancellationToken cancellationToken = default) {
 		if (connection.State == ConnectionState.Closed) await ((DbConnection) connection).OpenAsync(cancellationToken);
-		using var dbCommand = (DbCommand) CreateCommand(connection, text, parameters, options);
+		using var dbCommand = (DbCommand) command.ToDbCommand(connection, parameters);
 		var value = await dbCommand.ExecuteScalarAsync(cancellationToken);
 		return value is null || value is DBNull ? default : (T?) SqlMapper.ChangeType(value, typeof(T));
 	}

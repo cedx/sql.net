@@ -3,7 +3,7 @@ namespace Belin.Sql;
 using System.Data;
 
 /// <summary>
-/// Defines the options of a SQL command.
+/// Defines the options of an SQL command.
 /// </summary>
 public record SqlCommandOptions {
 
