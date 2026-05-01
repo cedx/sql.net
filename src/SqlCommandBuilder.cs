@@ -20,6 +20,11 @@ public class SqlCommandBuilder {
 	public string CatalogSeparator { get; set; } = ".";
 
 	/// <summary>
+	/// The SQL function to use when the <c>RETURNING</c> clause is not supported.
+	/// </summary>
+	public string LastInsertIdFunction { get; set; } = "SCOPE_IDENTITY()";
+
+	/// <summary>
 	/// The beginning string to use for naming parameters.
 	/// </summary>
 	public string ParameterPrefix { get; set; } = "@";
@@ -50,11 +55,6 @@ public class SqlCommandBuilder {
 	public bool UsePositionalParameters { get; set; }
 
 	/// <summary>
-	/// The SQL function to use when the <c>RETURNING</c> clause is not supported.
-	/// </summary>
-	private readonly string lastInsertIdFunction = "SCOPE_IDENTITY()";
-
-	/// <summary>
 	/// Creates a new command builder.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
@@ -63,7 +63,7 @@ public class SqlCommandBuilder {
 			case "MySql.Data.MySqlClient.MySqlConnection":
 			case "MySqlConnector.MySqlConnection":
 				QuotePrefix = QuoteSuffix = "`";
-				lastInsertIdFunction = "LAST_INSERT_ID()";
+				LastInsertIdFunction = "LAST_INSERT_ID()";
 				break;
 			case "FirebirdSql.Data.FirebirdClient.FbConnection":
 			case "Microsoft.Data.Sqlite.SqliteConnection":
@@ -171,7 +171,7 @@ public class SqlCommandBuilder {
 		var text = $"""
 			INSERT INTO {GetTableName(table)} ({string.Join(", ", fields.Select(field => QuoteIdentifier(field.Name)))})
 			VALUES ({string.Join(", ", fields.Select(field => UsePositionalParameters ? "?" : GetParameterName(field.Name)))})
-			{(SupportsReturningClause ? $"RETURNING {QuoteIdentifier(identityColumn.Name)}" : $"; SELECT {lastInsertIdFunction};")}
+			{(SupportsReturningClause ? $"RETURNING {QuoteIdentifier(identityColumn.Name)}" : $"; SELECT {LastInsertIdFunction};")}
 			""";
 
 		return (text, [.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(entity)))]);
