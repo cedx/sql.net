@@ -41,7 +41,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
 	public static IEnumerable<T> Query<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null) where T: new() {
 		var records = SqlMapper.Instance.CreateInstances<T>(ExecuteReader(connection, command, parameters));
-		return command.Stream ? records : Enumerable.ToList(records);
+		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -55,7 +55,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<T>> QueryAsync<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, CancellationToken cancellationToken = default) where T: new() {
 		var records = SqlMapper.Instance.CreateInstances<T>(await ExecuteReaderAsync(connection, command, parameters, cancellationToken));
-		return command.Stream ? records : Enumerable.ToList(records);
+		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -70,7 +70,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
 	public static IEnumerable<(TItem1, TItem2)> Query<TItem1, TItem2>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, string splitOn = "Id") where TItem1: new() where TItem2: new() {
 		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2>(ExecuteReader(connection, command, parameters), splitOn);
-		return command.Stream ? records : Enumerable.ToList(records);
+		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -86,7 +86,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<(TItem1, TItem2)>> QueryAsync<TItem1, TItem2>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, string splitOn = "Id", CancellationToken cancellationToken = default) where TItem1: new() where TItem2: new() {
 		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2>(await ExecuteReaderAsync(connection, command, parameters, cancellationToken), splitOn);
-		return command.Stream ? records : Enumerable.ToList(records);
+		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -102,7 +102,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
 	public static IEnumerable<(TItem1, TItem2, TItem3)> Query<TItem1, TItem2, TItem3>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, (string, string)? splitOn = null) where TItem1: new() where TItem2: new() where TItem3: new() {
 		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2, TItem3>(ExecuteReader(connection, command, parameters), splitOn);
-		return command.Stream ? records : Enumerable.ToList(records);
+		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -119,7 +119,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<(TItem1, TItem2, TItem3)>> QueryAsync<TItem1, TItem2, TItem3>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, (string, string)? splitOn = null, CancellationToken cancellationToken = default) where TItem1: new() where TItem2: new() where TItem3: new() {
 		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2, TItem3>(await ExecuteReaderAsync(connection, command, parameters, cancellationToken), splitOn);
-		return command.Stream ? records : Enumerable.ToList(records);
+		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -136,7 +136,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
 	public static IEnumerable<(TItem1, TItem2, TItem3, TItem4)> Query<TItem1, TItem2, TItem3, TItem4>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, (string, string, string)? splitOn = null) where TItem1: new() where TItem2: new() where TItem3: new() where TItem4: new() {
 		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2, TItem3, TItem4>(ExecuteReader(connection, command, parameters), splitOn);
-		return command.Stream ? records : Enumerable.ToList(records);
+		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>
@@ -154,7 +154,7 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<(TItem1, TItem2, TItem3, TItem4)>> QueryAsync<TItem1, TItem2, TItem3, TItem4>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, (string, string, string)? splitOn = null, CancellationToken cancellationToken = default) where TItem1: new() where TItem2: new() where TItem3: new() where TItem4: new() {
 		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2, TItem3, TItem4>(await ExecuteReaderAsync(connection, command, parameters, cancellationToken), splitOn);
-		return command.Stream ? records : Enumerable.ToList(records);
+		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
 	/// <summary>

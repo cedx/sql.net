@@ -12,7 +12,7 @@ public sealed class SqlCommand(string text, SqlCommandOptions? options = null) {
 	/// <summary>
 	/// Value indicating whether to prevent from buffering the rows in memory.
 	/// </summary>
-	public bool Stream { get; set; }
+	public bool NoEnumerate { get; set; }
 
 	/// <summary>
 	/// The text of the SQL statement.
