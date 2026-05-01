@@ -6,7 +6,7 @@ using Belin.Sql.Fixtures;
 /// Tests the features of the <see cref="DbConnectionExtensions"/> class.
 /// </summary>
 [TestClass]
-public sealed class DbConnectionExtensionsExecuteTests(TestContext testContext): SqliteTests {
+public sealed class DbConnectionExtensionsExecuteTests(TestContext testContext): DataSourceTests {
 
 	[TestMethod]
 	public void Execute() {

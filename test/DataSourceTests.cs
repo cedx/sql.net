@@ -3,9 +3,9 @@ namespace Belin.Sql;
 using System.Data.SQLite;
 
 /// <summary>
-/// Provides the base class for tests requiring an SQLite database.
+/// Provides the base class for tests requiring a data source.
 /// </summary>
-public abstract class SqliteTests {
+public abstract class DataSourceTests {
 
 	/// <summary>
 	/// The connection to the data source.

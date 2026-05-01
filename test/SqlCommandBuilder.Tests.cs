@@ -6,7 +6,7 @@ using Belin.Sql.Fixtures;
 /// Tests the features of the <see cref="SqlCommandBuilder"/> class.
 /// </summary>
 [TestClass]
-public sealed class SqlCommandBuilderTests: SqliteTests {
+public sealed class SqlCommandBuilderTests: DataSourceTests {
 
 	/// <summary>
 	/// The test data.
