@@ -1,29 +1,17 @@
 namespace Belin.Sql;
 
 using Belin.Sql.Fixtures;
-using System.Data.SQLite;
 
 /// <summary>
 /// Tests the features of the <see cref="SqlCommandBuilder"/> class.
 /// </summary>
 [TestClass]
-public sealed class SqlCommandBuilderTests {
-
-	/// <summary>
-	/// The connection to the data source.
-	/// </summary>
-	private SQLiteConnection connection = default!;
+public sealed class SqlCommandBuilderTests: SqliteTests {
 
 	/// <summary>
 	/// The test data.
 	/// </summary>
 	private readonly Character record = new() { Id = 1000, FirstName = "Cédric", Gender = CharacterGender.DarkLord };
-
-	[TestInitialize]
-	public void TestInitialize() => connection = That.CreateInMemoryDatabase();
-
-	[TestCleanup]
-	public void TestCleanup() => connection.Close();
 
 	[TestMethod]
 	public void GetDeleteCommand() {

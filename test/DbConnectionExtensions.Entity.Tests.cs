@@ -5,41 +5,77 @@ using Belin.Sql.Fixtures;
 /// <summary>
 /// Tests the features of the <see cref="DbConnectionExtensions"/> class.
 /// </summary>
-public sealed partial class DbConnectionExtensionsTests {
+[TestClass]
+public sealed class DbConnectionExtensionsEntityTests(TestContext testContext): SqliteTests {
 
 	[TestMethod]
-	public async Task Delete() {
+	public void Delete() {
 		var sql = "SELECT * FROM Characters WHERE Id = @Id";
-
 		var record = connection.QuerySingleOrDefault<Character>(sql, [("Id", 1)]);
+
 		IsNotNull(record);
 		IsTrue(connection.Delete(record));
 		IsFalse(connection.Delete(record));
 		IsNull(connection.QuerySingleOrDefault<Character>(sql, [("Id", 1)]));
-
-		record = await connection.QuerySingleOrDefaultAsync<Character>(sql, [("Id", 2)], cancellationToken: testContext.CancellationToken);
-		IsNotNull(record);
-		IsTrue(await connection.DeleteAsync(record, cancellationToken: testContext.CancellationToken));
-		IsFalse(await connection.DeleteAsync(record, cancellationToken: testContext.CancellationToken));
-		IsNull(await connection.QuerySingleOrDefaultAsync<Character>(sql, [("Id", 2)], cancellationToken: testContext.CancellationToken));
 	}
 
 	[TestMethod]
-	public async Task Exists() {
+	public async Task DeleteAsync() {
+		var sql = "SELECT * FROM Characters WHERE Id = @Id";
+		var record = await connection.QuerySingleOrDefaultAsync<Character>(sql, [("Id", 2)], cancellationToken: testContext.CancellationToken);
+
+		IsNotNull(record);
+		IsTrue(await connection.DeleteAsync(record, cancellationToken: testContext.CancellationToken));
+		IsFalse(await connection.DeleteAsync(record, cancellationToken: testContext.CancellationToken));
+		IsNull(await connection.QuerySingleOrDefaultAsync<Character>(sql, [("Id", 2)], testContext.CancellationToken));
+	}
+
+	[TestMethod]
+	public void Exists() {
 		IsTrue(connection.Exists<Character>(1));
-		IsTrue(await connection.ExistsAsync<Character>(1, cancellationToken: testContext.CancellationToken));
 		IsFalse(connection.Exists<Character>(666));
+	}
+
+	[TestMethod]
+	public async Task ExistsAsync() {
+		IsTrue(await connection.ExistsAsync<Character>(1, cancellationToken: testContext.CancellationToken));
 		IsFalse(await connection.ExistsAsync<Character>(666, cancellationToken: testContext.CancellationToken));
 	}
 
 	[TestMethod]
-	public async Task Find() {
+	public void Find() {
 		var record = connection.Find<Character>(2);
 		IsNotNull(record);
 		AreEqual(2, record.Id);
 		AreEqual("Balin", record.FullName);
 
-		record = connection.Find<Character>(2, ["gender"])!;
+		record = connection.Find<Character>(2, ["gender"]);
+		IsNotNull(record);
+		IsNull(record.FullName);
+		AreEqual(CharacterGender.Dwarf, record.Gender);
+
+		record = connection.Find<Character>(14);
+		IsNotNull(record);
+		AreEqual(14, record.Id);
+		AreEqual("Sam Gamgee", record.FullName);
+
+		record = connection.Find<Character>(14, ["gender"]);
+		IsNotNull(record);
+		IsNull(record.FullName);
+		AreEqual(CharacterGender.Hobbit, record.Gender);
+
+		IsNull(connection.Find<Character>(666));
+	}
+
+	[TestMethod]
+	public async Task FindAsync() {
+		var record = await connection.FindAsync<Character>(2, cancellationToken: testContext.CancellationToken);
+		IsNotNull(record);
+		AreEqual(2, record.Id);
+		AreEqual("Balin", record.FullName);
+
+		record = await connection.FindAsync<Character>(2, ["gender"], cancellationToken: testContext.CancellationToken);
+		IsNotNull(record);
 		IsNull(record.FullName);
 		AreEqual(CharacterGender.Dwarf, record.Gender);
 
@@ -48,11 +84,11 @@ public sealed partial class DbConnectionExtensionsTests {
 		AreEqual(14, record.Id);
 		AreEqual("Sam Gamgee", record.FullName);
 
-		record = connection.Find<Character>(14, ["gender"])!;
+		record = await connection.FindAsync<Character>(14, ["gender"], cancellationToken: testContext.CancellationToken);
+		IsNotNull(record);
 		IsNull(record.FullName);
 		AreEqual(CharacterGender.Hobbit, record.Gender);
 
-		IsNull(connection.Find<Character>(666));
 		IsNull(await connection.FindAsync<Character>(666, cancellationToken: testContext.CancellationToken));
 	}
 

@@ -5,13 +5,13 @@ using Belin.Sql.Fixtures;
 /// <summary>
 /// Tests the features of the <see cref="DbConnectionExtensions"/> class.
 /// </summary>
-public sealed partial class DbConnectionExtensionsTests {
+[TestClass]
+public sealed class DbConnectionExtensionsQueryTests(TestContext testContext): SqliteTests {
 
 	[TestMethod]
-	public async Task Query() {
+	public void Query() {
 		var sql = "SELECT * FROM Characters WHERE Gender = @Gender ORDER BY FullName";
 		var parameters = new SqlParameterCollection(("Gender", CharacterGender.Elf.ToString()));
-
 		var records = connection.Query<Character>(sql, parameters).AsList();
 		HasCount(3, records);
 
@@ -19,8 +19,21 @@ public sealed partial class DbConnectionExtensionsTests {
 		AreEqual("Elrond", elrond.FullName);
 		AreEqual(CharacterGender.Elf, elrond.Gender);
 
-		records = (await connection.QueryAsync<Character>(sql, parameters, cancellationToken: testContext.CancellationToken)).AsList();
+		var galadriel = records[1];
+		AreEqual("Galadriel", galadriel.FullName);
+		AreEqual(CharacterGender.Elf, galadriel.Gender);
+	}
+
+	[TestMethod]
+	public async Task QueryAsync() {
+		var sql = "SELECT * FROM Characters WHERE Gender = @Gender ORDER BY FullName";
+		var parameters = new SqlParameterCollection(("Gender", CharacterGender.Elf.ToString()));
+		var records = (await connection.QueryAsync<Character>(sql, parameters, testContext.CancellationToken)).AsList();
 		HasCount(3, records);
+
+		var elrond = records[0];
+		AreEqual("Elrond", elrond.FullName);
+		AreEqual(CharacterGender.Elf, elrond.Gender);
 
 		var galadriel = records[1];
 		AreEqual("Galadriel", galadriel.FullName);
@@ -28,29 +41,35 @@ public sealed partial class DbConnectionExtensionsTests {
 	}
 
 	[TestMethod]
-	public async Task QueryFirst() {
+	public void QueryFirst() {
 		var sql = "SELECT * FROM Characters WHERE FullName = @FullName";
-		var parameters = new SqlParameterCollection(("FullName", "Sauron"));
-
-		var record = connection.QueryFirst<Character>(sql, parameters);
-		AreEqual("Sauron", record.FirstName);
-		AreEqual(CharacterGender.DarkLord, record.Gender);
-
-		record = await connection.QueryFirstAsync<Character>(sql, parameters, cancellationToken: testContext.CancellationToken);
+		var record = connection.QueryFirst<Character>(sql, [("FullName", "Sauron")]);
 		AreEqual("Sauron", record.FirstName);
 		AreEqual(CharacterGender.DarkLord, record.Gender);
 	}
 
 	[TestMethod]
-	public async Task QuerySingle() {
+	public async Task QueryFirstAsync() {
+		var sql = "SELECT * FROM Characters WHERE FullName = @FullName";
+		var record = await connection.QueryFirstAsync<Character>(sql, [("FullName", "Sauron")], testContext.CancellationToken);
+		AreEqual("Sauron", record.FirstName);
+		AreEqual(CharacterGender.DarkLord, record.Gender);
+	}
+
+	[TestMethod]
+	public void QuerySingle() {
 		var sql = "SELECT * FROM Characters WHERE FullName = @FullName";
 		var parameters = new SqlParameterCollection(("FullName", "Saruman"));
-
 		var record = connection.QuerySingle<Character>(sql, parameters);
 		AreEqual("Saruman", record.FirstName);
 		AreEqual(CharacterGender.Istari, record.Gender);
+	}
 
-		record = await connection.QuerySingleAsync<Character>(sql, parameters, cancellationToken: testContext.CancellationToken);
+	[TestMethod]
+	public async Task QuerySingleAsync() {
+		var sql = "SELECT * FROM Characters WHERE FullName = @FullName";
+		var parameters = new SqlParameterCollection(("FullName", "Saruman"));
+		var record = await connection.QuerySingleAsync<Character>(sql, parameters, testContext.CancellationToken);
 		AreEqual("Saruman", record.FirstName);
 		AreEqual(CharacterGender.Istari, record.Gender);
 	}
