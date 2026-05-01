@@ -79,8 +79,8 @@ public class SqlCommandBuilder {
 				QuotePrefix = QuoteSuffix = "\"";
 				SupportsReturningClause = true;
 				break;
-			case "System.Data.OleDb.OleDbConnection":
 			case "System.Data.Odbc.OdbcConnection":
+			case "System.Data.OleDb.OleDbConnection":
 				UsePositionalParameters = true;
 				break;
 		}
@@ -90,13 +90,13 @@ public class SqlCommandBuilder {
 	/// Gets the generated command to delete an entity.
 	/// </summary>
 	/// <typeparam name="T">The entity type.</typeparam>
-	/// <param name="instance">The entity to delete.</param>
+	/// <param name="entity">The entity to delete.</param>
 	/// <returns>The generated command to delete an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public (string Text, SqlParameterCollection Parameters) GetDeleteCommand<T>(T instance) where T: new() {
+	public (string Text, SqlParameterCollection Parameters) GetDeleteCommand<T>(T entity) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
-		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), identityColumn.GetValue(instance));
+		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(identityColumn.Name), identityColumn.GetValue(entity));
 
 		var text = $"""
 			DELETE FROM {GetTableName(table)}
@@ -160,10 +160,10 @@ public class SqlCommandBuilder {
 	/// Gets the generated command to insert an entity.
 	/// </summary>
 	/// <typeparam name="T">The entity type.</typeparam>
-	/// <param name="instance">The entity to insert.</param>
+	/// <param name="entity">The entity to insert.</param>
 	/// <returns>The generated command to insert an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public (string Text, SqlParameterCollection Parameters) GetInsertCommand<T>(T instance) where T: new() {
+	public (string Text, SqlParameterCollection Parameters) GetInsertCommand<T>(T entity) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 		var fields = table.Columns.Values.Where(column => column.CanRead && !column.IsComputed).ToArray();
@@ -174,18 +174,18 @@ public class SqlCommandBuilder {
 			{(SupportsReturningClause ? $"RETURNING {QuoteIdentifier(identityColumn.Name)}" : $"; SELECT {lastInsertIdFunction};")}
 			""";
 
-		return (text, [.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(instance)))]);
+		return (text, [.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(entity)))]);
 	}
 
 	/// <summary>
 	/// Gets the generated command to update an entity.
 	/// </summary>
 	/// <typeparam name="T">The entity type.</typeparam>
-	/// <param name="instance">The entity to update.</param>
+	/// <param name="entity">The entity to update.</param>
 	/// <param name="columns">The list of columns to update. By default, all columns.</param>
 	/// <returns>The generated command to update an entity.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public (string Text, SqlParameterCollection Parameters) GetUpdateCommand<T>(T instance, params string[] columns) where T: new() {
+	public (string Text, SqlParameterCollection Parameters) GetUpdateCommand<T>(T entity, params string[] columns) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
 		var identityColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 		var fields = (columns.Length == 0 ? table.Columns.Values : table.Columns.Values.Where(column => columns.Contains(column.Name)))
@@ -199,8 +199,8 @@ public class SqlCommandBuilder {
 			""";
 
 		return (text, [
-			.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(instance))),
-			(GetParameterName(identityColumn.Name), identityColumn.GetValue(instance))
+			.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index}" : GetParameterName(field.Name), field.GetValue(entity))),
+			(GetParameterName(identityColumn.Name), identityColumn.GetValue(entity))
 		]);
 	}
 
