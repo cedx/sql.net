@@ -1,5 +1,5 @@
 # SQL Mapper for .NET
-A simple micro-ORM for [C#](https://learn.microsoft.com/en-us/dotnet/csharp) and [PowerShell](https://learn.microsoft.com/en-us/powershell),
+A simple micro-ORM for [C#](https://learn.microsoft.com/en-us/dotnet/csharp),
 based on [ADO.NET](https://learn.microsoft.com/en-us/dotnet/framework/data/adonet) and data annotations.  
 If you like [SQL](https://en.wikipedia.org/wiki/SQL) but dislike the boilerplate of ADO.NET: **SQL Mapper for .NET** might be for you!
 

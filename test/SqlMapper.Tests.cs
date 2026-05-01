@@ -151,7 +151,7 @@ public sealed class SqlMapperTests {
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 123, ["LongLabel"] = "Hello World!", ["ShortLabel"] = null }, records[0]);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 456, ["FirstName"] = "Cédric", ["LastName"] = "Belin", ["RowID"] = 789 }, records[1]);
 
-		records = SqlMapper.SplitOn(record, "id", "rowID", "_Unused_");
+		records = SqlMapper.SplitOn(record, "id", "rowid", "_Unused_");
 		HasCount(3, records);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 123, ["LongLabel"] = "Hello World!", ["ShortLabel"] = null }, records[0]);
 		CollectionAssert.AreEqual(new Dictionary<string, object?> { ["Id"] = 456, ["FirstName"] = "Cédric", ["LastName"] = "Belin" }, records[1]);
