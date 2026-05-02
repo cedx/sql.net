@@ -45,7 +45,7 @@ public sealed class DbTableInfo {
 			where !property.IsDefined(typeof(NotMappedAttribute)) && ((property.CanRead && property.CanWrite) || property.IsDefined(typeof(ColumnAttribute)))
 			select new DbColumnInfo(property);
 
-		Columns = columns.ToFrozenDictionary(column => column.Name);
+		Columns = columns.ToFrozenDictionary(column => column.Name, StringComparer.OrdinalIgnoreCase);
 		IdentityColumn = Columns.Values.SingleOrDefault(column => column.IsIdentity) ?? (Columns.TryGetValue("Id", out var column) ? column : null);
 		Name = table?.Name ?? type.Name;
 		Schema = table?.Schema;
