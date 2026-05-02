@@ -25,7 +25,7 @@ public sealed partial class DbConnectionExtensionsTests {
 
 		// It should allow the data rows to be split into distinct objects.
 		sql = "SELECT ID, firstName, lastName, ID, fullName, gender FROM Characters WHERE firstName = @FirstName";
-		var objects = connection.Query<ExpandoObject, ExpandoObject>(sql, [("FirstName", "Frodo")], splitOn: "id").AsList();
+		var objects = connection.Query<ExpandoObject, ExpandoObject>(sql, [("FirstName", "Frodo")]).AsList();
 		HasCount(1, objects);
 
 		dynamic left = objects[0].Item1;
