@@ -52,8 +52,8 @@ public sealed class SqlMapper {
 	public (TItem1, TItem2) CreateInstance<TItem1, TItem2>(IDataRecord record, string splitOn = "Id") where TItem1: new() where TItem2: new() {
 		var records = SplitOn(record, splitOn);
 		return (
-			records[0].Values.All(value => value is null) ? default! : CreateInstance<TItem1>(records[0]),
-			records.Count <= 1 || records[1].Values.All(value => value is null) ? default! : CreateInstance<TItem2>(records[1])
+			IsNullObject(records[0]) ? default! : CreateInstance<TItem1>(records[0]),
+			records.Count <= 1 || IsNullObject(records[1]) ? default! : CreateInstance<TItem2>(records[1])
 		);
 	}
 
@@ -70,9 +70,9 @@ public sealed class SqlMapper {
 		var (firstField, secondField) = splitOn ?? ("Id", "Id");
 		var records = SplitOn(record, firstField, secondField);
 		return (
-			records[0].Values.All(value => value is null) ? default! : CreateInstance<TItem1>(records[0]),
-			records.Count <= 1 || records[1].Values.All(value => value is null) ? default! : CreateInstance<TItem2>(records[1]),
-			records.Count <= 2 || records[2].Values.All(value => value is null) ? default! : CreateInstance<TItem3>(records[2])
+			IsNullObject(records[0]) ? default! : CreateInstance<TItem1>(records[0]),
+			records.Count <= 1 || IsNullObject(records[1]) ? default! : CreateInstance<TItem2>(records[1]),
+			records.Count <= 2 || IsNullObject(records[2]) ? default! : CreateInstance<TItem3>(records[2])
 		);
 	}
 
@@ -90,10 +90,10 @@ public sealed class SqlMapper {
 		var (firstField, secondField, thirdField) = splitOn ?? ("Id", "Id", "Id");
 		var records = SplitOn(record, firstField, secondField, thirdField);
 		return (
-			records[0].Values.All(value => value is null) ? default! : CreateInstance<TItem1>(records[0]),
-			records.Count <= 1 || records[1].Values.All(value => value is null) ? default! : CreateInstance<TItem2>(records[1]),
-			records.Count <= 2 || records[2].Values.All(value => value is null) ? default! : CreateInstance<TItem3>(records[2]),
-			records.Count <= 3 || records[3].Values.All(value => value is null) ? default! : CreateInstance<TItem4>(records[3])
+			IsNullObject(records[0]) ? default! : CreateInstance<TItem1>(records[0]),
+			records.Count <= 1 || IsNullObject(records[1]) ? default! : CreateInstance<TItem2>(records[1]),
+			records.Count <= 2 || IsNullObject(records[2]) ? default! : CreateInstance<TItem3>(records[2]),
+			records.Count <= 3 || IsNullObject(records[3]) ? default! : CreateInstance<TItem4>(records[3])
 		);
 	}
 
@@ -226,6 +226,13 @@ public sealed class SqlMapper {
 			_ => isNullable ? default : Activator.CreateInstance(targetType)
 		};
 	}
+
+	/// <summary>
+	/// Returns a value indicating whether all values of the specified dictionary are <see langword="null"/>.
+	/// </summary>
+	/// <param name="dictionary">The dictionary to inspect.</param>
+	/// <returns><see langword="true"/> if all values of the specified dictionary are <see langword="null"/>, otherwise <see langword="false"/>.</returns>
+	internal static bool IsNullObject(Dictionary<string, object?> dictionary) => dictionary.Values.All(value => value is null);
 
 	/// <summary>
 	/// Splits the specified data record according to the specified fields.
