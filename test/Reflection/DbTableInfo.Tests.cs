@@ -1,4 +1,4 @@
-namespace Belin.Sql.Reflection;
+namespace Belin.Sql;
 
 using Belin.Sql.Fixtures;
 

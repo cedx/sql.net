@@ -7,7 +7,7 @@
 - Breaking change: dropped support for [PowerShell](https://learn.microsoft.com/en-us/powershell). See the [SQL Mapper for PowerShell](https://github.com/cedx/sql.ps1) project for an alternative.
 - Breaking change: raised the required target framework.
 - Breaking change: renamed the `ConnectionExtensions` class to `DbConnectionExtensions`.
-- Breaking change: replaced the `string text` parameter of the query methods by a `SqlCommand command` parameter.
+- Breaking change: replaced the `string text` parameter of the query methods by the `SqlCommand command` parameter.
 - Breaking change: replaced the `QueryOptions.Buffered` property by the `SqlCommand.NoEnumerate` property.
 - Added the `SqlCommand.ToDbCommand()` method.
 - Added the `SqlParameter.ToDbParameter()` method.
