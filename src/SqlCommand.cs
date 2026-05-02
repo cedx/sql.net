@@ -6,8 +6,7 @@ using System.Data;
 /// Represents an SQL statement that is executed while connected to a data source.
 /// </summary>
 /// <param name="text">The text of the SQL statement.</param>
-/// <param name="options">The command options.</param>
-public sealed class SqlCommand(string text, SqlCommandOptions? options = null) {
+public sealed class SqlCommand(string text) {
 
 	/// <summary>
 	/// Value indicating whether to prevent from buffering the rows in memory.
@@ -22,17 +21,17 @@ public sealed class SqlCommand(string text, SqlCommandOptions? options = null) {
 	/// <summary>
 	/// The wait time, in seconds, before terminating the attempt to execute the command and generating an error.
 	/// </summary>
-	public int Timeout { get; set; } = options?.Timeout ?? 30;
+	public int Timeout { get; set; } = 30;
 
 	/// <summary>
 	/// The transaction within which the command executes.
 	/// </summary>
-	public IDbTransaction? Transaction { get; set; } = options?.Transaction;
+	public IDbTransaction? Transaction { get; set; }
 
 	/// <summary>
 	/// Value indicating how the command is interpreted.
 	/// </summary>
-	public CommandType Type { get; set; } = options?.Type ?? CommandType.Text;
+	public CommandType Type { get; set; } = CommandType.Text;
 
 	/// <summary>
 	/// Creates a new command from the specified text.
