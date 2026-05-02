@@ -10,23 +10,19 @@ public sealed partial class DbConnectionExtensionsTests {
 	[TestMethod]
 	public void Delete() {
 		var sql = "SELECT * FROM Characters WHERE ID = @Id";
-		var record = connection.QuerySingleOrDefault<Character>(sql, [("Id", 1)]);
-
-		IsNotNull(record);
+		var record = connection.QuerySingle<Character>(sql, [("Id", 1)]);
 		IsTrue(connection.Delete(record));
 		IsFalse(connection.Delete(record));
-		IsNull(connection.QuerySingleOrDefault<Character>(sql, [("Id", 1)]));
+		IsNull(connection.QueryFirstOrDefault<Character>(sql, [("Id", 1)]));
 	}
 
 	[TestMethod]
 	public async Task DeleteAsync() {
 		var sql = "SELECT * FROM Characters WHERE ID = @Id";
-		var record = await connection.QuerySingleOrDefaultAsync<Character>(sql, [("Id", 2)], testContext.CancellationToken);
-
-		IsNotNull(record);
+		var record = await connection.QuerySingleAsync<Character>(sql, [("Id", 2)], testContext.CancellationToken);
 		IsTrue(await connection.DeleteAsync(record, cancellationToken: testContext.CancellationToken));
 		IsFalse(await connection.DeleteAsync(record, cancellationToken: testContext.CancellationToken));
-		IsNull(await connection.QuerySingleOrDefaultAsync<Character>(sql, [("Id", 2)], testContext.CancellationToken));
+		IsNull(await connection.QueryFirstOrDefaultAsync<Character>(sql, [("Id", 2)], testContext.CancellationToken));
 	}
 
 	[TestMethod]
@@ -43,6 +39,7 @@ public sealed partial class DbConnectionExtensionsTests {
 
 	[TestMethod]
 	public void Find() {
+		// It should find the record with the specified identifier.
 		var record = connection.Find<Character>(2);
 		IsNotNull(record);
 		AreEqual(2, record.Id);
@@ -63,6 +60,7 @@ public sealed partial class DbConnectionExtensionsTests {
 		IsNull(record.FullName);
 		AreEqual(CharacterGender.Hobbit, record.Gender);
 
+		// It should return `null` if the record is not found.
 		IsNull(connection.Find<Character>(666));
 	}
 
