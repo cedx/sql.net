@@ -60,6 +60,7 @@ public sealed class SqlCommandBuilderTests {
 		StartsWith(@"SELECT ""firstName""", command.Text);
 		DoesNotContain("gender", command.Text);
 		DoesNotContain("lastName", command.Text);
+		EndsWith(@"WHERE ""ID"" = @ID", command.Text);
 	}
 
 	[TestMethod]
@@ -84,11 +85,14 @@ public sealed class SqlCommandBuilderTests {
 		EndsWith(@"WHERE ""ID"" = @ID", command.Text);
 
 		HasCount(4, parameters);
+		AreEqual(1000, parameters["ID"].Value);
 		AreEqual("Cédric", parameters["firstName"].Value);
 		AreEqual(CharacterGender.DarkLord, parameters["gender"].Value);
-		AreEqual(1000, parameters["ID"].Value);
 		AreEqual("", parameters["lastName"].Value);
 
-		HasCount(2, builder.GetUpdateCommand(character, "lastName").Parameters);
+		(_, parameters) = builder.GetUpdateCommand(character, "firstName");
+		HasCount(2, parameters);
+		AreEqual(1000, parameters["ID"].Value);
+		AreEqual("Cédric", parameters["firstName"].Value);
 	}
 }
