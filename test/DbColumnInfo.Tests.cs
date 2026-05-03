@@ -1,6 +1,7 @@
 namespace Belin.Sql;
 
 using Belin.Sql.Fixtures;
+using DataType = System.Data.DbType;
 
 /// <summary>
 /// Tests the features of the <see cref="DbColumnInfo"/> class.
@@ -23,6 +24,14 @@ public sealed class DbColumnInfoTests {
 	[DataRow("Id")]
 	public void CanWrite(string name) =>
 		IsTrue(new DbColumnInfo(typeof(Character).GetProperty(name)!).CanWrite);
+
+	[TestMethod]
+	[DataRow("FirstName", DataType.String)]
+	[DataRow("FullName", DataType.String)]
+	[DataRow("Gender", DataType.AnsiString)]
+	[DataRow("Id", DataType.Int32)]
+	public void DbType(string name, DataType expected) =>
+		AreEqual(expected, new DbColumnInfo(typeof(Character).GetProperty(name)!).DbType);
 
 	[TestMethod]
 	[DataRow("FirstName", false)]
