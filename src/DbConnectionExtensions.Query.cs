@@ -1,6 +1,7 @@
 namespace Belin.Sql;
 
 using System.Data;
+using System.Data.Common;
 using System.Dynamic;
 
 /// <summary>
@@ -40,7 +41,10 @@ public static partial class DbConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL statement.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
 	public static IEnumerable<T> Query<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null) where T: new() {
-		var records = SqlMapper.Instance.CreateInstances<T>(ExecuteReader(connection, command, parameters));
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = command.ToDbCommand(connection, parameters);
+		using var reader = dbCommand.ExecuteReader();
+		var records = SqlMapper.Instance.CreateInstances<T>(reader);
 		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
@@ -54,7 +58,10 @@ public static partial class DbConnectionExtensions {
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The sequence of objects whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<T>> QueryAsync<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, CancellationToken cancellationToken = default) where T: new() {
-		var records = SqlMapper.Instance.CreateInstances<T>(await ExecuteReaderAsync(connection, command, parameters, cancellationToken));
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = (DbCommand) command.ToDbCommand(connection, parameters);
+		using var reader = await dbCommand.ExecuteReaderAsync(cancellationToken);
+		var records = SqlMapper.Instance.CreateInstances<T>(reader);
 		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
@@ -69,7 +76,10 @@ public static partial class DbConnectionExtensions {
 	/// <param name="splitOn">The field from which to split and read the next object.</param>
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
 	public static IEnumerable<(TItem1, TItem2)> Query<TItem1, TItem2>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, string splitOn = "Id") where TItem1: new() where TItem2: new() {
-		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2>(ExecuteReader(connection, command, parameters), splitOn);
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = command.ToDbCommand(connection, parameters);
+		using var reader = dbCommand.ExecuteReader();
+		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2>(reader, splitOn);
 		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
@@ -85,7 +95,10 @@ public static partial class DbConnectionExtensions {
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The sequence of object pairs whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<(TItem1, TItem2)>> QueryAsync<TItem1, TItem2>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, string splitOn = "Id", CancellationToken cancellationToken = default) where TItem1: new() where TItem2: new() {
-		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2>(await ExecuteReaderAsync(connection, command, parameters, cancellationToken), splitOn);
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = (DbCommand) command.ToDbCommand(connection, parameters);
+		using var reader = await dbCommand.ExecuteReaderAsync(cancellationToken);
+		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2>(reader, splitOn);
 		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
@@ -101,7 +114,10 @@ public static partial class DbConnectionExtensions {
 	/// <param name="splitOn">The fields from which to split and read the next objects.</param>
 	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
 	public static IEnumerable<(TItem1, TItem2, TItem3)> Query<TItem1, TItem2, TItem3>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, (string, string)? splitOn = null) where TItem1: new() where TItem2: new() where TItem3: new() {
-		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2, TItem3>(ExecuteReader(connection, command, parameters), splitOn);
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = command.ToDbCommand(connection, parameters);
+		using var reader = dbCommand.ExecuteReader();
+		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2, TItem3>(reader, splitOn);
 		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
@@ -118,7 +134,10 @@ public static partial class DbConnectionExtensions {
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<(TItem1, TItem2, TItem3)>> QueryAsync<TItem1, TItem2, TItem3>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, (string, string)? splitOn = null, CancellationToken cancellationToken = default) where TItem1: new() where TItem2: new() where TItem3: new() {
-		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2, TItem3>(await ExecuteReaderAsync(connection, command, parameters, cancellationToken), splitOn);
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = (DbCommand) command.ToDbCommand(connection, parameters);
+		using var reader = await dbCommand.ExecuteReaderAsync(cancellationToken);
+		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2, TItem3>(reader, splitOn);
 		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
@@ -135,7 +154,10 @@ public static partial class DbConnectionExtensions {
 	/// <param name="splitOn">The fields from which to split and read the next objects.</param>
 	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
 	public static IEnumerable<(TItem1, TItem2, TItem3, TItem4)> Query<TItem1, TItem2, TItem3, TItem4>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, (string, string, string)? splitOn = null) where TItem1: new() where TItem2: new() where TItem3: new() where TItem4: new() {
-		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2, TItem3, TItem4>(ExecuteReader(connection, command, parameters), splitOn);
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = command.ToDbCommand(connection, parameters);
+		using var reader = dbCommand.ExecuteReader();
+		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2, TItem3, TItem4>(reader, splitOn);
 		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
@@ -153,7 +175,10 @@ public static partial class DbConnectionExtensions {
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The sequence of object tuples whose properties correspond to the columns.</returns>
 	public static async Task<IEnumerable<(TItem1, TItem2, TItem3, TItem4)>> QueryAsync<TItem1, TItem2, TItem3, TItem4>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, (string, string, string)? splitOn = null, CancellationToken cancellationToken = default) where TItem1: new() where TItem2: new() where TItem3: new() where TItem4: new() {
-		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2, TItem3, TItem4>(await ExecuteReaderAsync(connection, command, parameters, cancellationToken), splitOn);
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = (DbCommand) command.ToDbCommand(connection, parameters);
+		using var reader = await dbCommand.ExecuteReaderAsync(cancellationToken);
+		var records = SqlMapper.Instance.CreateInstances<TItem1, TItem2, TItem3, TItem4>(reader, splitOn);
 		return command.NoEnumerate ? records : Enumerable.ToList(records);
 	}
 
@@ -192,7 +217,9 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The first row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
 	public static T QueryFirst<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null) where T: new() {
-		using var reader = ExecuteReader(connection, command, parameters);
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = command.ToDbCommand(connection, parameters);
+		using var reader = dbCommand.ExecuteReader();
 		return reader.Read() ? SqlMapper.Instance.CreateInstance<T>(reader) : throw new InvalidOperationException("The result set is empty.");
 	}
 
@@ -207,7 +234,9 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The first row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty.</exception>
 	public static async Task<T> QueryFirstAsync<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, CancellationToken cancellationToken = default) where T: new() {
-		using var reader = await ExecuteReaderAsync(connection, command, parameters, cancellationToken);
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = (DbCommand) command.ToDbCommand(connection, parameters);
+		using var reader = await dbCommand.ExecuteReaderAsync(cancellationToken);
 		return reader.Read() ? SqlMapper.Instance.CreateInstance<T>(reader) : throw new InvalidOperationException("The result set is empty.");
 	}
 
@@ -243,7 +272,9 @@ public static partial class DbConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL statement.</param>
 	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
 	public static T? QueryFirstOrDefault<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null) where T: new() {
-		using var reader = ExecuteReader(connection, command, parameters);
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = command.ToDbCommand(connection, parameters);
+		using var reader = dbCommand.ExecuteReader();
 		return reader.Read() ? SqlMapper.Instance.CreateInstance<T>(reader) : default;
 	}
 
@@ -257,7 +288,9 @@ public static partial class DbConnectionExtensions {
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The first row, or <see langword="null"/> if not found.</returns>
 	public static async Task<T?> QueryFirstOrDefaultAsync<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, CancellationToken cancellationToken = default) where T: new() {
-		using var reader = await ExecuteReaderAsync(connection, command, parameters, cancellationToken);
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = (DbCommand) command.ToDbCommand(connection, parameters);
+		using var reader = await dbCommand.ExecuteReaderAsync(cancellationToken);
 		return reader.Read() ? SqlMapper.Instance.CreateInstance<T>(reader) : default;
 	}
 
@@ -296,10 +329,12 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The single row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty or contains more than one record.</exception>
 	public static T QuerySingle<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null) where T: new() {
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = command.ToDbCommand(connection, parameters);
+		using var reader = dbCommand.ExecuteReader();
+
 		T? record = default;
 		var rowCount = 0;
-
-		using var reader = ExecuteReader(connection, command, parameters);
 		while (reader.Read()) {
 			if (++rowCount > 1) break;
 			record = SqlMapper.Instance.CreateInstance<T>(reader);
@@ -319,10 +354,12 @@ public static partial class DbConnectionExtensions {
 	/// <returns>The single row.</returns>
 	/// <exception cref="InvalidOperationException">The result set is empty or contains more than one record.</exception>
 	public static async Task<T> QuerySingleAsync<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, CancellationToken cancellationToken = default) where T: new() {
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = (DbCommand) command.ToDbCommand(connection, parameters);
+		using var reader = await dbCommand.ExecuteReaderAsync(cancellationToken);
+
 		T? record = default;
 		var rowCount = 0;
-
-		using var reader = await ExecuteReaderAsync(connection, command, parameters, cancellationToken);
 		while (reader.Read()) {
 			if (++rowCount > 1) break;
 			record = SqlMapper.Instance.CreateInstance<T>(reader);
@@ -363,10 +400,12 @@ public static partial class DbConnectionExtensions {
 	/// <param name="parameters">The parameters of the SQL statement.</param>
 	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
 	public static T? QuerySingleOrDefault<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null) where T: new() {
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = command.ToDbCommand(connection, parameters);
+		using var reader = dbCommand.ExecuteReader();
+
 		T? record = default;
 		var rowCount = 0;
-
-		using var reader = ExecuteReader(connection, command, parameters);
 		while (reader.Read()) {
 			if (++rowCount > 1) break;
 			record = SqlMapper.Instance.CreateInstance<T>(reader);
@@ -385,10 +424,12 @@ public static partial class DbConnectionExtensions {
 	/// <param name="cancellationToken">The token to cancel the operation.</param>
 	/// <returns>The single row, or <see langword="null"/> if not found.</returns>
 	public static async Task<T?> QuerySingleOrDefaultAsync<T>(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, CancellationToken cancellationToken = default) where T: new() {
+		if (connection.State == ConnectionState.Closed) connection.Open();
+		using var dbCommand = (DbCommand) command.ToDbCommand(connection, parameters);
+		using var reader = await dbCommand.ExecuteReaderAsync(cancellationToken);
+
 		T? record = default;
 		var rowCount = 0;
-
-		using var reader = await ExecuteReaderAsync(connection, command, parameters, cancellationToken);
 		while (reader.Read()) {
 			if (++rowCount > 1) break;
 			record = SqlMapper.Instance.CreateInstance<T>(reader);

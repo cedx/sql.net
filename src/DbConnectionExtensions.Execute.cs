@@ -36,33 +36,6 @@ public static partial class DbConnectionExtensions {
 	}
 
 	/// <summary>
-	/// Executes a parameterized SQL query and returns a data reader.
-	/// </summary>
-	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="command">The command to be executed.</param>
-	/// <param name="parameters">The parameters of the SQL statement.</param>
-	/// <returns>The data reader that can be used to access the results.</returns>
-	public static IDataReader ExecuteReader(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null) {
-		if (connection.State == ConnectionState.Closed) connection.Open();
-		using var dbCommand = command.ToDbCommand(connection, parameters);
-		return dbCommand.ExecuteReader();
-	}
-
-	/// <summary>
-	/// Executes a parameterized SQL query and returns a data reader.
-	/// </summary>
-	/// <param name="connection">The connection to the data source.</param>
-	/// <param name="command">The command to be executed.</param>
-	/// <param name="parameters">The parameters of the SQL statement.</param>
-	/// <param name="cancellationToken">The token to cancel the operation.</param>
-	/// <returns>The data reader that can be used to access the results.</returns>
-	public static async Task<IDataReader> ExecuteReaderAsync(this IDbConnection connection, SqlCommand command, SqlParameterCollection? parameters = null, CancellationToken cancellationToken = default) {
-		if (connection.State == ConnectionState.Closed) await ((DbConnection) connection).OpenAsync(cancellationToken);
-		using var dbCommand = (DbCommand) command.ToDbCommand(connection, parameters);
-		return await dbCommand.ExecuteReaderAsync(cancellationToken);
-	}
-
-	/// <summary>
 	/// Executes a parameterized SQL query that selects a single value.
 	/// </summary>
 	/// <param name="connection">The connection to the data source.</param>
