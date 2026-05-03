@@ -9,6 +9,11 @@ using System.Data.Common;
 public class SqlCommandBuilder {
 
 	/// <summary>
+	/// The list of data types corresponding to a string.
+	/// </summary>
+	private static readonly DbType[] stringTypes = [DbType.AnsiString, DbType.AnsiStringFixedLength, DbType.String, DbType.StringFixedLength];
+
+	/// <summary>
 	/// The position of the catalog name in a qualified table name.
 	/// </summary>
 	public CatalogLocation CatalogLocation { get; set; } = CatalogLocation.Start;
@@ -239,10 +244,7 @@ public class SqlCommandBuilder {
 	/// <returns>The parameter value corresponding to the specified column.</returns>
 	private object? GetParameterValue<T>(DbColumnInfo column, T entity) where T: new() {
 		var value = column.GetValue(entity);
-		return column.DbType switch {
-			DbType.AnsiString or DbType.AnsiStringFixedLength or DbType.String or DbType.StringFixedLength when column.PropertyType.IsEnum => value?.ToString(),
-			_ => value
-		};
+		return column.PropertyType.IsEnum && stringTypes.Contains(column.DbType) ? value?.ToString() : value;
 	}
 
 	/// <summary>
