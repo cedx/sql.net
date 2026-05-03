@@ -1,6 +1,7 @@
 namespace Belin.Sql.Fixtures;
 
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 
 /// <summary>
 /// Represents a fictional character from a well-known saga.
@@ -23,7 +24,7 @@ public sealed class Character {
 	/// <summary>
 	/// The character's gender.
 	/// </summary>
-	[Column("gender")]
+	[Column("gender", TypeName = nameof(DbType.AnsiString))]
 	public CharacterGender Gender { get; set; } = CharacterGender.Human;
 
 	/// <summary>
