@@ -49,6 +49,18 @@ public class SqlParameterCollection: List<SqlParameter> {
 	)];
 
 	/// <summary>
+	/// Adds a new parameter to the end of this collection.
+	/// </summary>
+	/// <param name="name">The parameter name.</param>
+	/// <param name="value">The parameter value.</param>
+	/// <returns>The newly added parameter.</returns>
+	public SqlParameter AddWithValue(string name, object? value) {
+		var parameter = new SqlParameter(name, value);
+		Add(parameter);
+		return parameter;
+	}
+
+	/// <summary>
 	/// Gets a value indicating whether a parameter in this collection has the specified name.
 	/// </summary>
 	/// <param name="name">The parameter name.</param>

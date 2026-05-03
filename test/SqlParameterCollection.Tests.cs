@@ -9,6 +9,17 @@ using System.Data;
 public sealed class SqlParameterCollectionTests {
 
 	[TestMethod]
+	public void AddWithValue() {
+		var collection = new SqlParameterCollection();
+		IsEmpty(collection);
+
+		var parameter = collection.AddWithValue("Name", "Value");
+		HasCount(1, collection);
+		AreEqual("@Name", parameter.Name);
+		AreEqual("Value", parameter.Value);
+	}
+
+	[TestMethod]
 	public void Constructor() {
 		// It should create an empty collection by default.
 		var collection = new SqlParameterCollection();
