@@ -80,7 +80,7 @@ public sealed class SqlCommandBuilderTests {
 		// It should also return the parameters used by the SQL command.
 		HasCount(3, parameters);
 		AreEqual("Cédric", parameters["firstName"].Value);
-		AreEqual(CharacterGender.DarkLord, parameters["gender"].Value);
+		AreEqual(CharacterGender.DarkLord.ToString(), parameters["gender"].Value);
 		AreEqual("", parameters["lastName"].Value);
 	}
 
@@ -98,7 +98,7 @@ public sealed class SqlCommandBuilderTests {
 		HasCount(4, parameters);
 		AreEqual(1000, parameters["ID"].Value);
 		AreEqual("Cédric", parameters["firstName"].Value);
-		AreEqual(CharacterGender.DarkLord, parameters["gender"].Value);
+		AreEqual(CharacterGender.DarkLord.ToString(), parameters["gender"].Value);
 		AreEqual("", parameters["lastName"].Value);
 
 		// It should allow updating a specific set of columns.
