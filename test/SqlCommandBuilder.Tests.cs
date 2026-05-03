@@ -1,7 +1,7 @@
 namespace Belin.Sql;
 
 using Belin.Sql.Fixtures;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 
 /// <summary>
 /// Tests the features of the <see cref="SqlCommandBuilder"/> class.
@@ -17,7 +17,7 @@ public sealed class SqlCommandBuilderTests {
 	/// <summary>
 	/// The connection to the data source.
 	/// </summary>
-	private readonly SQLiteConnection connection = new("DataSource=:memory:");
+	private readonly SqliteConnection connection = new("DataSource=:memory:");
 
 	[TestMethod]
 	public void GetDeleteCommand() {
