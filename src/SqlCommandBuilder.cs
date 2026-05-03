@@ -200,7 +200,7 @@ public class SqlCommandBuilder {
 
 		return (text, [
 			.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index + 1}" : GetParameterName(field), GetParameterValue(field, entity))),
-			(GetParameterName(idColumn), GetParameterValue(idColumn, entity))
+			(UsePositionalParameters ? $"?{fields.Length + 1}" : GetParameterName(idColumn), GetParameterValue(idColumn, entity))
 		]);
 	}
 
