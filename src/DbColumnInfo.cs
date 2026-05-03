@@ -96,7 +96,7 @@ public sealed class DbColumnInfo {
 	/// <summary>
 	/// The type of the column value.
 	/// </summary>
-	public Type Type => property.PropertyType;
+	public Type PropertyType => property.PropertyType;
 
 	/// <summary>
 	/// The property information providing the column metadata.

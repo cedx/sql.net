@@ -106,8 +106,8 @@ public sealed class SqlMapperTests {
 
 		HasCount(5, table.Columns.Keys);
 		AreEqual(table.Columns["ID"], table.IdentityColumn);
-		AreEqual(typeof(CharacterGender), table.Columns["gender"].Type);
-		AreEqual(typeof(string), table.Columns["lastName"].Type);
+		AreEqual(typeof(CharacterGender), table.Columns["gender"].PropertyType);
+		AreEqual(typeof(string), table.Columns["lastName"].PropertyType);
 
 		IsTrue(table.Columns["firstName"].CanWrite);
 		IsTrue(table.Columns["fullName"].IsComputed);

@@ -200,7 +200,7 @@ public sealed class SqlMapper {
 	/// <param name="value">The object to convert.</param>
 	/// <param name="column">The column providing the type of object to return.</param>
 	/// <returns>The value of the given type corresponding to the specified object.</returns>
-	internal static object? ChangeType(object? value, DbColumnInfo column) => ChangeType(value, column.Type, column.IsNullable);
+	internal static object? ChangeType(object? value, DbColumnInfo column) => ChangeType(value, column.PropertyType, column.IsNullable);
 
 	/// <summary>
 	/// Converts the specified object into an equivalent value of the specified type.

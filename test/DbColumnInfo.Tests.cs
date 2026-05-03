@@ -61,8 +61,8 @@ public sealed class DbColumnInfoTests {
 	[DataRow("FullName", typeof(string))]
 	[DataRow("Gender", typeof(CharacterGender))]
 	[DataRow("Id", typeof(int))]
-	public void Type(string name, Type expected) =>
-		AreEqual(expected, new DbColumnInfo(typeof(Character).GetProperty(name)!).Type);
+	public void PropertyType(string name, Type expected) =>
+		AreEqual(expected, new DbColumnInfo(typeof(Character).GetProperty(name)!).PropertyType);
 
 	[TestMethod]
 	public void GetValue() {
