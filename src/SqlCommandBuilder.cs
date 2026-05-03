@@ -96,7 +96,7 @@ public class SqlCommandBuilder {
 		var table = SqlMapper.Instance.GetTable<T>();
 		var idColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 
-		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(idColumn.Name), idColumn.GetValue(entity));
+		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(idColumn), idColumn.GetValue(entity));
 		var text = $"""
 			DELETE FROM {GetTableName(table)}
 			WHERE {QuoteIdentifier(idColumn.Name)} = {(UsePositionalParameters ? "?" : parameter.Name)}
@@ -116,7 +116,7 @@ public class SqlCommandBuilder {
 		var table = SqlMapper.Instance.GetTable<T>();
 		var idColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 
-		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(idColumn.Name), id);
+		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(idColumn), id);
 		var text = $"""
 			SELECT 1
 			FROM {GetTableName(table)}
@@ -145,7 +145,7 @@ public class SqlCommandBuilder {
 
 		if (!fields.Contains(idColumn.Name)) fields.Add(idColumn.Name);
 
-		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(idColumn.Name), id);
+		var parameter = new SqlParameter(UsePositionalParameters ? "?1" : GetParameterName(idColumn), id);
 		var text = $"""
 			SELECT {string.Join(", ", fields.Select(QuoteIdentifier))}
 			FROM {GetTableName(table)}
@@ -169,11 +169,11 @@ public class SqlCommandBuilder {
 		var fields = table.Columns.Values.Where(column => column.CanRead && !column.IsComputed).ToArray();
 		var text = $"""
 			INSERT INTO {GetTableName(table)} ({string.Join(", ", fields.Select(field => QuoteIdentifier(field.Name)))})
-			VALUES ({string.Join(", ", fields.Select(field => UsePositionalParameters ? "?" : GetParameterName(field.Name)))})
+			VALUES ({string.Join(", ", fields.Select(field => UsePositionalParameters ? "?" : GetParameterName(field)))})
 			{(SupportsReturningClause ? $"RETURNING {QuoteIdentifier(idColumn.Name)}" : $"; SELECT {LastInsertIdFunction};")}
 			""";
 
-		return (text, [.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index + 1}" : GetParameterName(field.Name), field.GetValue(entity)))]);
+		return (text, [.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index + 1}" : GetParameterName(field), field.GetValue(entity)))]);
 	}
 
 	/// <summary>
@@ -194,13 +194,13 @@ public class SqlCommandBuilder {
 
 		var text = $"""
 			UPDATE {GetTableName(table)}
-			SET {string.Join(", ", fields.Select(field => $"{QuoteIdentifier(field.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(field.Name))}"))}
-			WHERE {QuoteIdentifier(idColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(idColumn.Name))}
+			SET {string.Join(", ", fields.Select(field => $"{QuoteIdentifier(field.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(field))}"))}
+			WHERE {QuoteIdentifier(idColumn.Name)} = {(UsePositionalParameters ? "?" : GetParameterName(idColumn))}
 			""";
 
 		return (text, [
-			.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index + 1}" : GetParameterName(field.Name), field.GetValue(entity))),
-			(GetParameterName(idColumn.Name), idColumn.GetValue(entity))
+			.. fields.Select((field, index) => (UsePositionalParameters ? $"?{index + 1}" : GetParameterName(field), field.GetValue(entity))),
+			(GetParameterName(idColumn), idColumn.GetValue(entity))
 		]);
 	}
 
@@ -224,11 +224,27 @@ public class SqlCommandBuilder {
 	}
 
 	/// <summary>
-	/// Returns the full parameter name corresponding to the specified partial parameter name.
+	/// Returns the parameter name corresponding to the specified column.
 	/// </summary>
-	/// <param name="parameterName">The partial name of the parameter.</param>
-	/// <returns>The full parameter name corresponding to the specified partial parameter name.</returns>
-	private string GetParameterName(string parameterName) => $"{ParameterPrefix}{parameterName}";
+	/// <param name="column">The column providing a parameter name.</param>
+	/// <returns>The parameter name corresponding to the specified column.</returns>
+	private string GetParameterName(DbColumnInfo column) => $"{ParameterPrefix}{column.Name}";
+
+	/// <summary>
+	/// Returns the parameter value corresponding to th
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="column"></param>
+	/// <param name="entity"></param>
+	/// <returns></returns>
+	private static object? GetParameterValue<T>(DbColumnInfo column, T entity) where T: new() {
+		var value = column.GetValue(entity);
+		if (!column.PropertyType.IsEnum) return column.GetValue(entity);
+		return column.DbType switch {
+			DbType.AnsiString or DbType.AnsiStringFixedLength or DbType.String or DbType.StringFixedLength => value?.ToString(),
+			_ => value
+		};
+	}
 
 	/// <summary>
 	/// Returns the fully qualified name corresponding to the specified table.
