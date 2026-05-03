@@ -89,24 +89,47 @@ public sealed partial class DbConnectionExtensionsTests {
 		IsNull(await connection.FindAsync<Character>(666, cancellationToken: testContext.CancellationToken));
 	}
 
-	// [TestMethod]
-	// TODO public async Task Insert() {
-	// 	var sql = "SELECT 1 FROM Characters WHERE fullName = @FullName";
+	[TestMethod]
+	public void Insert() {
+		var sql = "SELECT * FROM Characters WHERE firstName = 'Cédric'";
+		IsEmpty(connection.Query<Character>(sql));
 
-	// 	var record = new Character { FirstName = "Cédric", Gender = CharacterGender.DarkLord };
-	// 	AreEqual(0, record.Id);
-	// 	IsFalse(connection.ExecuteScalar<bool>(sql, new("FullName", record.FullName)));
+		var character = new Character { FirstName = "Cédric", LastName = "Belin", Gender = CharacterGender.Istari };
+		AreEqual(0, character.Id);
+		IsNull(character.FullName);
 
-	// 	var id = connection.Insert(record);
-	// 	AreEqual(id, record.Id);
-	// 	IsTrue(connection.ExecuteScalar<bool>(sql, new("FullName", record.FullName)));
+		var id = connection.Insert(character);
+		IsGreaterThan(16, id);
+		AreEqual(id, character.Id);
 
-	// 	record = new Character { FirstName = "Cédric", LastName = "Belin", Gender = CharacterGender.Istari };
-	// 	AreEqual(0, record.Id);
-	// 	IsFalse(await connection.ExecuteScalarAsync<bool>(sql, new("FullName", record.FullName), testContext.CancellationToken));
+		var records = connection.Query<Character>(sql).AsList();
+		HasCount(1, records);
 
-	// 	id = await connection.InsertAsync(record, testContext.CancellationToken);
-	// 	AreEqual(id, record.Id);
-	// 	IsTrue(await connection.ExecuteScalarAsync<bool>(sql, new("FullName", record.FullName), testContext.CancellationToken));
-	// }
+		var cedric = records[0];
+		AreEqual(id, cedric.Id);
+		AreEqual("Cédric Belin", cedric.FullName);
+		AreEqual(character.Gender, cedric.Gender);
+	}
+
+	[TestMethod]
+	public async Task InsertAsync() {
+		var sql = "SELECT * FROM Characters WHERE firstName = 'Cédric'";
+		IsEmpty(await connection.QueryAsync<Character>(sql, cancellationToken: testContext.CancellationToken));
+
+		var character = new Character { FirstName = "Cédric", LastName = "Belin", Gender = CharacterGender.Istari };
+		AreEqual(0, character.Id);
+		IsNull(character.FullName);
+
+		var id = await connection.InsertAsync(character, cancellationToken: testContext.CancellationToken);
+		IsGreaterThan(16, id);
+		AreEqual(id, character.Id);
+
+		var records = (await connection.QueryAsync<Character>(sql, cancellationToken: testContext.CancellationToken)).AsList();
+		HasCount(1, records);
+
+		var cedric = records[0];
+		AreEqual(id, cedric.Id);
+		AreEqual("Cédric Belin", cedric.FullName);
+		AreEqual(character.Gender, cedric.Gender);
+	}
 }
