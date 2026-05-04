@@ -31,6 +31,15 @@ public class SqlParameterCollection: List<SqlParameter> {
 	}
 
 	/// <summary>
+	/// Creates a new parameter collection from the specified array of positional parameters.
+	/// </summary>
+	/// <param name="parameters">The array whose elements are copied to the parameter collection.</param>
+	/// <returns>The parameter collection corresponding to the specified array of positional parameters.</returns>
+	public static implicit operator SqlParameterCollection(object?[] parameters) => [.. parameters.Select((value, index) =>
+		value is SqlParameter parameter ? parameter : new SqlParameter($"?{index + 1}", value)
+	)];
+
+	/// <summary>
 	/// Creates a new parameter collection from the specified list of positional parameters.
 	/// </summary>
 	/// <param name="parameters">The list whose elements are copied to the parameter collection.</param>
