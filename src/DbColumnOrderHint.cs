@@ -3,9 +3,19 @@ namespace Belin.Sql;
 /// <summary>
 /// Defines the sort order for a database column.
 /// </summary>
-/// <param name="Column">The name of the column for which the hint is being provided.</param>
-/// <param name="SortOrder">The sort order of the column.</param>
-public sealed record DbColumnOrderHint(string Column, SortOrder SortOrder = SortOrder.Ascending) {
+/// <param name="column">The name of the column for which the hint is being provided.</param>
+/// <param name="sortOrder">The sort order of the column.</param>
+public sealed class DbColumnOrderHint(string column, SortOrder sortOrder = SortOrder.Ascending) {
+
+	/// <summary>
+	/// The name of the column for which the hint is being provided.
+	/// </summary>
+	public string Column { get; } = column;
+
+	/// <summary>
+	/// The sort order of the column.
+	/// </summary>
+	public SortOrder SortOrder { get; set; } = sortOrder;
 
 	/// <summary>
 	/// Creates a new order hint from the specified tuple.
