@@ -3,19 +3,8 @@ namespace Belin.Sql;
 /// <summary>
 /// Collects all parameters relevant to a parameterized SQL statement.
 /// </summary>
-public class SqlParameterCollection: List<SqlParameter> {
-
-	/// <summary>
-	/// Creates a new parameter collection that has the specified initial capacity.
-	/// </summary>
-	/// <param name="capacity">The number of parameters that the collection can initially store.</param>
-	public SqlParameterCollection(int capacity): base(capacity) {}
-
-	/// <summary>
-	/// Creates a new parameter collection that contains the elements copied from the specified collection.
-	/// </summary>
-	/// <param name="parameters">The collection whose elements are copied to the parameter collection.</param>
-	public SqlParameterCollection(params IEnumerable<SqlParameter> parameters): base(parameters) {}
+/// <param name="parameters">The collection whose elements are copied to the parameter collection.</param>
+public class SqlParameterCollection(params IEnumerable<SqlParameter> parameters): List<SqlParameter>(parameters) {
 
 	/// <summary>
 	/// Gets the parameter with the specified name.
