@@ -8,9 +8,9 @@ namespace Belin.Sql;
 public sealed record DbColumnOrderHint(string Column, SortOrder SortOrder = SortOrder.Ascending) {
 
 	/// <summary>
-	/// Creates a new parameter collection from the specified list of positional parameters.
+	/// Creates a new order hint from the specified key/value pair.
 	/// </summary>
-	/// <param name="parameters">The list whose elements are copied to the parameter collection.</param>
-	/// <returns>The parameter collection corresponding to the specified list of positional parameters.</returns>
-	public static implicit operator DbColumnOrderHint(KeyValuePair<string, SortOrder> columnOrderHint) => new(columnOrderHint.Key, columnOrderHint.Value);
+	/// <param name="orderHint">The key/value pair providing the column name and its sort order.</param>
+	/// <returns>The order hint corresponding to the specified key/value pair.</returns>
+	public static implicit operator DbColumnOrderHint(KeyValuePair<string, SortOrder> orderHint) => new(orderHint.Key, orderHint.Value);
 }
