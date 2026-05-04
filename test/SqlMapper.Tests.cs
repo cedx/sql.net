@@ -115,6 +115,16 @@ public sealed class SqlMapperTests {
 	}
 
 	[TestMethod]
+	public void IsNullObject() {
+		// It should return `true` if all values of the specified dictionary are `null`.
+		IsTrue(SqlMapper.IsNullObject([]));
+		IsTrue(SqlMapper.IsNullObject(new Dictionary<string, object?> { ["Foo"] = null, ["Bar"] = null }));
+
+		// It should return `false` if at least one value of the specified dictionary is not `null`.
+		IsFalse(SqlMapper.IsNullObject(new Dictionary<string, object?> { ["Foo"] = "Bar", ["Baz"] = null }));
+	}
+
+	[TestMethod]
 	public void SplitOn() {
 		var record = new List<KeyValuePair<string, object?>> {
 			new("Id", 123),
