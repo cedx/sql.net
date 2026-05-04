@@ -8,6 +8,13 @@ namespace Belin.Sql;
 public sealed record DbColumnOrderHint(string Column, SortOrder SortOrder = SortOrder.Ascending) {
 
 	/// <summary>
+	/// Creates a new order hint from the specified tuple.
+	/// </summary>
+	/// <param name="parameter">The tuple providing the column name and its sort order.</param>
+	/// <returns>The order hint corresponding to the specified tuple.</returns>
+	public static implicit operator DbColumnOrderHint((string Column, SortOrder SortOrder) orderHint) => new(orderHint.Column, orderHint.SortOrder);
+
+	/// <summary>
 	/// Creates a new order hint from the specified key/value pair.
 	/// </summary>
 	/// <param name="orderHint">The key/value pair providing the column name and its sort order.</param>
