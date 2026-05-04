@@ -10,7 +10,7 @@ public sealed class DbTableInfoTests {
 
 	[TestMethod]
 	public void Columns() {
-		HasCount(0, new DbTableInfo(typeof(DbTableInfo)).Columns);
+		HasCount(0, new DbTableInfo(typeof(ConsoleKeyInfo)).Columns);
 
 		var columns = new DbTableInfo(typeof(Character)).Columns;
 		HasCount(5, columns);
@@ -19,7 +19,7 @@ public sealed class DbTableInfoTests {
 
 	[TestMethod]
 	public void IdentityColumn() {
-		IsNull(new DbTableInfo(typeof(DbTableInfo)).IdentityColumn);
+		IsNull(new DbTableInfo(typeof(ConsoleKeyInfo)).IdentityColumn);
 
 		var identityColumn = new DbTableInfo(typeof(Character)).IdentityColumn;
 		IsNotNull(identityColumn);
@@ -29,7 +29,7 @@ public sealed class DbTableInfoTests {
 	[TestMethod]
 	public void Name() {
 		// It should return the class name when there is no [Table] attribute.
-		AreEqual(nameof(DbTableInfo), new DbTableInfo(typeof(DbTableInfo)).Name);
+		AreEqual(nameof(ConsoleKeyInfo), new DbTableInfo(typeof(ConsoleKeyInfo)).Name);
 
 		// It should return the value of the [Table] attribute when it is present.
 		AreEqual("Characters", new DbTableInfo(typeof(Character)).Name);
@@ -38,7 +38,7 @@ public sealed class DbTableInfoTests {
 	[TestMethod]
 	public void Schema() {
 		// It should return `null` when there is no [Table] attribute.
-		IsNull(new DbTableInfo(typeof(DbTableInfo)).Schema);
+		IsNull(new DbTableInfo(typeof(ConsoleKeyInfo)).Schema);
 
 		// It should return the value of the [Table] attribute when it is present.
 		AreEqual("main", new DbTableInfo(typeof(Character)).Schema);
