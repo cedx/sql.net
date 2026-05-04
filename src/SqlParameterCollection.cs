@@ -11,11 +11,11 @@ public class SqlParameterCollection(params IEnumerable<SqlParameter> parameters)
 	/// </summary>
 	/// <param name="name">The parameter name.</param>
 	/// <returns>The parameter with the specified name.</returns>
-	/// <exception cref="ArgumentOutOfRangeException">The specified parameter name does not exist.</exception>
+	/// <exception cref="KeyNotFoundException">The specified parameter name does not exist.</exception>
 	public SqlParameter this[string name] {
 		get {
 			var normalizedName = SqlParameter.NormalizeName(name);
-			return Find(parameter => parameter.Name == normalizedName) ?? throw new ArgumentOutOfRangeException(nameof(name));
+			return Find(parameter => parameter.Name == normalizedName) ?? throw new KeyNotFoundException(normalizedName);
 		}
 	}
 

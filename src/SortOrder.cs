@@ -6,12 +6,12 @@ namespace Belin.Sql;
 public enum SortOrder {
 
 	/// <summary>
-	/// Rows are sorted in ascending order.
+	/// The rows are sorted in ascending order.
 	/// </summary>
 	Ascending,
 
 	/// <summary>
-	/// Rows are sorted in descending order.
+	/// The rows are sorted in descending order.
 	/// </summary>
 	Descending
 }
