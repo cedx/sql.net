@@ -58,7 +58,14 @@ public class SqlParameterCollection: List<SqlParameter> {
 	)];
 
 	/// <summary>
-	/// Adds a new parameter to the end of this collection.
+	/// Adds a new positional parameter to the end of this collection.
+	/// </summary>
+	/// <param name="value">The parameter value.</param>
+	/// <returns>The newly added parameter.</returns>
+	public SqlParameter AddWithValue(object? value) => AddWithValue($"?{Count + 1}", value);
+
+	/// <summary>
+	/// Adds a new named parameter to the end of this collection.
 	/// </summary>
 	/// <param name="name">The parameter name.</param>
 	/// <param name="value">The parameter value.</param>

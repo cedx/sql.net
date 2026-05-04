@@ -13,10 +13,15 @@ public sealed class SqlParameterCollectionTests {
 		var collection = new SqlParameterCollection();
 		IsEmpty(collection);
 
-		var parameter = collection.AddWithValue("Name", "Value");
+		var parameter = collection.AddWithValue("Name", "Value1");
 		HasCount(1, collection);
 		AreEqual("@Name", parameter.Name);
-		AreEqual("Value", parameter.Value);
+		AreEqual("Value1", parameter.Value);
+
+		parameter = collection.AddWithValue("Value2");
+		HasCount(2, collection);
+		AreEqual("?2", parameter.Name);
+		AreEqual("Value2", parameter.Value);
 	}
 
 	[TestMethod]
