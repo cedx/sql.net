@@ -161,6 +161,32 @@ public class SqlCommandBuilder {
 	}
 
 	/// <summary>
+	/// Gets the generated command to find all entities.
+	/// </summary>
+	/// <typeparam name="T">The entity type.</typeparam>
+	/// <param name="orderHints">The hints describing the sort order of columns.</param>
+	/// <param name="columns">The list of columns to select. By default, all columns.</param>
+	/// <returns>The generated command to find all entities.</returns>
+	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
+	public (SqlCommand Command, SqlParameterCollection Parameters) GetFindAllCommand<T>(DbColumnOrderHint[]? orderHints = null, params string[] columns) where T: new() {
+		var table = SqlMapper.Instance.GetTable<T>();
+		var idColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
+
+		var fields = (columns.Length == 0 ? table.Columns.Values : table.Columns.Values.Where(column => columns.Contains(column.Name)))
+			.Where(column => column.CanWrite)
+			.Select(column => column.Name)
+			.ToList();
+
+		if (!fields.Contains(idColumn.Name)) fields.Add(idColumn.Name);
+
+		var orderBy = orderHints is null || orderHints.Length == 0
+			? $"{QuoteIdentifier(idColumn.Name)} ASC"
+			: string.Join(", ", orderHints.Select(orderHint => $"{QuoteIdentifier(orderHint.Column)} {(orderHint.SortOrder == SortOrder.Descending ? "DESC" : "ASC")}"));
+
+		return ($"SELECT {string.Join(", ", fields.Select(QuoteIdentifier))} FROM {GetTableName(table)} ORDER BY {orderBy}", []);
+	}
+
+	/// <summary>
 	/// Gets the generated command to insert an entity.
 	/// </summary>
 	/// <typeparam name="T">The entity type.</typeparam>
