@@ -32,10 +32,10 @@ public class SqlOrderHintCollection(params IEnumerable<SqlOrderHint> orderHints)
 		[.. columns.Select(value => new SqlOrderHint(value, SortOrder.Ascending))];
 
 	/// <summary>
-	/// Creates a new order hint collection from the specified dictionary of column names and orders.
+	/// Creates a new order hint collection from the specified dictionary of column names and sort orders.
 	/// </summary>
 	/// <param name="orderHints">The dictionary whose elements are copied to the order hint collection.</param>
-	/// <returns>The order hint collection corresponding to the specified dictionary of column names and orders.</returns>
+	/// <returns>The order hint collection corresponding to the specified dictionary of column names and sort orders.</returns>
 	public static implicit operator SqlOrderHintCollection(OrderedDictionary<string, SortOrder> orderHints) =>
 		[.. orderHints.Select(entry => new SqlOrderHint(entry.Key, entry.Value))];
 

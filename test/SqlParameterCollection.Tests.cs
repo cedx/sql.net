@@ -62,23 +62,16 @@ public sealed class SqlParameterCollectionTests {
 	public void ImplicitConversion() {
 		// It should create a collection from the specified array of positional parameters.
 		SqlParameterCollection collection = new object[] { "foo", "bar" };
-		HasCount(2, collection);
-		AreEqual("?1", collection[0].Name);
-		AreEqual("foo", collection[0].Value);
-		AreEqual("?2", collection[1].Name);
-		AreEqual("bar", collection[1].Value);
+		CollectionAssert.AreEqual(new[] { "?1", "?2" }, collection.Select(parameter => parameter.Name).ToArray());
+		CollectionAssert.AreEqual(new[] { "foo", "bar" }, collection.Select(parameter => parameter.Value).ToArray());
 
 		// It should create a collection from the specified list of positional parameters.
 		collection = new List<object?> { "foo", "bar" };
-		HasCount(2, collection);
-		AreEqual("?1", collection[0].Name);
-		AreEqual("foo", collection[0].Value);
-		AreEqual("?2", collection[1].Name);
-		AreEqual("bar", collection[1].Value);
+		CollectionAssert.AreEqual(new[] { "?1", "?2" }, collection.Select(parameter => parameter.Name).ToArray());
+		CollectionAssert.AreEqual(new[] { "foo", "bar" }, collection.Select(parameter => parameter.Value).ToArray());
 
 		// It should create a collection from the specified dictionary of named parameters.
 		collection = new Dictionary<string, object?> { ["foo"] = "bar", ["baz"] = "qux" };
-		HasCount(2, collection);
 		CollectionAssert.AreEquivalent(new[] { "@foo", "@baz" }, collection.Select(parameter => parameter.Name).ToArray());
 		CollectionAssert.AreEquivalent(new[] { "bar", "qux" }, collection.Select(parameter => parameter.Value).ToArray());
 	}
