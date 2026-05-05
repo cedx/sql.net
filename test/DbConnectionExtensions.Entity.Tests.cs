@@ -94,17 +94,73 @@ public sealed partial class DbConnectionExtensionsTests {
 	}
 
 	[TestMethod]
+	public void FindAll() {
+		// It should return the complete list of entities, sorted by default according to the identity column.
+		var records = connection.FindAll<Character>();
+		HasCount(16, records);
+		AreEqual(1, records[0].Id);
+		AreEqual("Aragorn", records[0].FullName);
+		AreEqual(16, records[15].Id);
+		AreEqual("Sauron", records[15].FullName);
+
+		// It should allow sorting the results by a specific set of columns.
+		records = connection.FindAll<Character>([("gender", SortOrder.Ascending), ("fullName", SortOrder.Descending)]);
+		HasCount(16, records);
+		AreEqual(11, records[0].Id);
+		AreEqual("Gothmog", records[0].FullName);
+		AreEqual(8, records[15].Id);
+		AreEqual("Gandalf", records[15].FullName);
+
+		// It should allow selecting a specific set of columns.
+		records = connection.FindAll<Character>(columns: ["gender"]);
+		AreEqual(1, records[0].Id);
+		AreEqual(CharacterGender.Human, records[0].Gender);
+		IsNull(records[0].FullName);
+		AreEqual(16, records[15].Id);
+		AreEqual(CharacterGender.DarkLord, records[15].Gender);
+		IsNull(records[15].FullName);
+	}
+
+	[TestMethod]
+	public async Task FindAllAsync() {
+		// It should return the complete list of entities, sorted by default according to the identity column.
+		var records = await connection.FindAllAsync<Character>(cancellationToken: testContext.CancellationToken);
+		HasCount(16, records);
+		AreEqual(1, records[0].Id);
+		AreEqual("Aragorn", records[0].FullName);
+		AreEqual(16, records[15].Id);
+		AreEqual("Sauron", records[15].FullName);
+
+		// It should allow sorting the results by a specific set of columns.
+		records = await connection.FindAllAsync<Character>([("gender", SortOrder.Ascending), ("fullName", SortOrder.Descending)], cancellationToken: testContext.CancellationToken);
+		HasCount(16, records);
+		AreEqual(11, records[0].Id);
+		AreEqual("Gothmog", records[0].FullName);
+		AreEqual(8, records[15].Id);
+		AreEqual("Gandalf", records[15].FullName);
+
+		// It should allow selecting a specific set of columns.
+		records = await connection.FindAllAsync<Character>(columns: ["gender"], cancellationToken: testContext.CancellationToken);
+		AreEqual(1, records[0].Id);
+		AreEqual(CharacterGender.Human, records[0].Gender);
+		IsNull(records[0].FullName);
+		AreEqual(16, records[15].Id);
+		AreEqual(CharacterGender.DarkLord, records[15].Gender);
+		IsNull(records[15].FullName);
+	}
+
+	[TestMethod]
 	public void Insert() {
 		var sql = "SELECT * FROM Characters WHERE firstName = 'Cédric'";
 		IsEmpty(connection.Query<Character>(sql));
 
-		var character = new Character { FirstName = "Cédric", LastName = "Belin", Gender = CharacterGender.Istari };
-		AreEqual(0, character.Id);
-		IsNull(character.FullName);
+		var record = new Character { FirstName = "Cédric", LastName = "Belin", Gender = CharacterGender.Istari };
+		AreEqual(0, record.Id);
+		IsNull(record.FullName);
 
-		var id = connection.Insert(character);
+		var id = connection.Insert(record);
 		IsGreaterThan(16, id);
-		AreEqual(id, character.Id);
+		AreEqual(id, record.Id);
 
 		var records = connection.Query<Character>(sql).AsList();
 		HasCount(1, records);
@@ -112,7 +168,7 @@ public sealed partial class DbConnectionExtensionsTests {
 		var cedric = records[0];
 		AreEqual(id, cedric.Id);
 		AreEqual("Cédric Belin", cedric.FullName);
-		AreEqual(character.Gender, cedric.Gender);
+		AreEqual(record.Gender, cedric.Gender);
 	}
 
 	[TestMethod]
@@ -120,13 +176,13 @@ public sealed partial class DbConnectionExtensionsTests {
 		var sql = "SELECT * FROM Characters WHERE firstName = 'Cédric'";
 		IsEmpty(await connection.QueryAsync<Character>(sql, cancellationToken: testContext.CancellationToken));
 
-		var character = new Character { FirstName = "Cédric", LastName = "Belin", Gender = CharacterGender.Istari };
-		AreEqual(0, character.Id);
-		IsNull(character.FullName);
+		var record = new Character { FirstName = "Cédric", LastName = "Belin", Gender = CharacterGender.Istari };
+		AreEqual(0, record.Id);
+		IsNull(record.FullName);
 
-		var id = await connection.InsertAsync(character, cancellationToken: testContext.CancellationToken);
+		var id = await connection.InsertAsync(record, cancellationToken: testContext.CancellationToken);
 		IsGreaterThan(16, id);
-		AreEqual(id, character.Id);
+		AreEqual(id, record.Id);
 
 		var records = (await connection.QueryAsync<Character>(sql, cancellationToken: testContext.CancellationToken)).AsList();
 		HasCount(1, records);
@@ -134,7 +190,7 @@ public sealed partial class DbConnectionExtensionsTests {
 		var cedric = records[0];
 		AreEqual(id, cedric.Id);
 		AreEqual("Cédric Belin", cedric.FullName);
-		AreEqual(character.Gender, cedric.Gender);
+		AreEqual(record.Gender, cedric.Gender);
 	}
 
 	[TestMethod]

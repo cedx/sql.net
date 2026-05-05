@@ -75,17 +75,17 @@ public sealed class DbColumnInfoTests {
 
 	[TestMethod]
 	public void GetValue() {
-		var character = new Character { FirstName = "Cédric", LastName = "Belin" };
-		AreEqual("Cédric", new DbColumnInfo(typeof(Character).GetProperty("FirstName")!).GetValue(character));
-		AreEqual("Belin", new DbColumnInfo(typeof(Character).GetProperty("LastName")!).GetValue(character));
+		var record = new Character { FirstName = "Cédric", LastName = "Belin" };
+		AreEqual("Cédric", new DbColumnInfo(typeof(Character).GetProperty("FirstName")!).GetValue(record));
+		AreEqual("Belin", new DbColumnInfo(typeof(Character).GetProperty("LastName")!).GetValue(record));
 	}
 
 	[TestMethod]
 	public void SetValue() {
-		var character = new Character { FirstName = "Cédric", LastName = "Belin" };
-		new DbColumnInfo(typeof(Character).GetProperty("FirstName")!).SetValue(character, "Anders");
-		new DbColumnInfo(typeof(Character).GetProperty("LastName")!).SetValue(character, "Hejlsberg");
-		AreEqual("Anders", character.FirstName);
-		AreEqual("Hejlsberg", character.LastName);
+		var record = new Character { FirstName = "Cédric", LastName = "Belin" };
+		new DbColumnInfo(typeof(Character).GetProperty("FirstName")!).SetValue(record, "Anders");
+		new DbColumnInfo(typeof(Character).GetProperty("LastName")!).SetValue(record, "Hejlsberg");
+		AreEqual("Anders", record.FirstName);
+		AreEqual("Hejlsberg", record.LastName);
 	}
 }

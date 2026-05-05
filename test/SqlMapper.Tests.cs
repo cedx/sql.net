@@ -90,11 +90,11 @@ public sealed class SqlMapperTests {
 		IsNull(instance.lastName);
 
 		// It should create an object of the specified type.
-		var character = SqlMapper.Instance.CreateInstance<Character>(properties);
-		IsInstanceOfType<Character>(character);
-		AreEqual("Cédric", character.FirstName);
-		AreEqual(CharacterGender.Balrog, character.Gender);
-		AreEqual("", character.LastName);
+		var record = SqlMapper.Instance.CreateInstance<Character>(properties);
+		IsInstanceOfType<Character>(record);
+		AreEqual("Cédric", record.FirstName);
+		AreEqual(CharacterGender.Balrog, record.Gender);
+		AreEqual("", record.LastName);
 	}
 
 	[TestMethod]
