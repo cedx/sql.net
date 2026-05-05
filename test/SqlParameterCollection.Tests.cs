@@ -60,8 +60,16 @@ public sealed class SqlParameterCollectionTests {
 
 	[TestMethod]
 	public void ImplicitConversion() {
+		// It should create a collection from the specified array of positional parameters.
+		SqlParameterCollection collection = new object[] { "foo", "bar" };
+		HasCount(2, collection);
+		AreEqual("?1", collection[0].Name);
+		AreEqual("foo", collection[0].Value);
+		AreEqual("?2", collection[1].Name);
+		AreEqual("bar", collection[1].Value);
+
 		// It should create a collection from the specified list of positional parameters.
-		SqlParameterCollection collection = new List<object?> { "foo", "bar" };
+		collection = new List<object?> { "foo", "bar" };
 		HasCount(2, collection);
 		AreEqual("?1", collection[0].Name);
 		AreEqual("foo", collection[0].Value);
@@ -100,12 +108,16 @@ public sealed class SqlParameterCollectionTests {
 
 	[TestMethod]
 	public void RemoveAt() {
+		// It should remove the parameter with the specified name.
 		var collection = new SqlParameterCollection(("?1", 123), ("@Key", "Unique"));
 		HasCount(2, collection);
 		collection.RemoveAt("Key");
 		HasCount(1, collection);
-		Throws<KeyNotFoundException>(() => collection.RemoveAt("Foo"));
 		collection.RemoveAt("?1");
 		IsEmpty(collection);
+
+		// It should throw an error if the specified name does not exist.
+		collection = new SqlParameterCollection(("?1", 123), ("@Key", "Unique"));
+		Throws<KeyNotFoundException>(() => collection.RemoveAt("Foo"));
 	}
 }

@@ -168,7 +168,7 @@ public class SqlCommandBuilder {
 	/// <param name="columns">The list of columns to select. By default, all columns.</param>
 	/// <returns>The generated command to find all entities.</returns>
 	/// <exception cref="InvalidOperationException">The identity column could not be found.</exception>
-	public (SqlCommand Command, SqlParameterCollection Parameters) GetFindAllCommand<T>(DbColumnOrderHint[]? orderHints = null, params string[] columns) where T: new() {
+	public (SqlCommand Command, SqlParameterCollection Parameters) GetFindAllCommand<T>(SqlOrderHint[]? orderHints = null, params string[] columns) where T: new() {
 		var table = SqlMapper.Instance.GetTable<T>();
 		var idColumn = table.IdentityColumn ?? throw new InvalidOperationException("The identity column could not be found.");
 

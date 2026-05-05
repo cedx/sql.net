@@ -5,7 +5,7 @@ namespace Belin.Sql;
 /// </summary>
 /// <param name="column">The name of the column for which the hint is being provided.</param>
 /// <param name="sortOrder">The sort order of the column.</param>
-public sealed class DbColumnOrderHint(string column, SortOrder sortOrder = SortOrder.Ascending) {
+public sealed class SqlOrderHint(string column, SortOrder sortOrder = SortOrder.Ascending) {
 
 	/// <summary>
 	/// The name of the column for which the hint is being provided.
@@ -22,12 +22,12 @@ public sealed class DbColumnOrderHint(string column, SortOrder sortOrder = SortO
 	/// </summary>
 	/// <param name="parameter">The tuple providing the column name and its sort order.</param>
 	/// <returns>The order hint corresponding to the specified tuple.</returns>
-	public static implicit operator DbColumnOrderHint((string Column, SortOrder SortOrder) orderHint) => new(orderHint.Column, orderHint.SortOrder);
+	public static implicit operator SqlOrderHint((string Column, SortOrder SortOrder) orderHint) => new(orderHint.Column, orderHint.SortOrder);
 
 	/// <summary>
 	/// Creates a new order hint from the specified key/value pair.
 	/// </summary>
 	/// <param name="orderHint">The key/value pair providing the column name and its sort order.</param>
 	/// <returns>The order hint corresponding to the specified key/value pair.</returns>
-	public static implicit operator DbColumnOrderHint(KeyValuePair<string, SortOrder> orderHint) => new(orderHint.Key, orderHint.Value);
+	public static implicit operator SqlOrderHint(KeyValuePair<string, SortOrder> orderHint) => new(orderHint.Key, orderHint.Value);
 }

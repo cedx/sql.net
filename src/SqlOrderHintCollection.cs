@@ -4,15 +4,15 @@ namespace Belin.Sql;
 /// A collection of hints describing the sort order of columns.
 /// </summary>
 /// <param name="orderHints">The collection whose elements are copied to the order hint collection.</param>
-public class DbColumnOrderHintCollection(params IEnumerable<DbColumnOrderHint> orderHints): List<DbColumnOrderHint>(orderHints) {
+public class SqlOrderHintCollection(params IEnumerable<SqlOrderHint> orderHints): List<SqlOrderHint>(orderHints) {
 
 	/// <summary>
 	/// Gets the order hint with the specified column name.
 	/// </summary>
 	/// <param name="column">The column name.</param>
 	/// <returns>The order hint with the specified column name.</returns>
-	/// <exception cref="KeyNotFoundException">The specified order hint name does not exist.</exception>
-	public DbColumnOrderHint this[string column] =>
+	/// <exception cref="KeyNotFoundException">The specified column name does not exist.</exception>
+	public SqlOrderHint this[string column] =>
 		Find(orderHint => orderHint.Column.Equals(column, StringComparison.OrdinalIgnoreCase)) ?? throw new KeyNotFoundException(column);
 
 	/// <summary>
@@ -20,24 +20,24 @@ public class DbColumnOrderHintCollection(params IEnumerable<DbColumnOrderHint> o
 	/// </summary>
 	/// <param name="columns">The array whose elements are copied to the order hint collection.</param>
 	/// <returns>The order hint collection corresponding to the specified array of column names.</returns>
-	public static implicit operator DbColumnOrderHintCollection(string[] columns) =>
-		[.. columns.Select(value => new DbColumnOrderHint(value, SortOrder.Ascending))];
+	public static implicit operator SqlOrderHintCollection(string[] columns) =>
+		[.. columns.Select(value => new SqlOrderHint(value, SortOrder.Ascending))];
 
 	/// <summary>
 	/// Creates a new order hint collection from the specified array of column names.
 	/// </summary>
 	/// <param name="columns">The array whose elements are copied to the order hint collection.</param>
 	/// <returns>The order hint collection corresponding to the specified array of column names.</returns>
-	public static implicit operator DbColumnOrderHintCollection(List<string> columns) =>
-		[.. columns.Select(value => new DbColumnOrderHint(value, SortOrder.Ascending))];
+	public static implicit operator SqlOrderHintCollection(List<string> columns) =>
+		[.. columns.Select(value => new SqlOrderHint(value, SortOrder.Ascending))];
 
 	/// <summary>
 	/// Creates a new order hint collection from the specified dictionary of column names and orders.
 	/// </summary>
 	/// <param name="orderHints">The dictionary whose elements are copied to the order hint collection.</param>
 	/// <returns>The order hint collection corresponding to the specified dictionary of column names and orders.</returns>
-	public static implicit operator DbColumnOrderHintCollection(OrderedDictionary<string, SortOrder> orderHints) =>
-		[.. orderHints.Select(entry => new DbColumnOrderHint(entry.Key, entry.Value))];
+	public static implicit operator SqlOrderHintCollection(OrderedDictionary<string, SortOrder> orderHints) =>
+		[.. orderHints.Select(entry => new SqlOrderHint(entry.Key, entry.Value))];
 
 	/// <summary>
 	/// Gets a value indicating whether an order hint in this collection has the specified column name.
@@ -57,5 +57,9 @@ public class DbColumnOrderHintCollection(params IEnumerable<DbColumnOrderHint> o
 	/// Removes the order hint with the specified column name from this collection.
 	/// </summary>
 	/// <param name="column">The column name.</param>
-	public void RemoveAt(string column) => RemoveAt(IndexOf(column));
+	/// <exception cref="KeyNotFoundException">The specified column name does not exist.</exception>
+	public void RemoveAt(string column) {
+		try { RemoveAt(IndexOf(column)); }
+		catch (ArgumentOutOfRangeException e) { throw new KeyNotFoundException(column, e); }
+	}
 }
