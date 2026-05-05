@@ -71,6 +71,35 @@ public sealed class SqlCommandBuilderTests {
 	}
 
 	[TestMethod]
+	public void GetFindAllCommand() {
+		var builder = new SqlCommandBuilder(connection);
+
+		// It should return the SQL command to find all entities.
+		var (command, parameters) = builder.GetFindAllCommand<Character>();
+		StartsWith(@"SELECT """, command.Text);
+		DoesNotContain("*", command.Text);
+		Contains(@"FROM ""main"".""Characters""", command.Text);
+		EndsWith(@"ORDER BY ""ID"" ASC", command.Text);
+
+		// It should also return an empty parameter collection.
+		IsEmpty(parameters);
+
+		// It should allow sorting the results by a specific set of columns.
+		(command, _) = builder.GetFindAllCommand<Character>([("gender", SortOrder.Ascending), ("fullName", SortOrder.Descending)]);
+		StartsWith(@"SELECT """, command.Text);
+		DoesNotContain("*", command.Text);
+		Contains(@"FROM ""main"".""Characters""", command.Text);
+		EndsWith(@"ORDER BY ""gender"" ASC, ""fullName"" DESC", command.Text);
+
+		// It should allow selecting a specific set of columns.
+		(command, _) = builder.GetFindAllCommand<Character>(columns: ["firstName"]);
+		StartsWith(@"SELECT ""firstName""", command.Text);
+		DoesNotContain("gender", command.Text);
+		DoesNotContain("lastName", command.Text);
+		EndsWith(@"ORDER BY ""ID"" ASC", command.Text);
+	}
+
+	[TestMethod]
 	public void GetInsertCommand() {
 		// It should return the SQL command to insert an entity.
 		var (command, parameters) = new SqlCommandBuilder(connection).GetInsertCommand(character);

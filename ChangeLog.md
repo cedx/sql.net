@@ -1,5 +1,7 @@
 # Changelog
 
+## Version [4.1.0](https://github.com/cedx/sql.net/compare/v4.0.0...v4.1.0)
+
 ## Version [4.0.0](https://github.com/cedx/sql.net/compare/v3.2.0...v4.0.0)
 - Breaking change: completely rewrote the library.
 - Breaking change: dropped support for [PowerShell](https://learn.microsoft.com/en-us/powershell). See the [SQL Mapper for PowerShell](https://github.com/cedx/sql.ps1) project for an alternative.
