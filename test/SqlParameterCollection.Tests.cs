@@ -86,7 +86,7 @@ public sealed class SqlParameterCollectionTests {
 		AreEqual(parameter, collection[1]);
 
 		// It should throw an error if the specified name does not exist.
-		Throws<ArgumentOutOfRangeException>(() => collection["@Foo"]);
+		Throws<KeyNotFoundException>(() => collection["@Foo"]);
 	}
 
 	[TestMethod]
@@ -104,7 +104,7 @@ public sealed class SqlParameterCollectionTests {
 		HasCount(2, collection);
 		collection.RemoveAt("Key");
 		HasCount(1, collection);
-		Throws<ArgumentOutOfRangeException>(() => collection.RemoveAt("Foo"));
+		Throws<KeyNotFoundException>(() => collection.RemoveAt("Foo"));
 		collection.RemoveAt("?1");
 		IsEmpty(collection);
 	}

@@ -89,5 +89,9 @@ public class SqlParameterCollection(params IEnumerable<SqlParameter> parameters)
 	/// Removes the parameter with the specified name from this collection.
 	/// </summary>
 	/// <param name="name">The parameter name.</param>
-	public void RemoveAt(string name) => RemoveAt(IndexOf(name));
+	/// <exception cref="KeyNotFoundException">The specified parameter name does not exist.</exception>
+	public void RemoveAt(string name) {
+		try { RemoveAt(IndexOf(name)); }
+		catch (ArgumentOutOfRangeException e) { throw new KeyNotFoundException(SqlParameter.NormalizeName(name), e); }
+	}
 }
