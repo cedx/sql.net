@@ -1,6 +1,10 @@
 # Changelog
 
 ## Version [4.1.0](https://github.com/cedx/sql.net/compare/v4.0.0...v4.1.0)
+- Added the `SqlOrderHint` and `SqlOrderHintCollection` classes.
+- Added the `FindAll()` and `FindAllAsync()` methods to the `DbConnectionExtensions` class.
+- Added the `SqlCommandBuilder.GetFindAllCommand()` method.
+- Added the `SortOrder` enumeration.
 
 ## Version [4.0.0](https://github.com/cedx/sql.net/compare/v3.2.0...v4.0.0)
 - Breaking change: completely rewrote the library.
