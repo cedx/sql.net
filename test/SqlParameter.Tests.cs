@@ -40,7 +40,7 @@ public sealed class SqlParameterTests {
 	[DataRow(":baz", ":baz")]
 	[DataRow("$qux", "$qux")]
 	public void Name(string name, string expected) =>
-		AreEqual(expected, new SqlParameter(name, null).Name);
+		AreEqual(expected, new SqlParameter(name).Name);
 
 	[TestMethod]
 	public void Value() {
