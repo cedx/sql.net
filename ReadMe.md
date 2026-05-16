@@ -6,12 +6,12 @@ If you like [SQL](https://en.wikipedia.org/wiki/SQL) but dislike the boilerplate
 > Think of [Dapper](https://www.learndapper.com) and its alternatives, but less advanced/powerful.
 
 ## Documentation
-- [User guide](https://github.com/cedx/sql.net/tree/main/docs)
-- [Examples](https://github.com/cedx/sql.net/tree/main/example)
+- [User guide](https://github.com/CedX/Sql.net/tree/main/docs)
+- [Examples](https://github.com/CedX/Sql.net/tree/main/example)
 
 ## Development
-- [Git repository](https://github.com/cedx/sql.net)
-- [Submit an issue](https://github.com/cedx/sql.net/issues)
+- [Git repository](https://github.com/CedX/Sql.net)
+- [Submit an issue](https://github.com/CedX/Sql.net/issues)
 
 ## License
-[SQL Mapper for .NET](https://github.com/cedx/sql.net) is distributed under the MIT License.
+[SQL Mapper for .NET](https://github.com/CedX/Sql.net) is distributed under the MIT License.

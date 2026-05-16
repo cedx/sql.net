@@ -15,9 +15,9 @@
 
 	PrivateData = @{
 		PSData = @{
-			LicenseUri = "https://github.com/cedx/sql.net/blob/main/License.md"
-			ProjectUri = "https://github.com/cedx/sql.net"
-			ReleaseNotes = "https://github.com/cedx/sql.net/releases"
+			LicenseUri = "https://github.com/CedX/Sql.net/blob/main/License.md"
+			ProjectUri = "https://github.com/CedX/Sql.net"
+			ReleaseNotes = "https://github.com/CedX/Sql.net/releases"
 			Tags = "ado.net", "data", "database", "mapper", "mapping", "orm", "query", "sql"
 		}
 	}
